@@ -11,7 +11,6 @@ typedef struct liste
 {
     t_tile* n;
     struct liste* next;
-    struct liste* prev;
 }t_liste;
 
 t_liste *creer(void);

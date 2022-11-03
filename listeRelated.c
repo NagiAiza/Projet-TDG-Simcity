@@ -15,7 +15,6 @@ t_liste *insererNoeud(t_liste *liste, t_tile *n) //inserer noeud dans la liste
     nouv->n = n;
 
     nouv->next = liste;
-    nouv->prev = NULL;
     return nouv;
 }
 
@@ -142,8 +141,6 @@ void liberer(t_liste *l)
     while (l != NULL)
     {
         aux = l->next;
-        l->next = NULL;
-        l->prev = NULL;
         free(l);
         l = aux;
     }

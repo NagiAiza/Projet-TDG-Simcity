@@ -7,11 +7,10 @@
 
 #include <stdio.h>
 #include <allegro.h>
+#include "jeu1.h"
 
 BITMAP * load_bitmap_check(char *nomImage);
-void affichageCaseSelec(BITMAP* map, BITMAP* selec, int R, int B);//R correspond à la colonne, B à la ligne
-BITMAP* affichageMap(BITMAP* bufferMap);
-BITMAP* affichageMenu(BITMAP* bufferMenu);
+void affichageCaseSelec(BITMAP* map, BITMAP* selec, t_pos souris);
 void affichageTotal();
 
 #endif //PROJET_S1_AFFICHAGE_H

@@ -1,9 +1,47 @@
 //
 // Created by alexi on 02/11/2022.
 //
-
 #include "jeu1.h"
 #include "listeRelated.h"
+
+t_pos calcul_pos_souris(BITMAP* sousMap, int decalageScreenX/*pour savoir où placer la bitmap*/)//retourne la position de la souris
+{
+    t_pos souris;
+    souris.ligne=getb(getpixel(sousMap, mouse_x+decalageScreenX-124, mouse_y));
+    souris.colonne=getr(getpixel(sousMap, mouse_x+decalageScreenX-124, mouse_y));
+    return souris;
+}
+
+t_tile* associerCaseSouris(t_graphe* map, t_pos souris)
+{
+    if(souris.ligne<35 && souris.colonne<45)
+    {
+        return map->tab_case[souris.ligne][souris.colonne];
+    }
+    else
+    {
+        return NULL;
+    }
+}
+
+int detectionChangementDeCase(t_pos old_souris, t_pos new_souris)
+{
+    if(new_souris.ligne<35 && new_souris.colonne<45)
+    {
+        if(old_souris.colonne!=new_souris.colonne || old_souris.ligne!=new_souris.ligne)
+        {
+            return 1;
+        }
+        else
+        {
+            return 0;
+        }
+    }
+    else
+    {
+        return 0;
+    }
+}
 
 t_tile*** makeGrid()
 {
@@ -78,4 +116,15 @@ void initialiserVoisin(t_tile*** map, int ligne, int colonne)//pour donner une l
             rajouterVoisin(map[i][j], map, colonne, ligne);
         }
     }
+}
+
+void placementRoute()
+{
+    //mettre a jour le fichier
+    //est ce qu'on ferait pas un placement en A*?
+}
+
+void placementBatiment()
+{
+
 }
