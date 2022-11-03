@@ -99,7 +99,6 @@ void affichageTotal()
             pixel= getpixel(sousMap, mouse_x+screenx-124, mouse_y);
             r=getr(pixel);
             b=getb(pixel);
-            rest(100);
         }
 
 
