@@ -27,11 +27,11 @@ BITMAP * load_bitmap_check(char *nomImage);
 IMAGE* initialisation_liste_image();
 BUFFER* initialisation_liste_buffer();
 void liberation_memoire_bitmaps(IMAGE* liste_image, BUFFER* liste_buffer);
+void affichageElementsCarte(BITMAP* bufferMap, IMAGE* liste);//et toute les autres bitmap de batiments
 
-void affichageElement(BITMAP* bufferMap, BITMAP* route, int type, int ligne, int colonne);
+void affichageElement(BITMAP* bufferMap, IMAGE* liste, int type, int ligne, int colonne);
 void affichageCaseSelec(BITMAP* map, BITMAP* selec, t_pos souris);
-void affichageTotal(t_graphe* map);
-
+void affichageTotal(t_graphe* map, IMAGE* liste_image, BUFFER* liste_buffer, t_pos souris);
 t_pos calcul_pos_souris(BITMAP* sousMap, int decalageScreenX/*pour savoir où placer la bitmap*/);//retourne la position de la souris
 
 

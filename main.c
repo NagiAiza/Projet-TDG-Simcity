@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <allegro.h>
-#include "Affichage.h"
+#include "moteur_du_jeu.h"
+
 
 
 void initialisation_allegro() {    ///Initialisation pour Allegro
@@ -17,12 +18,9 @@ void initialisation_allegro() {    ///Initialisation pour Allegro
     }
 }
 
-int main() {//il n'y aura rien dans le main, tout se fait dans les sous prgm
+int main() {
     initialisation_allegro();
-
-    t_graphe* map=makeGrid();
-
-    affichageTotal(map);
+    jeu();
     allegro_exit();
     return 0;
 }END_OF_MAIN();
