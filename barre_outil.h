@@ -10,7 +10,7 @@
 #include "allegro.h"
 
 int choixAction();
-void action(BITMAP* bufferFinal);
+int action(BITMAP* bufferFinal);
 
 
 #endif //PROJET_S1_BARRE_OUTIL_H

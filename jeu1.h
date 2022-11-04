@@ -33,7 +33,7 @@ typedef struct tile{//pour faire la map on fait un tableau à 2 dimensions de ti
 }t_tile;
 
 typedef struct graphe{
-    t_tile*** tab_case;
+    t_tile*** grille;
     int** mat_adjacence;
 }t_graphe;
 
@@ -55,10 +55,13 @@ typedef struct habitation{
     int nbHabitant;
 }t_habitation;
 
-t_tile*** makeGrid();
+t_graphe* makeGrid();
+t_graphe* initialiserGrille(t_graphe* g); //premiere initialisation a faire
+void initialisationElementCarte();
+void majFichierPlacementElement(t_graphe* g);
+t_graphe* placementElement(t_graphe* g, int ligne, int colonne, int type);
 void rajouterVoisin(t_tile* spot, t_tile ***map, int colonne, int ligne);
 void initialiserVoisin(t_tile*** map, int ligne, int colonne);//pour donner une liste de voisins à chaque noeuds
-t_pos calcul_pos_souris(BITMAP* sousMap, int decalageScreenX/*pour savoir où placer la bitmap*/);//retourne la position de la souris
 
 
 

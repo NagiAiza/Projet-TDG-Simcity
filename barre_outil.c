@@ -3,7 +3,6 @@
 //
 
 #include "barre_outil.h"
-#include "jeu1.h"
 
 int choixAction()
 {
@@ -46,9 +45,10 @@ int choixAction()
     return 0;
 }
 
-void action(BITMAP* bufferFinal)
+int action(BITMAP* bufferFinal)
 {
-    switch (choixAction()) {
+    int choix=choixAction();
+    switch (choix) {
         case 1:
             textout_ex ( bufferFinal, font, "Action 1", 511, 326,makecol (255, 255, 255), -1); //texte explicatif
             break;
@@ -80,4 +80,5 @@ void action(BITMAP* bufferFinal)
             textout_ex ( bufferFinal, font, "Rien de selectionne", 511, 326,makecol (255, 255, 255), -1); //texte explicatif
             break;
     }
+    return choix;
 }

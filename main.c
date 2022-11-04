@@ -17,9 +17,12 @@ void initialisation_allegro() {    ///Initialisation pour Allegro
     }
 }
 
-int main() {
+int main() {//il n'y aura rien dans le main, tout se fait dans les sous prgm
     initialisation_allegro();
-    affichageTotal();
+
+    t_graphe* map=makeGrid();
+
+    affichageTotal(map);
     allegro_exit();
     return 0;
 }END_OF_MAIN();

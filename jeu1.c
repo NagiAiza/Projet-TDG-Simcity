@@ -4,19 +4,12 @@
 #include "jeu1.h"
 #include "listeRelated.h"
 
-t_pos calcul_pos_souris(BITMAP* sousMap, int decalageScreenX/*pour savoir où placer la bitmap*/)//retourne la position de la souris
-{
-    t_pos souris;
-    souris.ligne=getb(getpixel(sousMap, mouse_x+decalageScreenX-124, mouse_y));
-    souris.colonne=getr(getpixel(sousMap, mouse_x+decalageScreenX-124, mouse_y));
-    return souris;
-}
 
 t_tile* associerCaseSouris(t_graphe* map, t_pos souris)
 {
     if(souris.ligne<35 && souris.colonne<45)
     {
-        return map->tab_case[souris.ligne][souris.colonne];
+        return map->grille[souris.ligne][souris.colonne];
     }
     else
     {
@@ -43,54 +36,59 @@ int detectionChangementDeCase(t_pos old_souris, t_pos new_souris)
     }
 }
 
-t_tile*** makeGrid()
-{
-    t_tile*** grille=(t_tile***)malloc(sizeof(t_tile**)*NBLIGNE);
-    for(int i=0; i<NBCOLONNE; i++)
-    {
-        grille[i] = (t_tile**) malloc(NBCOLONNE*sizeof(t_tile*));
-    }
-    return grille;
-}
 
-void initialiserGrille(t_tile*** grid) //premiere initialisation a faire
+t_graphe* initialiserGrille(t_graphe* g) //premiere initialisation a faire
 {
-    FILE* pf=NULL;
-    pf=fopen("./map.txt","r");
-    if(pf==NULL)
-    {
-        printf("erreur d'ouverture fichier\n");
-    }
-    int i, j, random;
+    int i, j;
     for (i = 0; i < NBLIGNE; i++)
     {
         for (j = 0; j < NBCOLONNE; j++)
         {
-            grid[i][j] = (t_tile*)malloc(sizeof(t_tile));
-            grid[i][j]->position.colonne = i;
-            grid[i][j]->position.ligne = j;
+            g->grille[i][j] = (t_tile*)malloc(sizeof(t_tile));
+            g->grille[i][j]->position.colonne = i;
+            g->grille[i][j]->position.ligne = j;
 
-            grid[i][j]->f = 0;
-            grid[i][j]->g = 0;
-            grid[i][j]->h = 0;
+            g->grille[i][j]->f = 0;
+            g->grille[i][j]->g = 0;
+            g->grille[i][j]->h = 0;
 
-            grid[i][j]->f = grid[i][j]->g + grid[i][j]->h;
+            g->grille[i][j]->f = g->grille[i][j]->g + g->grille[i][j]->h;
 
-            grid[i][j]->voisin = NULL;
+            g->grille[i][j]->voisin = NULL;
 
-            grid[i][j]->parent = NULL;
+            g->grille[i][j]->parent = NULL;
 
-            fscanf(pf,"%d ",&grid[i][j]->element);
+            g->grille[i][j]->element=0;
         }
     }
-    fclose(pf);
-    pf=NULL;
+    return g;
 }
 
-void majFichierMap(t_tile*** grid)
+t_graphe* makeGrid()//penser a crer la libération de données
 {
+    t_graphe* g=(t_graphe*) malloc(sizeof(t_graphe));
+    g->grille=(t_tile***)malloc(sizeof(t_tile**)*NBLIGNE);
+    for(int i=0; i<NBCOLONNE; i++)
+    {
+        g->grille[i] = (t_tile**) malloc(NBCOLONNE*sizeof(t_tile*));
+    }
+    g= initialiserGrille(g);
 
+    g->mat_adjacence=(int**) malloc(NBLIGNE*sizeof(int*));
+    for(int i=0; i<NBLIGNE; i++)
+    {
+        g->mat_adjacence[i]=(int*)malloc(NBCOLONNE*sizeof(int));
+    }
+    for(int i=0; i<NBLIGNE; i++)
+    {
+        for(int j=0; j<NBCOLONNE; j++)
+        {
+            g->mat_adjacence[i][j]=0;
+        }
+    }
+    return g;
 }
+
 
 void rajouterVoisin(t_tile* spot, t_tile ***map, int colonne, int ligne)//les arretes existes que entre les voisins
 {
@@ -118,13 +116,47 @@ void initialiserVoisin(t_tile*** map, int ligne, int colonne)//pour donner une l
     }
 }
 
-void placementRoute()
+void majFichierPlacementElement(t_graphe* g)
 {
-    //mettre a jour le fichier
-    //est ce qu'on ferait pas un placement en A*?
+
+    FILE* elementCarte= fopen("element_map.txt", "w");
+
+    for(int i=0; i<NBLIGNE; i++)
+    {
+        for(int j=0; j<NBCOLONNE; j++)
+        {
+            fprintf(elementCarte, "%d ", g->grille[i][j]->element);
+        }
+        fprintf(elementCarte, "\n");
+    }
+
+    fclose(elementCarte);
 }
+
+t_graphe* placementElement(t_graphe* g, int ligne, int colonne, int type)
+{
+    g->grille[ligne][colonne]->element=type;
+    majFichierPlacementElement(g);
+    return g;
+}
+
+
 
 void placementBatiment()
 {
 
+}
+
+void initialisationElementCarte()
+{
+    FILE* elementCarte= fopen("element_map.txt", "w+");
+    for(int i=0; i<NBLIGNE; i++)
+    {
+        for(int j=0; j<NBCOLONNE; j++)
+        {
+            fprintf(elementCarte, "%d ", 0);//aucun element n'est sur la carte;
+        }
+        fprintf(elementCarte, "\n");
+    }
+    fclose(elementCarte);
 }
