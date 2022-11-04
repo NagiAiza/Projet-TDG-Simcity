@@ -45,10 +45,10 @@ int choixAction()
     return 0;
 }
 
-t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* choix, t_pos souris)
+t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* choix, t_pos souris, int* rotation)
 {
     switch (*choix) {
-        case 1:
+        case 1://route
             if(souris.ligne<35 && souris.colonne<45)
             {
                 draw_sprite(liste_buffer->buffer_map, liste_image->route, (SCREEN_W/2-36)+souris.colonne*14-souris.ligne*14, souris.colonne*8+souris.ligne*8);
@@ -63,11 +63,57 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
                 *choix=0;//on sort du choix des actions si l'utilisateur le veut
             }
             break;
-        case 2:
-            textout_ex ( liste_buffer->buffer_final, font, "Action 2", 511, 326,makecol (255, 255, 255), -1); //texte explicatif
+        case 2://habitation 3x3
+            //bouton pour rotationné le sens de construction? + blindage pour ne pas superposer avec une autre construction
+            if(key[KEY_1])//ou choisir un bouton plus judicieux
+            {
+                *choix=0;//on sort du choix des actions si l'utilisateur le veut
+            }
+            if(souris.ligne>=0+1 && souris.colonne>=0+1 && souris.ligne<35-1 && souris.colonne<45-1)
+            {
+                for(int i=-1; i<2; i++)
+                {
+                    for(int j=-1; j<2; j++)
+                    {
+                        draw_sprite(liste_buffer->buffer_map, liste_image->route, (SCREEN_W/2-36)+(souris.colonne+j)*14-(souris.ligne-i)*14, (souris.colonne+j)*8+(souris.ligne-i)*8);
+                    }
+                }
+
+            }
             break;
-        case 3:
-            textout_ex ( liste_buffer->buffer_final, font, "Action 3", 511, 326,makecol (255, 255, 255), -1); //texte explicatif
+        case 3://batiment 4x6
+            if(key[KEY_1])//ou choisir un bouton plus judicieux
+            {
+                *choix=0;//on sort du choix des actions si l'utilisateur le veut
+            }
+            if(key[KEY_2])
+            {
+                *rotation=-*rotation;
+                rest(100);//pour eviter les rebonds
+            }
+            if(souris.ligne<35 && souris.colonne<45)//blindage pour pas sortir de la map en fonction des deux moyens de rotation
+            {
+                if(*rotation==1)
+                {
+                    for(int i=0; i<4; i++)//trouver un moyen de centrer la construction sur la souris
+                    {
+                        for(int j=0; j<6; j++)
+                        {
+                            draw_sprite(liste_buffer->buffer_map, liste_image->route, (SCREEN_W/2-36)+(souris.colonne+j)*14-(souris.ligne-i)*14, (souris.colonne+j)*8+(souris.ligne-i)*8);
+                        }
+                    }
+                }
+                else if (*rotation==-1)
+                {
+                    for(int i=0; i<6; i++)
+                    {
+                        for(int j=0; j<4; j++)
+                        {
+                            draw_sprite(liste_buffer->buffer_map, liste_image->route, (SCREEN_W/2-36)+(souris.colonne+j)*14-(souris.ligne-i)*14, (souris.colonne+j)*8+(souris.ligne-i)*8);
+                        }
+                    }
+                }
+            }
             break;
         case 4:
             textout_ex ( liste_buffer->buffer_final, font, "Action 4", 511, 326,makecol (255, 255, 255), -1); //texte explicatif

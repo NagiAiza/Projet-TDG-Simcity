@@ -135,6 +135,7 @@ void majFichierPlacementElement(t_graphe* g)
 
 t_graphe* placementElement(t_graphe* g, int ligne, int colonne, int type)
 {
+    //faire en fonction des différentes taille de machin
     g->grille[ligne][colonne]->element=type;
     majFichierPlacementElement(g);
 

@@ -12,7 +12,7 @@
 
 
 int choixAction();
-t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* choix, t_pos souris);
+t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* choix, t_pos souris, int*rotation);
 
 
 #endif //PROJET_S1_BARRE_OUTIL_H
