@@ -137,6 +137,7 @@ t_graphe* placementElement(t_graphe* g, int ligne, int colonne, int type)
 {
     g->grille[ligne][colonne]->element=type;
     majFichierPlacementElement(g);
+
     return g;
 }
 

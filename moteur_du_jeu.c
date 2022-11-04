@@ -39,32 +39,25 @@ void jeu()//sous programme qui fera tourner tout le jeu
 
         affichageTotal(map, liste_image, liste_buffer, souris);
 
+        if(mouse_x>124 && mouse_y<640)
+        {
+            souris= calcul_pos_souris(liste_image->sous_map, decalageX);
+        }
+
+//L'utilisateur choisi déjà un bouton dans la barre d'outil
         if(mouse_b & 1)
         {
-
             if(mouse_x<124 || mouse_y>640)
             {
-                choix = action(liste_buffer->buffer_final);
+                choix = choixAction();
                 rest(100);
             }
         }
-        if(choix==1)
-        {
-            if(mouse_x>124 && mouse_y<640)
-            {
-                souris= calcul_pos_souris(liste_image->sous_map, decalageX);
-            }
-            if(souris.ligne<35 && souris.colonne<45)
-            {
-                draw_sprite(liste_buffer->buffer_map, liste_image->route, (SCREEN_W/2-36)+souris.colonne*14-souris.ligne*14, souris.colonne*8+souris.ligne*8);
-                if(mouse_b & 1)
-                {
-                    map = placementElement(map, souris.ligne, souris.colonne, choix);
-                    choix=0;
 
-                }
-            }
-        }
+        //dès qu'on a récup ce qu'il veut faire on conserve son action et en fonction de l'action on lance le sous pgrm pour l'effectué
+        map=action(map, liste_buffer, liste_image, &choix, souris);
+
+
         blit(liste_buffer->buffer_menu, liste_buffer->buffer_final, 0, 0, 0, 0, SCREEN_W, SCREEN_H);
         blit(liste_buffer->buffer_map, liste_buffer->buffer_final, decalageX, 0, 124, 0, SCREEN_W, SCREEN_H);
         show_mouse(liste_buffer->buffer_final);

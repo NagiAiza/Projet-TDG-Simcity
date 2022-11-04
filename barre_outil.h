@@ -8,9 +8,11 @@
 #include "stdio.h"
 #include "stdlib.h"
 #include "allegro.h"
+#include "Affichage.h"
+
 
 int choixAction();
-int action(BITMAP* bufferFinal);
+t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* choix, t_pos souris);
 
 
 #endif //PROJET_S1_BARRE_OUTIL_H

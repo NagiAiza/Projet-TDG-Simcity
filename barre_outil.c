@@ -45,40 +45,51 @@ int choixAction()
     return 0;
 }
 
-int action(BITMAP* bufferFinal)
+t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* choix, t_pos souris)
 {
-    int choix=choixAction();
-    switch (choix) {
+    switch (*choix) {
         case 1:
-            textout_ex ( bufferFinal, font, "Action 1", 511, 326,makecol (255, 255, 255), -1); //texte explicatif
+            if(souris.ligne<35 && souris.colonne<45)
+            {
+                draw_sprite(liste_buffer->buffer_map, liste_image->route, (SCREEN_W/2-36)+souris.colonne*14-souris.ligne*14, souris.colonne*8+souris.ligne*8);
+                if(mouse_b & 1)
+                {
+                    map = placementElement(map, souris.ligne, souris.colonne, *choix);
+                    *choix=0; // dès qu'on a fait l'action on peut revenir a un etat neutre de choix
+                }
+            }
+            if(key[KEY_1])//ou choisir un bouton plus judicieux
+            {
+                *choix=0;//on sort du choix des actions si l'utilisateur le veut
+            }
             break;
         case 2:
-            textout_ex ( bufferFinal, font, "Action 2", 511, 326,makecol (255, 255, 255), -1); //texte explicatif
+            textout_ex ( liste_buffer->buffer_final, font, "Action 2", 511, 326,makecol (255, 255, 255), -1); //texte explicatif
             break;
         case 3:
-            textout_ex ( bufferFinal, font, "Action 3", 511, 326,makecol (255, 255, 255), -1); //texte explicatif
+            textout_ex ( liste_buffer->buffer_final, font, "Action 3", 511, 326,makecol (255, 255, 255), -1); //texte explicatif
             break;
         case 4:
-            textout_ex ( bufferFinal, font, "Action 4", 511, 326,makecol (255, 255, 255), -1); //texte explicatif
+            textout_ex ( liste_buffer->buffer_final, font, "Action 4", 511, 326,makecol (255, 255, 255), -1); //texte explicatif
             break;
         case 5:
-            textout_ex ( bufferFinal, font, "Action 5", 511, 326,makecol (255, 255, 255), -1); //texte explicatif
+            textout_ex ( liste_buffer->buffer_final, font, "Action 5", 511, 326,makecol (255, 255, 255), -1); //texte explicatif
             break;
         case 6:
-            textout_ex ( bufferFinal, font, "Action 6", 511, 326,makecol (255, 255, 255), -1); //texte explicatif
+            textout_ex ( liste_buffer->buffer_final, font, "Action 6", 511, 326,makecol (255, 255, 255), -1); //texte explicatif
             break;
         case 7:
-            textout_ex ( bufferFinal, font, "Action 7", 511, 326,makecol (255, 255, 255), -1); //texte explicatif
+            textout_ex ( liste_buffer->buffer_final, font, "Action 7", 511, 326,makecol (255, 255, 255), -1); //texte explicatif
             break;
         case 8:
-            textout_ex ( bufferFinal, font, "Action 8", 511, 326,makecol (255, 255, 255), -1); //texte explicatif
+            textout_ex ( liste_buffer->buffer_final, font, "Action 8", 511, 326,makecol (255, 255, 255), -1); //texte explicatif
             break;
         case 9:
-            textout_ex ( bufferFinal, font, "Action 9", 511, 326,makecol (255, 255, 255), -1); //texte explicatif
+            textout_ex ( liste_buffer->buffer_final, font, "Action 9", 511, 326,makecol (255, 255, 255), -1); //texte explicatif
             break;
         default:
-            textout_ex ( bufferFinal, font, "Rien de selectionne", 511, 326,makecol (255, 255, 255), -1); //texte explicatif
+            textout_ex ( liste_buffer->buffer_final, font, "Rien de selectionne", 511, 326,makecol (255, 255, 255), -1); //texte explicatif
             break;
     }
-    return choix;
+    return map;
 }
