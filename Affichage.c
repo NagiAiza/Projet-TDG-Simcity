@@ -85,10 +85,12 @@ void affichageElement(BITMAP* bufferMap, IMAGE* liste, int type, int ligne, int 
     }
 }
 
-void affichageElementsCarte(BITMAP* bufferMap, IMAGE* liste_image)//et toute les autres bitmap de batiments
+void affichageElementsCarte(BITMAP* bufferMap, IMAGE* liste_image)//on pourra peut etre rajouter des obstacles du style montage etc...
 {
     //peut etre 2 fichiers texte, un pour l'affichage, l'autre pour les données de la map
     //parce que avec ça on va avoir un problème pour l'affichage des batiments > 1x1
+    //j'ai trouvé!
+    //on part de la coordonnées de départ de la souris et on donne le point de départ du sprite en fonction de la souris(en prenant en compte que la souris est centrée sur le sprite
     FILE* elementMap=fopen("element_map.txt", "r");//pour la nouvelle partie tout les elements sont à 0
     int type=0;
     for(int i=0; i<NBLIGNE; i++)
