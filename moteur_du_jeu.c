@@ -69,4 +69,5 @@ void jeu()//sous programme qui fera tourner tout le jeu
     //libération de la mémoire
     show_mouse(NULL);
     liberation_memoire_bitmaps(liste_image, liste_buffer);
+    //liberation_donnee(map);
 }

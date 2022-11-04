@@ -30,7 +30,7 @@ typedef struct tile{//pour faire la map on fait un tableau à 2 dimensions de ti
     int f;
     struct tile* parent;
     struct liste* voisin;//on initialise les voisins de chaque case en début de programme
-}t_tile;
+}t_tile;//rajouter un emplacement qui permette de differencier l'affichage du truc en globalité
 
 typedef struct graphe{
     t_tile*** grille;
@@ -38,7 +38,7 @@ typedef struct graphe{
 }t_graphe;
 
 
-
+///Faire une structure pour tout les bat???? (qui se mettra dans le graphe)
 typedef struct route{
     t_pos position;
 }t_route;
@@ -62,7 +62,7 @@ void majFichierPlacementElement(t_graphe* g);
 t_graphe* placementElement(t_graphe* g, int ligne, int colonne, int type);
 void rajouterVoisin(t_tile* spot, t_tile ***map, int colonne, int ligne);
 void initialiserVoisin(t_tile*** map, int ligne, int colonne);//pour donner une liste de voisins à chaque noeuds
-
+void liberation_donnee(t_graphe* g);
 
 
 #endif //PROJET_S1_JEU1_H

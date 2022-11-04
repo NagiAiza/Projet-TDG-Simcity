@@ -71,14 +71,12 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
             }
             if(souris.ligne>=0+1 && souris.colonne>=0+1 && souris.ligne<35-1 && souris.colonne<45-1)
             {
-                for(int i=-1; i<2; i++)
+                draw_sprite(liste_buffer->buffer_map, liste_image->batiment, (SCREEN_W/2-36)+(souris.colonne-2)*14-(souris.ligne)*14, (souris.colonne-2)*8+(souris.ligne)*8);
+                if(mouse_b & 1)
                 {
-                    for(int j=-1; j<2; j++)
-                    {
-                        draw_sprite(liste_buffer->buffer_map, liste_image->route, (SCREEN_W/2-36)+(souris.colonne+j)*14-(souris.ligne-i)*14, (souris.colonne+j)*8+(souris.ligne-i)*8);
-                    }
+                    map = placementElement(map, souris.ligne, souris.colonne, *choix);
+                    *choix=0; // dès qu'on a fait l'action on peut revenir a un etat neutre de choix
                 }
-
             }
             break;
         case 3://batiment 4x6

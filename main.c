@@ -24,3 +24,8 @@ int main() {
     allegro_exit();
     return 0;
 }END_OF_MAIN();
+
+//il reste (partie placement des batiments):
+// 1/ faire les batiments de taille 4x6
+// 2/ gérer le chevauchement des batiments
+// 3/ gérer la création de la structure de données nouvellement posé

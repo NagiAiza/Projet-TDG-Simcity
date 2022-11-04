@@ -24,6 +24,7 @@ IMAGE* initialisation_liste_image()
     liste->map= load_bitmap_check("damierTestProvisoire.bmp");
     liste->sous_map= load_bitmap_check("damierFond.bmp");
     liste->route = load_bitmap_check("route.bmp");
+    liste->batiment = load_bitmap_check("batiment.bmp");
     return liste;
 }
 
@@ -47,11 +48,13 @@ void liberation_memoire_bitmaps(IMAGE* liste_image, BUFFER* liste_buffer)
     destroy_bitmap(liste_image->map);
     destroy_bitmap(liste_image->menu);
     destroy_bitmap(liste_image->route);
+    destroy_bitmap(liste_image->batiment);
     destroy_bitmap(liste_image->sous_map);
     free(liste_image);
     destroy_bitmap(liste_buffer->buffer_map);
     destroy_bitmap(liste_buffer->buffer_menu);
     destroy_bitmap(liste_buffer->buffer_final);
+    free(liste_buffer);
 }
 
 t_pos calcul_pos_souris(BITMAP* sousMap, int decalageScreenX/*pour savoir où placer la bitmap*/)//retourne la position de la souris
@@ -75,6 +78,7 @@ void affichageElement(BITMAP* bufferMap, IMAGE* liste, int type, int ligne, int 
             draw_sprite(bufferMap, liste->route, (SCREEN_W/2-36)+colonne*14-ligne*14, colonne*8+ligne*8);
             break;
         case 2:
+            draw_sprite(bufferMap, liste->batiment, (SCREEN_W/2-36)+(colonne-2)*14-ligne*14, (colonne-2)*8+ligne*8);
             //habitation
             break;
         case 3:

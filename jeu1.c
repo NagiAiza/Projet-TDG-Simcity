@@ -162,3 +162,21 @@ void initialisationElementCarte()
     }
     fclose(elementCarte);
 }
+
+
+void liberation_donnee(t_graphe* g)//ne marche pas
+{
+    for(int i=0; i<NBLIGNE; i++)
+    {
+        for(int j=0; j<NBCOLONNE; j++)
+        {
+            free(g->grille[i][j]);
+        }
+        free(g->grille[i]);
+        free(g->mat_adjacence[i]);
+    }
+    free(g->grille);
+    free(g->mat_adjacence);
+    free(g);
+
+}

@@ -14,6 +14,7 @@ typedef struct IMAGE{
     BITMAP* map;
     BITMAP* menu;
     BITMAP* route;
+    BITMAP* batiment;
 }IMAGE;
 
 typedef struct BUFFER{
