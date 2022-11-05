@@ -25,7 +25,7 @@ int main() {
     return 0;
 }END_OF_MAIN();
 
+//création de route avec A*
 //il reste (partie placement des batiments):
-// 1/ faire les batiments de taille 4x6
-// 2/ gérer le chevauchement des batiments
-// 3/ gérer la création de la structure de données nouvellement posé
+//2.2/si chevauchement changer la couleur du sprite en rouge ou teinte de rouge
+//3/ gérer la création de la structure de données nouvellement posé

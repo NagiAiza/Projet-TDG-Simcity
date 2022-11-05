@@ -47,6 +47,7 @@ int choixAction()
 
 t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* choix, t_pos souris, int* rotation)
 {
+    int verif_chevauchement=0;
     switch (*choix) {
         case 1://route
             if(souris.ligne<35 && souris.colonne<45)
@@ -54,8 +55,11 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
                 draw_sprite(liste_buffer->buffer_map, liste_image->route, (SCREEN_W/2-36)+souris.colonne*14-souris.ligne*14, souris.colonne*8+souris.ligne*8);
                 if(mouse_b & 1)
                 {
-                    map = placementElement(map, souris.ligne, souris.colonne, *choix);
-                    *choix=0; // dès qu'on a fait l'action on peut revenir a un etat neutre de choix
+                    if(!verification_chevauchement(map, souris.ligne, souris.colonne, *choix, *rotation) && placement_route(map, souris.ligne, souris.colonne)==1)
+                    {
+                        map = placementElement(map, souris.ligne, souris.colonne, *choix, *rotation);
+                        map = remplissage_matrice_adjacence(map, souris.ligne, souris.colonne, *choix, *rotation);
+                    }
                 }
             }
             if(key[KEY_1])//ou choisir un bouton plus judicieux
@@ -74,7 +78,18 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
                 draw_sprite(liste_buffer->buffer_map, liste_image->batiment, (SCREEN_W/2-36)+(souris.colonne-2)*14-(souris.ligne)*14, (souris.colonne-2)*8+(souris.ligne)*8);
                 if(mouse_b & 1)
                 {
-                    map = placementElement(map, souris.ligne, souris.colonne, *choix);
+                    if(!verification_chevauchement(map, souris.ligne, souris.colonne, *choix, *rotation))
+                    {
+                        map = placementElement(map, souris.ligne, souris.colonne, *choix, *rotation);
+
+                        for(int i=-1; i<2; i++)
+                        {
+                            for(int j=-1; j<2; j++)
+                            {
+                                map= remplissage_matrice_adjacence(map, souris.ligne+i, souris.colonne+j, *choix, *rotation);
+                            }
+                        }
+                    }
                     *choix=0; // dès qu'on a fait l'action on peut revenir a un etat neutre de choix
                 }
             }
@@ -89,26 +104,49 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
                 *rotation=-*rotation;
                 rest(100);//pour eviter les rebonds
             }
-            if(souris.ligne<35 && souris.colonne<45)//blindage pour pas sortir de la map en fonction des deux moyens de rotation
+            if(*rotation==1)
             {
-                if(*rotation==1)
+                if (souris.ligne >= 2 && souris.ligne < 35 - 1 && souris.colonne >= 2 && souris.colonne < 45 - 3)//blindage pour pas sortir de la map en fonction des deux moyens de rotation
                 {
-                    for(int i=0; i<4; i++)//trouver un moyen de centrer la construction sur la souris
+                    draw_sprite(liste_buffer->buffer_map, liste_image->chateau_eau, (SCREEN_W / 2 - 36) + (souris.colonne - 3) * 14 - (souris.ligne) * 14, (souris.colonne - 3) * 8 + (souris.ligne) * 8 - 8);//pq le -8? jsp j'ai tatonné
+                    if(mouse_b & 1)
                     {
-                        for(int j=0; j<6; j++)
+                        if(!verification_chevauchement(map, souris.ligne, souris.colonne, *choix, *rotation))
                         {
-                            draw_sprite(liste_buffer->buffer_map, liste_image->route, (SCREEN_W/2-36)+(souris.colonne+j)*14-(souris.ligne-i)*14, (souris.colonne+j)*8+(souris.ligne-i)*8);
+
+                            map = placementElement(map, souris.ligne, souris.colonne, *choix, *rotation);
+
+                            for (int i = -2; i < 2; i++)
+                            {
+                                for (int j = -2; j < 4; j++)
+                                {
+
+                                    map = remplissage_matrice_adjacence(map, souris.ligne + i, souris.colonne + j,*choix, *rotation);
+                                }
+                            }
                         }
+                        *choix=0;
                     }
                 }
-                else if (*rotation==-1)
+            }else if (*rotation==-1)
+            {
+                if (souris.ligne >= 3 && souris.ligne < 35-2 && souris.colonne >= 1 && souris.colonne < 45-2 )//blindage pour pas sortir de la map en fonction des deux moyens de rotation
                 {
-                    for(int i=0; i<6; i++)
+                    draw_sprite_h_flip(liste_buffer->buffer_map, liste_image->chateau_eau, (SCREEN_W/2-36)+(souris.colonne-3)*14-(souris.ligne)*14, (souris.colonne-3)*8+(souris.ligne)*8-8);
+                    if(mouse_b & 1)
                     {
-                        for(int j=0; j<4; j++)
+                        if (!verification_chevauchement(map, souris.ligne, souris.colonne, *choix, *rotation))
                         {
-                            draw_sprite(liste_buffer->buffer_map, liste_image->route, (SCREEN_W/2-36)+(souris.colonne+j)*14-(souris.ligne-i)*14, (souris.colonne+j)*8+(souris.ligne-i)*8);
+                            map = placementElement(map, souris.ligne, souris.colonne, *choix, *rotation);
+                            for (int i = -3; i < 3; i++)
+                            {
+                                for (int j = -1; j < 3; j++)
+                                {
+                                    map = remplissage_matrice_adjacence(map, souris.ligne + i, souris.colonne + j,*choix, *rotation);
+                                }
+                            }
                         }
+                        *choix=0;
                     }
                 }
             }

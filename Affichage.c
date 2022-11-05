@@ -3,7 +3,6 @@
 //
 
 #include "Affichage.h"
-#include "barre_outil.h"
 
 //simplification du code pour load une bitmap avec une erreur si pb
 BITMAP * load_bitmap_check(char *nomImage){
@@ -25,6 +24,7 @@ IMAGE* initialisation_liste_image()
     liste->sous_map= load_bitmap_check("damierFond.bmp");
     liste->route = load_bitmap_check("route.bmp");
     liste->batiment = load_bitmap_check("batiment.bmp");
+    liste->chateau_eau = load_bitmap_check("bat4x6.bmp");
     return liste;
 }
 
@@ -50,6 +50,7 @@ void liberation_memoire_bitmaps(IMAGE* liste_image, BUFFER* liste_buffer)
     destroy_bitmap(liste_image->route);
     destroy_bitmap(liste_image->batiment);
     destroy_bitmap(liste_image->sous_map);
+    destroy_bitmap(liste_image->chateau_eau);
     free(liste_image);
     destroy_bitmap(liste_buffer->buffer_map);
     destroy_bitmap(liste_buffer->buffer_menu);
@@ -71,7 +72,7 @@ void affichageCaseSelec(BITMAP* map, BITMAP* selec, t_pos souris)//R correspond 
     draw_sprite(map, selec, (SCREEN_W/2-36)+souris.colonne*14-souris.ligne*14, souris.colonne*8+souris.ligne*8);
 }
 
-void affichageElement(BITMAP* bufferMap, IMAGE* liste, int type, int ligne, int colonne)
+void affichageElement(BITMAP* bufferMap, IMAGE* liste, int type, int ligne, int colonne, int rotation)//pour avoir la rotation du batiment il va falloir un autre fichier
 {
     switch (type) {
         case 1:
@@ -81,7 +82,15 @@ void affichageElement(BITMAP* bufferMap, IMAGE* liste, int type, int ligne, int 
             draw_sprite(bufferMap, liste->batiment, (SCREEN_W/2-36)+(colonne-2)*14-ligne*14, (colonne-2)*8+ligne*8);
             //habitation
             break;
-        case 3:
+        case 3://ça ne print pas ce cas là
+            if(rotation==1)
+            {
+                draw_sprite(bufferMap, liste->chateau_eau, (SCREEN_W / 2 - 36) + (colonne - 3) * 14 - (ligne) * 14, (colonne - 3) * 8 + (ligne) * 8 - 8);//pq le -8? jsp j'ai tatonné
+            }
+            else if(rotation==-1)
+            {
+                draw_sprite_h_flip(bufferMap, liste->chateau_eau, (SCREEN_W/2-36)+(colonne-3)*14-(ligne)*14, (colonne-3)*8+(ligne)*8-8);
+            }
             //Chateau Deau;
             break;
         default:
@@ -89,22 +98,26 @@ void affichageElement(BITMAP* bufferMap, IMAGE* liste, int type, int ligne, int 
     }
 }
 
-void affichageElementsCarte(BITMAP* bufferMap, IMAGE* liste_image)//on pourra peut etre rajouter des obstacles du style montage etc...
+void affichageElementsCarte(BITMAP* bufferMap, IMAGE* liste_image)//on pourra peut etre rajouter des obstacles du style montagne etc...
 {
     //peut etre 2 fichiers texte, un pour l'affichage, l'autre pour les données de la map
     //parce que avec ça on va avoir un problème pour l'affichage des batiments > 1x1
     //j'ai trouvé!
     //on part de la coordonnées de départ de la souris et on donne le point de départ du sprite en fonction de la souris(en prenant en compte que la souris est centrée sur le sprite
     FILE* elementMap=fopen("element_map.txt", "r");//pour la nouvelle partie tout les elements sont à 0
+    FILE* rotation_element_map=fopen("rotation_element_map.txt", "r");
     int type=0;
+    int rotation=0;
     for(int i=0; i<NBLIGNE; i++)
     {
         for(int j=0; j<NBCOLONNE; j++)
         {
             fscanf(elementMap, "%d", &type);
-            affichageElement(bufferMap, liste_image, type, i, j);
+            fscanf(rotation_element_map, "%d", &rotation);
+            affichageElement(bufferMap, liste_image, type, i, j, rotation);
         }
     }
+    fclose(rotation_element_map);
     fclose(elementMap);
 }
 

@@ -9,6 +9,7 @@
 #include "stdlib.h"
 #include "allegro.h"
 #include "Affichage.h"
+#include "jeu1.h"
 
 
 int choixAction();
