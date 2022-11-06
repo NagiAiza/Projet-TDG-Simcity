@@ -22,6 +22,9 @@ int existe(t_liste *l, t_tile *n);
 int taille(t_liste *l);
 int tailleChemin(t_tile* n);
 int estVide(t_liste *l);
+void afficherListe(t_liste *l);//servira pour débugger
+void liberer(t_liste *l);
+
 
 t_liste* insertion_en_triant(t_liste* liste, t_tile* noeud);//pour file de priorité
 t_liste* enlever_noeud_debut(t_liste* liste, t_tile** noeud_a_conserver);

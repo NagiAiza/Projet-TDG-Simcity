@@ -16,7 +16,10 @@ t_liste *insererNoeud(t_liste *liste, t_tile *n) //inserer noeud debut de la lis
 
     nouv->next = liste;
     nouv->prev=NULL;
-    liste->prev=nouv;
+    if(liste!=NULL)
+    {
+        liste->prev=nouv;
+    }
     return nouv;
 }
 
@@ -49,8 +52,8 @@ t_liste *enleverNoeud(t_liste *liste, t_tile *n)
                 free(actuel);
                 actuel = prev;
                 continue;
-            };
-        };
+            }
+        }
         // On passe a l'element suivant
         prev = actuel;
         actuel = actuel->next;
@@ -60,9 +63,11 @@ t_liste *enleverNoeud(t_liste *liste, t_tile *n)
 
 int existe(t_liste *l, t_tile *n)
 {
+    //printf("entree dans existe\n");
     t_liste *aux = l;
     while (aux != NULL)
     {
+
         if ((aux->n->position.colonne == n->position.colonne) && (aux->n->position.ligne == n->position.ligne))
         {
             return 1;
@@ -158,7 +163,7 @@ t_liste* actualisation(t_liste* l, t_tile* noeud_a_retrier)//si jamais la valeur
 
     //et on le retrie ensuite
 
-    l= insertion_en_triant(l, &noeud_a_retrier);
+    l= insertion_en_triant(l, noeud_a_retrier);
 
     return l;
 }
@@ -204,7 +209,7 @@ void afficherListe(t_liste *l)//servira pour débugger
     t_liste *aux = l;
     while (aux != NULL)
     {
-        printf("X: %d\tY: %d\n", aux->n->position.colonne, aux->n->position.ligne);
+        printf("case [%d][%d]\n", aux->n->position.ligne, aux->n->position.colonne);
         aux = aux->next;
     }
     printf("\n\n");

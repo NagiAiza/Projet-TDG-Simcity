@@ -11,8 +11,11 @@ void jeu()//sous programme qui fera tourner tout le jeu
     t_pos souris;
     souris.ligne=0;
     souris.colonne=0;
-    int choix, rotation=1;
 
+    int choix, rotation=1;
+    int action_en_cours=0;
+    int algo_A=0;
+    t_tile* case_select;
     //initialisation des bitmaps
     IMAGE* liste_image=initialisation_liste_image();
     BUFFER* liste_buffer=initialisation_liste_buffer();
@@ -55,7 +58,7 @@ void jeu()//sous programme qui fera tourner tout le jeu
         }
 
         //dès qu'on a récup ce qu'il veut faire on conserve son action et en fonction de l'action on lance le sous pgrm pour l'effectué
-        map=action(map, liste_buffer, liste_image, &choix, souris, &rotation);
+        map=action(map, liste_buffer, liste_image, &choix, souris, &rotation, &action_en_cours, &case_select, &algo_A);
 
 
         blit(liste_buffer->buffer_menu, liste_buffer->buffer_final, 0, 0, 0, 0, SCREEN_W, SCREEN_H);

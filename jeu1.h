@@ -20,7 +20,7 @@ typedef struct pos{
 
 
 typedef struct batiment{
-    t_pos position;
+    t_pos position;//elle est déjà dans tile, est ce que je l'utilise quand meme?
     int type; //si c'est une route, une habitation, un batiment
     int orientation;//connaitre l'orientation du bat 1 ou 2
     // si c'est une habitation

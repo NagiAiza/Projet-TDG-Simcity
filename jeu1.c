@@ -46,8 +46,8 @@ t_graphe* initialiserGrille(t_graphe* g) //premiere initialisation a faire
         for (j = 0; j < NBCOLONNE; j++)
         {
             g->grille[i][j] = (t_tile*)malloc(sizeof(t_tile));
-            g->grille[i][j]->position.colonne = i;
-            g->grille[i][j]->position.ligne = j;
+            g->grille[i][j]->position.colonne = j;
+            g->grille[i][j]->position.ligne = i;
 
             g->grille[i][j]->f = 0;
             g->grille[i][j]->g = 0;
@@ -91,14 +91,14 @@ t_graphe* makeGrid()//penser a crer la libération de données
 
 void rajouterVoisin(t_tile* spot, t_tile ***map, int colonne, int ligne)//les arretes existes que entre les voisins
 {
-    int i = spot->position.colonne;// on récupère les coordonnées
-    int j = spot->position.ligne;
+    int i = spot->position.ligne;// on récupère les coordonnées
+    int j = spot->position.colonne;
 
-    if (i < colonne - 1)//on vérifie qu'on n'est pas sur les bords de la map
+    if (i < ligne - 1)//on vérifie qu'on n'est pas sur les bords de la map
         spot->voisin = insererNoeud(spot->voisin, map[i + 1][j]);//et on rajoute les noeuds voisins en tant que voisin dans une liste du noeuds donné
     if (i > 0)
         spot->voisin = insererNoeud(spot->voisin, map[i - 1][j]);
-    if (j < ligne - 1)
+    if (j < colonne - 1)
         spot->voisin = insererNoeud(spot->voisin, map[i][j + 1]);
     if (j > 0)
         spot->voisin = insererNoeud(spot->voisin, map[i][j - 1]);
@@ -271,6 +271,18 @@ int verification_chevauchement(t_graphe* map, int ligne, int colonne, int choix,
 
 ///algorithme A*
 
+int estArrive(t_tile *actuel, t_tile *arrive)
+{
+    if((actuel->position.colonne == arrive->position.colonne) && (actuel->position.ligne == arrive->position.ligne))
+    {
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
+}
+
 int distance(t_pos a, t_pos b)
 {
     int d = abs(a.colonne - b.colonne) + abs(a.ligne - b.ligne);//valeur absolu pour éviter d'avoir des problèmes avec une différence de coordoonées négative
@@ -302,35 +314,49 @@ t_graphe* A_star(t_graphe* g, t_tile* depart, t_tile* arrive/*position souris*/)
     }
 
     liste_ouverte= insertion_en_triant(liste_ouverte, depart);
+
     while(!estVide(liste_ouverte))
     {
         liste_ouverte= enlever_noeud_debut(liste_ouverte, &case_actuelle);
         liste_ferme= insererNoeud(liste_ferme, case_actuelle);
+
+        if (existe(liste_ferme, arrive))
+        {
+            break;
+        }
+
         liste_voisin=case_actuelle->voisin;//on récupère les voisins du noeud en cours d'analyse et on analyse
         while(liste_voisin!=NULL)
         {
+
             voisin_actuel=liste_voisin->n;
 
-            if(!existe(liste_ferme, voisin_actuel) && voisin_actuel->element->type>1)//si le voisin n'est pas déjà dans la liste fermé et si ce n'est ni une route ni rien du tout
+            if(!existe(liste_ferme, voisin_actuel) && g->mat_adjacence[voisin_actuel->position.ligne][voisin_actuel->position.colonne]==0)//si le voisin n'est pas déjà dans la liste fermé et si on peut posser qqc
             {
                 tempG=case_actuelle->g+ heuristic(voisin_actuel, case_actuelle);
                 if(!existe(liste_ouverte, voisin_actuel))
                 {
+                    //on actualise toute les variables de calcul de noeuds
+                    voisin_actuel->g=tempG;
+                    voisin_actuel->h= heuristic(voisin_actuel, arrive);
+                    voisin_actuel->f=voisin_actuel->g+voisin_actuel->h;
+                    voisin_actuel->parent=case_actuelle;
                     liste_ouverte= insertion_en_triant(liste_ouverte, voisin_actuel);
                 }
-                else if(tempG >= voisin_actuel->g)//si le voisin était déjà dans la liste et que la  nouvelle composante G est supérieur à l'ancienne calculé, alors on saute ce voisin
+                else if (tempG<voisin_actuel->g)
                 {
-                    liste_voisin=liste_voisin->next;
-                    continue;//permet de passer à l'itération suivante de la boucle
+                    //on actualise toute les variables de calcul de noeuds
+                    voisin_actuel->g=tempG;
+                    voisin_actuel->h= heuristic(voisin_actuel, arrive);
+                    voisin_actuel->f=voisin_actuel->g+voisin_actuel->h;
+                    voisin_actuel->parent=case_actuelle;
+                    actualisation(liste_ouverte, voisin_actuel);
                 }
-                //on actualise toute les variables de calcul de noeuds
-                voisin_actuel->g=tempG;
-                voisin_actuel->h= heuristic(voisin_actuel, arrive);
-                voisin_actuel->f=voisin_actuel->g+voisin_actuel->h;
-                voisin_actuel->parent=case_actuelle;
             }
             liste_voisin=liste_voisin->next;
         }
     }
+    liberer(liste_ouverte);
+    liberer(liste_ferme);
     return g;
 }

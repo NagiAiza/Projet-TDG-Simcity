@@ -45,28 +45,56 @@ int choixAction()
     return 0;
 }
 
-t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* choix, t_pos souris, int* rotation, int* action_en_cours)
+t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* choix, t_pos souris, int* rotation, int* action_en_cours, t_tile** case_select, int* algo_A)
 {
     int verif_chevauchement=0;
+    t_tile* parcour_chemin=NULL;//tuile auxilière pour reparcourir les chemins calculé
     switch (*choix) {
         case 1://route
             if(souris.ligne<35 && souris.colonne<45)
             {
-                draw_sprite(liste_buffer->buffer_map, liste_image->route, (SCREEN_W/2-36)+souris.colonne*14-souris.ligne*14, souris.colonne*8+souris.ligne*8);
-                if(mouse_b & 1)
+                if(*algo_A == 0)
                 {
-                    //quand on clique une première fois on va passer dans la boucle qui ne fait que calculer A* et renvoyer le chemin;
-                    //qunand on clique une deuxième fois on va appliquer le chemin actuel qui est calculé dans la map
-                    if(!verification_chevauchement(map, souris.ligne, souris.colonne, *choix, *rotation) && placement_route(map, souris.ligne, souris.colonne)==1)
+                    draw_sprite(liste_buffer->buffer_map, liste_image->route,(SCREEN_W / 2 - 36) + souris.colonne * 14 - souris.ligne * 14,souris.colonne * 8 + souris.ligne * 8);
+                    if (mouse_b & 1)
                     {
-                        map = placementElement(map, souris.ligne, souris.colonne, *choix, *rotation);
-                        map = remplissage_matrice_adjacence(map, souris.ligne, souris.colonne, *choix, *rotation);
+                        if (!verification_chevauchement(map, souris.ligne, souris.colonne, *choix, *rotation) && placement_route(map, souris.ligne, souris.colonne) == 1)
+                        {
+                            *algo_A = 1;
+                            *case_select = map->grille[souris.ligne][souris.colonne];
+                            printf("Case selec\n");
+                        }
+                    }
+                }
+                else if (*algo_A == 1)
+                {
+                    map = A_star(map, *case_select,map->grille[souris.ligne][souris.colonne]);//on retrace ensuite le chemin en utilisant les parents
+                    parcour_chemin = map->grille[souris.ligne][souris.colonne];
+                    while (parcour_chemin != NULL)
+                    {
+                        draw_sprite(liste_buffer->buffer_map, liste_image->route,(SCREEN_W / 2 - 36) + parcour_chemin->position.colonne * 14 - parcour_chemin->position.ligne * 14,parcour_chemin->position.colonne * 8 + parcour_chemin->position.ligne * 8);
+                        parcour_chemin = parcour_chemin->parent;
+                    }
+                    if (mouse_b & 2)//on valide le chemin final avec le clic droit
+                    {
+                        if (!verification_chevauchement(map, souris.ligne, souris.colonne, *choix, *rotation))
+                        {
+                            parcour_chemin = map->grille[souris.ligne][souris.colonne];
+                            while (parcour_chemin != NULL) {
+                                map = placementElement(map, parcour_chemin->position.ligne,parcour_chemin->position.colonne, *choix, *rotation);
+                                map = remplissage_matrice_adjacence(map, parcour_chemin->position.ligne,parcour_chemin->position.colonne, *choix, *rotation);
+                                parcour_chemin = parcour_chemin->parent;
+                            }
+                            *algo_A = 0;//et on sort de l'affichage A*
+                        }
                     }
                 }
             }
+
             if(key[KEY_1])//ou choisir un bouton plus judicieux
             {
                 *choix=0;//on sort du choix des actions si l'utilisateur le veut
+                *algo_A=0;
             }
             break;
         case 2://habitation 3x3
