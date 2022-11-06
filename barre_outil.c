@@ -45,7 +45,7 @@ int choixAction()
     return 0;
 }
 
-t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* choix, t_pos souris, int* rotation)
+t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* choix, t_pos souris, int* rotation, int* action_en_cours)
 {
     int verif_chevauchement=0;
     switch (*choix) {
@@ -55,6 +55,8 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
                 draw_sprite(liste_buffer->buffer_map, liste_image->route, (SCREEN_W/2-36)+souris.colonne*14-souris.ligne*14, souris.colonne*8+souris.ligne*8);
                 if(mouse_b & 1)
                 {
+                    //quand on clique une première fois on va passer dans la boucle qui ne fait que calculer A* et renvoyer le chemin;
+                    //qunand on clique une deuxième fois on va appliquer le chemin actuel qui est calculé dans la map
                     if(!verification_chevauchement(map, souris.ligne, souris.colonne, *choix, *rotation) && placement_route(map, souris.ligne, souris.colonne)==1)
                     {
                         map = placementElement(map, souris.ligne, souris.colonne, *choix, *rotation);

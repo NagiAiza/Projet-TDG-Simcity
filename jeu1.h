@@ -65,5 +65,11 @@ void liberation_donnee(t_graphe* g);
 int placement_route(t_graphe* map, int ligne, int colonne);
 int verification_chevauchement(t_graphe* map, int ligne, int colonne, int choix, int rotation);
 
+///algo A*
+
+int distance(t_pos a, t_pos b);
+int heuristic(t_tile *a, t_tile *b);
+t_graphe* A_star(t_graphe* g, t_tile* depart, t_tile* arrive/*position souris*/);
+
 
 #endif //PROJET_S1_JEU1_H

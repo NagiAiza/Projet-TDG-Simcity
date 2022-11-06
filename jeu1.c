@@ -3,6 +3,7 @@
 //
 #include "jeu1.h"
 #include "listeRelated.h"
+#include "math.h"
 
 
 t_tile* associerCaseSouris(t_graphe* map, t_pos souris)
@@ -59,6 +60,8 @@ t_graphe* initialiserGrille(t_graphe* g) //premiere initialisation a faire
             g->grille[i][j]->parent = NULL;
 
             g->grille[i][j]->element=(t_batiment*)calloc(1, sizeof(t_batiment));
+            g->grille[i][j]->element->position.ligne=i;
+            g->grille[i][j]->element->position.colonne=j;
         }
     }
     g->grille[17][0]->element->type=1;//emplacement de départ de la route
@@ -264,4 +267,70 @@ int verification_chevauchement(t_graphe* map, int ligne, int colonne, int choix,
         printf("impossible il ya chevauchement\n");
     }
     return verif;
+}
+
+///algorithme A*
+
+int distance(t_pos a, t_pos b)
+{
+    int d = abs(a.colonne - b.colonne) + abs(a.ligne - b.ligne);//valeur absolu pour éviter d'avoir des problèmes avec une différence de coordoonées négative
+    //printf("Vi: %i ",abs(a.x - b.x) + abs(a.y - b.y));
+    //printf(" Vd: %d ",d);
+    return d;
+}
+
+int heuristic(t_tile *a, t_tile *b)
+{
+    int h = round(distance((a->position), (b->position)));//arrondi le nombre pour ne pas avoir de float
+    //printf("Vh: %d\n",h);
+    return h;
+}
+
+t_graphe* A_star(t_graphe* g, t_tile* depart, t_tile* arrive/*position souris*/)
+{
+    int tempG;//pour une maj temporaire de cette composante
+    t_tile* case_actuelle,*voisin_actuel;
+    t_liste* liste_voisin;
+    t_liste* liste_ouverte=creer();//liste des noeuds à analyser
+    t_liste* liste_ferme=creer();//liste des noeuds analysés qu'on ne touchera plus
+    for(int i=0; i<NBLIGNE; i++)
+    {
+        for(int j=0; j<NBCOLONNE; j++)
+        {
+            g->grille[i][j]->parent=NULL;//on n'oublie pas de dire que les noeuds n'ont pas de prédécésseur au debut de l'algo
+        }
+    }
+
+    liste_ouverte= insertion_en_triant(liste_ouverte, depart);
+    while(!estVide(liste_ouverte))
+    {
+        liste_ouverte= enlever_noeud_debut(liste_ouverte, &case_actuelle);
+        liste_ferme= insererNoeud(liste_ferme, case_actuelle);
+        liste_voisin=case_actuelle->voisin;//on récupère les voisins du noeud en cours d'analyse et on analyse
+        while(liste_voisin!=NULL)
+        {
+            voisin_actuel=liste_voisin->n;
+
+            if(!existe(liste_ferme, voisin_actuel) && voisin_actuel->element->type>1)//si le voisin n'est pas déjà dans la liste fermé et si ce n'est ni une route ni rien du tout
+            {
+                tempG=case_actuelle->g+ heuristic(voisin_actuel, case_actuelle);
+                if(!existe(liste_ouverte, voisin_actuel))
+                {
+                    liste_ouverte= insertion_en_triant(liste_ouverte, voisin_actuel);
+                }
+                else if(tempG >= voisin_actuel->g)//si le voisin était déjà dans la liste et que la  nouvelle composante G est supérieur à l'ancienne calculé, alors on saute ce voisin
+                {
+                    liste_voisin=liste_voisin->next;
+                    continue;//permet de passer à l'itération suivante de la boucle
+                }
+                //on actualise toute les variables de calcul de noeuds
+                voisin_actuel->g=tempG;
+                voisin_actuel->h= heuristic(voisin_actuel, arrive);
+                voisin_actuel->f=voisin_actuel->g+voisin_actuel->h;
+                voisin_actuel->parent=case_actuelle;
+            }
+            liste_voisin=liste_voisin->next;
+        }
+    }
+    return g;
 }
