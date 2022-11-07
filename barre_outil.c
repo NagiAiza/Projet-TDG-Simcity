@@ -97,7 +97,7 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
                 *algo_A=0;
             }
             break;
-        case 2://habitation 3x3
+        case 2://habitation 3x3 à changer
             //bouton pour rotationné le sens de construction? + blindage pour ne pas superposer avec une autre construction
             if(key[KEY_1])//ou choisir un bouton plus judicieux
             {
@@ -124,7 +124,7 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
                 }
             }
             break;
-        case 3://batiment 4x6
+        case 3://batiment 4x6 à cahnger
             if(key[KEY_1])//ou choisir un bouton plus judicieux
             {
                 *choix=0;//on sort du choix des actions si l'utilisateur le veut

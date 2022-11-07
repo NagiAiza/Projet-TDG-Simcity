@@ -331,7 +331,7 @@ t_graphe* A_star(t_graphe* g, t_tile* depart, t_tile* arrive/*position souris*/)
 
             voisin_actuel=liste_voisin->n;
 
-            if(!existe(liste_ferme, voisin_actuel) && g->mat_adjacence[voisin_actuel->position.ligne][voisin_actuel->position.colonne]==0)//si le voisin n'est pas déjà dans la liste fermé et si on peut posser qqc
+            if(!existe(liste_ferme, voisin_actuel) && g->mat_adjacence[voisin_actuel->position.ligne][voisin_actuel->position.colonne]<=1)//si le voisin n'est pas déjà dans la liste fermé et si on peut posser qqc
             {
                 tempG=case_actuelle->g+ heuristic(voisin_actuel, case_actuelle);
                 if(!existe(liste_ouverte, voisin_actuel))
