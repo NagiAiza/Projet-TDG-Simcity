@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <allegro.h>
+#include "menu.h"
 #include "moteur_du_jeu.h"
 
 
@@ -19,7 +20,14 @@ void initialisation_allegro() {    ///Initialisation pour Allegro
 }
 
 int main() {
+    //variable qui reçoit le mode souhaite
+    int Mode_de_Jeu;
+
     initialisation_allegro();
+    //Sous-programme menu
+    Mode_de_Jeu = menu(); //si 1 communiste si 2 capitaliste si 0 nada
+    printf("ici\n");
+    //Sous-programme jeu
     jeu();
     allegro_exit();
     return 0;
