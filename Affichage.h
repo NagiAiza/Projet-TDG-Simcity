@@ -9,19 +9,20 @@
 #include <allegro.h>
 #include "jeu1.h"
 
-typedef struct IMAGE{
+typedef struct IMAGE{//liste de tout les buffer d'image qu'on va utiliser, on va les charger une seule fois et elles dureront jusqu'à la fin du pgrm
     BITMAP* sous_map;
     BITMAP* map;
     BITMAP* menu;
     BITMAP* route;
     BITMAP* batiment;
     BITMAP* chateau_eau;
+    BITMAP* centrale;
 }IMAGE;
 
-typedef struct BUFFER{
-    BITMAP* buffer_map;
-    BITMAP* buffer_menu;
-    BITMAP* buffer_final;
+typedef struct BUFFER{//liste des buffer qu'on utilisera qui correspondent à chaque element d'affichage
+    BITMAP* buffer_map;//information sur la partie de la map
+    BITMAP* buffer_menu;//info sur la partie du menu
+    BITMAP* buffer_final;//info total
 }BUFFER;
 
 

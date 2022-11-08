@@ -18,7 +18,7 @@ t_tile* associerCaseSouris(t_graphe* map, t_pos souris)
     }
 }
 
-int detectionChangementDeCase(t_pos old_souris, t_pos new_souris)
+int detectionChangementDeCase(t_pos old_souris, t_pos new_souris)//peut etre l'utiliser pour le placement de la route et ainsi éviter que le calcul de chemin se fasse h24?
 {
     if(new_souris.ligne<35 && new_souris.colonne<45)
     {
@@ -178,7 +178,15 @@ void initialisationElementCarte()
 }
 
 
-void liberation_donnee(t_graphe* g)//ne marche pas
+/*
+« the memory allocation using malloc() is not de-allocated on its own. So, “free()” method is
+ used to de-allocate the memory. But the free() method is not compulsory to use. If free() is
+ not used in a program the memory allocated using malloc() will be de-allocated after completion
+ of the execution of the program (included program execution time is relatively small and the
+ program ends normally). »
+ */
+
+void liberation_donnee(t_graphe* g)//ne marche pas mais n'est pas forcément utile
 {
     for(int i=0; i<NBLIGNE; i++)
     {
@@ -198,7 +206,19 @@ void liberation_donnee(t_graphe* g)//ne marche pas
 
 int placement_route(t_graphe* map, int ligne, int colonne)
 {
-    t_liste* voisin=map->grille[ligne][colonne]->voisin;
+    //dans cette verion on ne peut placer la route que sur une case étant déjà une route
+    if(map->grille[ligne][colonne]->element->type==1)//si l'element est une route
+    {
+        return 1;
+    }
+    else
+    {
+        printf("on ne peut pas placer la route\n");
+        return 0;
+    }
+
+    //Dans cette version on ne peut placer la route que sur une case voisine a une route
+    /*t_liste* voisin=map->grille[ligne][colonne]->voisin;
     while(voisin!=NULL)
     {
         if(voisin->n->element->type==1)
@@ -208,7 +228,8 @@ int placement_route(t_graphe* map, int ligne, int colonne)
         voisin=voisin->next;
     }
     printf("on ne peut pas placer la route\n");
-    return 0;
+    return 0;*/
+
 }
 
 int verification_chevauchement(t_graphe* map, int ligne, int colonne, int choix, int rotation)//rajouter un changement de couleur du sprite, genre en rouge pour dire que y a un chevauchement?
@@ -216,23 +237,11 @@ int verification_chevauchement(t_graphe* map, int ligne, int colonne, int choix,
     int verif=0;
     switch (choix) {
         case 1 ://route 1x1
-            if(map->mat_adjacence[ligne][colonne]!=0){
+            if(map->mat_adjacence[ligne][colonne]>1){
                 verif=1;
             }
             break;
         case 2 :
-            for(int i=-1; i<2; i++)
-            {
-                for(int j=-1; j<2; j++)
-                {
-                    if(map->mat_adjacence[ligne+i][colonne+j]!=0)
-                    {
-                        verif=1;
-                    }
-                }
-            }
-            break;
-        default ://a coder mais c'est pour les bat 4x6
             if(rotation==1)
             {
                 for(int i=-2; i<2; i++)
@@ -259,9 +268,51 @@ int verification_chevauchement(t_graphe* map, int ligne, int colonne, int choix,
                     }
                 }
             }
-
+            break;
+        case 3 ://c'est pour les bat 4x6
+            if(rotation==1)
+            {
+                for(int i=-2; i<2; i++)
+                {
+                    for(int j=-2; j<4; j++)
+                    {
+                        if(map->mat_adjacence[ligne+i][colonne+j]!=0)
+                        {
+                            verif=1;
+                        }
+                    }
+                }
+            }
+            else if(rotation==-1)
+            {
+                for(int i = -3; i < 3; i++)
+                {
+                    for(int j = -1; j < 3; j++)
+                    {
+                        if(map->mat_adjacence[ligne+i][colonne+j]!=0)
+                        {
+                            verif=1;
+                        }
+                    }
+                }
+            }
+            break;
+        case 4:
+            for(int i=-1; i<2; i++)
+            {
+                for(int j=-1; j<2; j++)
+                {
+                    if(map->mat_adjacence[ligne+i][colonne+j]!=0)
+                    {
+                        verif=1;
+                    }
+                }
+            }
+            break;
+        default:
             break;
     }
+
     if(verif==1)
     {
         printf("impossible il ya chevauchement\n");

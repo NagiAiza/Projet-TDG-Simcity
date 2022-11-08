@@ -42,7 +42,7 @@ typedef struct tile{//pour faire la map on fait un tableau à 2 dimensions de ti
     int g;
     int h;
     int f;
-    struct tile* parent;
+    struct tile* parent;//pour garder le prédécesseur de chaque case et ainsi retracer le chemin à la fin
     struct liste* voisin;//on initialise les voisins de chaque case en début de programme
 }t_tile;//rajouter un emplacement qui permette de differencier l'affichage du truc en globalité
 
@@ -52,15 +52,15 @@ typedef struct graphe{
 }t_graphe;
 
 
-t_graphe* makeGrid();
+t_graphe* makeGrid();//initialisation de la grille
 t_graphe* initialiserGrille(t_graphe* g); //premiere initialisation a faire
-void initialisationElementCarte();
-void majFichierPlacementElement(t_graphe* g);
-t_graphe* placementElement(t_graphe* g, int ligne, int colonne, int type, int rotation);
-t_graphe* remplissage_matrice_adjacence(t_graphe* g, int ligne, int colonne, int type, int rotation);
-void rajouterVoisin(t_tile* spot, t_tile ***map, int colonne, int ligne);
+void initialisationElementCarte();//initialisation du fichier des elements de carte avec une route de départ
+void majFichierPlacementElement(t_graphe* g);//mise à jour du fichier des elements à chaque fois qu'on fait une modification sur la map
+t_graphe* placementElement(t_graphe* g, int ligne, int colonne, int type, int rotation);//mets à jour les fichiers des elements et de rotation
+t_graphe* remplissage_matrice_adjacence(t_graphe* g, int ligne, int colonne, int type, int rotation);//rempli la matrice d'adjacence qui permet de savoir quelle place totale prend les elements
+void rajouterVoisin(t_tile* spot, t_tile ***map, int colonne, int ligne);//initialise les voisins de chaque case de la grille
 void initialiserVoisin(t_tile*** map, int ligne, int colonne);//pour donner une liste de voisins à chaque noeuds
-void liberation_donnee(t_graphe* g);
+void liberation_donnee(t_graphe* g);// pas forcément utile
 
 
 int placement_route(t_graphe* map, int ligne, int colonne);
