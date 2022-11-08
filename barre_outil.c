@@ -3,6 +3,8 @@
 //
 
 #include "barre_outil.h"
+#include "jeu2.h"
+#include "listeRelated.h"
 
 int choixAction()
 {
@@ -45,8 +47,9 @@ int choixAction()
     return 0;
 }
 
-t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* choix, t_pos souris, int* rotation, int* action_en_cours, t_tile** case_select, int* algo_A)
+t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* choix, t_pos souris, int* rotation, int* action_en_cours, t_tile** case_select, int* algo_A, long* argent_restant)
 {
+    int depense=0;
     t_tile* parcour_chemin=NULL;//tuile auxilière pour reparcourir les chemins calculé
     switch (*choix) {
         case 1://route
@@ -79,10 +82,15 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
                         if (!verification_chevauchement(map, souris.ligne, souris.colonne, *choix, *rotation))
                         {
                             parcour_chemin = map->grille[souris.ligne][souris.colonne];
-                            while (parcour_chemin != NULL) {
-                                map = placementElement(map, parcour_chemin->position.ligne,parcour_chemin->position.colonne, *choix, *rotation);
-                                map = remplissage_matrice_adjacence(map, parcour_chemin->position.ligne,parcour_chemin->position.colonne, *choix, *rotation);
-                                parcour_chemin = parcour_chemin->parent;
+                            depense= calcul_depenses(*choix, tailleChemin(parcour_chemin));
+                            if(validation_depense(depense, *argent_restant))
+                            {
+                                while (parcour_chemin != NULL) {
+                                    map = placementElement(map, parcour_chemin->position.ligne,parcour_chemin->position.colonne, *choix, *rotation);
+                                    map = remplissage_matrice_adjacence(map, parcour_chemin->position.ligne,parcour_chemin->position.colonne, *choix, *rotation);
+                                    parcour_chemin = parcour_chemin->parent;
+                                }
+                                *argent_restant-=depense;
                             }
                             *algo_A = 0;//et on sort de l'affichage A*
                         }
@@ -115,16 +123,20 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
                     {
                         if(!verification_chevauchement(map, souris.ligne, souris.colonne, *choix, *rotation))
                         {
-
-                            map = placementElement(map, souris.ligne, souris.colonne, *choix, *rotation);
-
-                            for (int i = -2; i < 2; i++)
+                            depense= calcul_depenses(*choix, 0);
+                            if(validation_depense(depense, *argent_restant))
                             {
-                                for (int j = -2; j < 4; j++)
-                                {
+                                map = placementElement(map, souris.ligne, souris.colonne, *choix, *rotation);
 
-                                    map = remplissage_matrice_adjacence(map, souris.ligne + i, souris.colonne + j,*choix, *rotation);
+                                for (int i = -2; i < 2; i++)
+                                {
+                                    for (int j = -2; j < 4; j++)
+                                    {
+
+                                        map = remplissage_matrice_adjacence(map, souris.ligne + i, souris.colonne + j,*choix, *rotation);
+                                    }
                                 }
+                                *argent_restant-=depense;
                             }
                         }
                         *choix=0;
@@ -139,13 +151,18 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
                     {
                         if (!verification_chevauchement(map, souris.ligne, souris.colonne, *choix, *rotation))
                         {
-                            map = placementElement(map, souris.ligne, souris.colonne, *choix, *rotation);
-                            for (int i = -3; i < 3; i++)
+                            depense= calcul_depenses(*choix, 0);
+                            if(validation_depense(depense, *argent_restant))
                             {
-                                for (int j = -1; j < 3; j++)
+                                map = placementElement(map, souris.ligne, souris.colonne, *choix, *rotation);
+                                for (int i = -3; i < 3; i++)
                                 {
-                                    map = remplissage_matrice_adjacence(map, souris.ligne + i, souris.colonne + j,*choix, *rotation);
+                                    for (int j = -1; j < 3; j++)
+                                    {
+                                        map = remplissage_matrice_adjacence(map, souris.ligne + i, souris.colonne + j,*choix, *rotation);
+                                    }
                                 }
+                                *argent_restant-=depense;
                             }
                         }
                         *choix=0;
@@ -172,16 +189,20 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
                     {
                         if(!verification_chevauchement(map, souris.ligne, souris.colonne, *choix, *rotation))
                         {
-
-                            map = placementElement(map, souris.ligne, souris.colonne, *choix, *rotation);
-
-                            for (int i = -2; i < 2; i++)
+                            depense= calcul_depenses(*choix, 0);
+                            if(validation_depense(depense, *argent_restant))
                             {
-                                for (int j = -2; j < 4; j++)
-                                {
+                                map = placementElement(map, souris.ligne, souris.colonne, *choix, *rotation);
 
-                                    map = remplissage_matrice_adjacence(map, souris.ligne + i, souris.colonne + j,*choix, *rotation);
+                                for (int i = -2; i < 2; i++)
+                                {
+                                    for (int j = -2; j < 4; j++)
+                                    {
+
+                                        map = remplissage_matrice_adjacence(map, souris.ligne + i, souris.colonne + j,*choix, *rotation);
+                                    }
                                 }
+                                *argent_restant-=depense;
                             }
                         }
                         *choix=0;
@@ -196,13 +217,18 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
                     {
                         if (!verification_chevauchement(map, souris.ligne, souris.colonne, *choix, *rotation))
                         {
-                            map = placementElement(map, souris.ligne, souris.colonne, *choix, *rotation);
-                            for (int i = -3; i < 3; i++)
+                            depense= calcul_depenses(*choix, 0);
+                            if(validation_depense(depense, *argent_restant))
                             {
-                                for (int j = -1; j < 3; j++)
+                                map = placementElement(map, souris.ligne, souris.colonne, *choix, *rotation);
+                                for (int i = -3; i < 3; i++)
                                 {
-                                    map = remplissage_matrice_adjacence(map, souris.ligne + i, souris.colonne + j,*choix, *rotation);
+                                    for (int j = -1; j < 3; j++)
+                                    {
+                                        map = remplissage_matrice_adjacence(map, souris.ligne + i, souris.colonne + j,*choix, *rotation);
+                                    }
                                 }
+                                *argent_restant-=depense;
                             }
                         }
                         *choix=0;
@@ -224,14 +250,19 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
                 {
                     if(!verification_chevauchement(map, souris.ligne, souris.colonne, *choix, *rotation))
                     {
-                        map = placementElement(map, souris.ligne, souris.colonne, *choix, *rotation);
-
-                        for(int i=-1; i<2; i++)
+                        depense= calcul_depenses(*choix, 0);
+                        if(validation_depense(depense, *argent_restant))
                         {
-                            for(int j=-1; j<2; j++)
+                            map = placementElement(map, souris.ligne, souris.colonne, *choix, *rotation);
+
+                            for(int i=-1; i<2; i++)
                             {
-                                map= remplissage_matrice_adjacence(map, souris.ligne+i, souris.colonne+j, *choix, *rotation);
+                                for(int j=-1; j<2; j++)
+                                {
+                                    map= remplissage_matrice_adjacence(map, souris.ligne+i, souris.colonne+j, *choix, *rotation);
+                                }
                             }
+                            *argent_restant-=depense;
                         }
                     }
                     *choix=0; // dès qu'on a fait l'action on peut revenir a un etat neutre de choix

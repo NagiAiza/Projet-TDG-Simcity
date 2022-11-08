@@ -143,13 +143,15 @@ void affichageElementsCarte(BITMAP* bufferMap, IMAGE* liste_image)//on pourra pe
 }
 
 
-void affichageTotal(t_graphe* map, IMAGE* liste_image, BUFFER* liste_buffer, t_pos souris)//doit etre independant du jeu en lui meme mais affiche toute les données nécéssaire à l'utilisateur
+void affichageTotal(t_graphe* map, IMAGE* liste_image, BUFFER* liste_buffer, t_pos souris, long compteur_argent)//doit etre independant du jeu en lui meme mais affiche toute les données nécéssaire à l'utilisateur
 {
-        clear(liste_buffer->buffer_menu);
+        clear_bitmap(liste_buffer->buffer_menu);
         clear_bitmap(liste_buffer->buffer_map);
 
 
         blit(liste_image->menu, liste_buffer->buffer_menu, 0, 0, 0, 0, SCREEN_W, SCREEN_H);
+        textprintf_ex(liste_buffer->buffer_menu,font,10,645,makecol(0,0,0),-1,"%ld$",compteur_argent);
+
 
         draw_sprite(liste_buffer->buffer_map, liste_image->map, 0, 0);
 
