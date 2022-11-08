@@ -164,5 +164,21 @@ int menu()
         }
 
     }
+
+    ///FREE TTE LES BITMAPS
+    destroy_bitmap(debut_projet);
+    for (int i=0 ; i<=16 ; i++)
+    {
+        destroy_bitmap(chargement[i]);
+    }
+    destroy_bitmap(image);
+    destroy_bitmap(prop1);
+    destroy_bitmap(prop2);
+    destroy_bitmap(prop3);
+    destroy_bitmap(Image);
+    destroy_bitmap(prop4);
+    destroy_bitmap(prop5);
+    destroy_bitmap(test_ecran);
+
     return 0;
 }
