@@ -69,7 +69,14 @@ void jeu()//sous programme qui fera tourner tout le jeu
 
 
     }
-
+   for(int i=0 ; i<NBLIGNE; i++)
+   {
+       for(int j=0; j<NBCOLONNE; j++)
+       {
+           printf("%d ", map->mat_adjacence[i][j]);
+       }
+       printf("\n");
+   }
     //libération de la mémoire
     show_mouse(NULL);
     liberation_memoire_bitmaps(liste_image, liste_buffer);

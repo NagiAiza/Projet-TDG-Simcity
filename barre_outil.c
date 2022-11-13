@@ -68,7 +68,7 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
                         }
                     }
                 }
-                else if (*algo_A == 1)
+                else if (*algo_A == 1)//calcul de chemin à chaque fois qu'on change de case c'est peut etre mieux
                 {
                     map = A_star(map, *case_select,map->grille[souris.ligne][souris.colonne]);//on retrace ensuite le chemin en utilisant les parents
                     parcour_chemin = map->grille[souris.ligne][souris.colonne];

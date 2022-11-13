@@ -45,7 +45,7 @@ t_graphe* initialiserGrille(t_graphe* g) //premiere initialisation a faire
     {
         for (j = 0; j < NBCOLONNE; j++)
         {
-            g->grille[i][j] = (t_tile*)malloc(sizeof(t_tile));
+            g->grille[i][j] = (t_tile*)malloc(1*sizeof(t_tile));//Verifier la ligne peut etre une erreur
             g->grille[i][j]->position.colonne = j;
             g->grille[i][j]->position.ligne = i;
 
