@@ -124,7 +124,7 @@ void affichageElementsCarte(BITMAP* bufferMap, IMAGE* liste_image)//on pourra pe
     //peut etre 2 fichiers texte, un pour l'affichage, l'autre pour les données de la map
     //parce que avec ça on va avoir un problème pour l'affichage des batiments > 1x1
     //j'ai trouvé!
-    //on part de la coordonnées de départ de la souris et on donne le point de départ du sprite en fonction de la case du fichier indiquand le type de batiment, on regarde la rotation et on affiche l'élement en fonction de ça
+    //on part de la coordonnées de départ de la souris et on donne le point de départ du sprite en fonction de la case du fichier indiquant le type de batiment, on regarde la rotation et on affiche l'élement en fonction de ça
     FILE* elementMap=fopen("element_map.txt", "r");//pour la nouvelle partie tout les elements sont à 0
     FILE* rotation_element_map=fopen("rotation_element_map.txt", "r");// la rotation indique dans quel sens on doit mettre le batiment sur la carte et donc la place qu'il prend
     int type=0;

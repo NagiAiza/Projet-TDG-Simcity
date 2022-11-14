@@ -43,6 +43,222 @@ int validation_depense(int depense, long argent_restant)
     }
 }
 
+//--------------------------------------------------------------------
+///horloge
+/*void setTimeout(int milliseconds)
+{
+    if (milliseconds <= 0) {
+        fprintf(stderr, "Count milliseconds for timeout is less or equal to 0\n");
+        return;
+    }
+
+    //chaque seconde
+    int milliseconds_since = clock() * 1000 / CLOCKS_PER_SEC;
+
+    int end = milliseconds_since + milliseconds;
+    do {
+        milliseconds_since = clock() * 1000 / CLOCKS_PER_SEC;
+    } while (milliseconds_since <= end);
+}
+void horloge()
+{
+
+    int compteur= 0;
+    int seconde=0;
+    int minute=0;
+    int heure=0;
+
+    int xseconde=90;
+    int yseconde=25;
+
+    do {
+        do
+        {
+
+            // on affiche l'horloge
+            printf("%d:%d:%d", heure,minute,seconde);
+
+            //textprintf_ex(page, font, 476, 176, makecol(255, 100, 200),-1, "%d",seconde);
+//           if(seconde==0)
+//           {
+//              draw_sprite(page,horloge0,xseconde, yseconde);
+//           }
+//           if(seconde==1)
+//           {
+//              draw_sprite(page,horloge1,xseconde, yseconde);
+//           }
+
+            //le compteur s'incrémente chaque seconde
+            setTimeout(1000);
+            // on incrémente les secondes et le compteur
+            seconde++;
+            compteur++;
+            //on efface la ligne pour re ecrire au meme endroit
+            system("CLS");
+            if(seconde==60) //les minutes s'incrémentes toutes les 60 secondes
+            {
+                minute++;//on incremente les minutes
+            }
+            if(minute==60) //les heures s'incrémentes toutes les 60 minutes
+            {
+                heure++;//on incremente les heures
+            }
+            if(seconde==60) //on repart à 0
+            {
+                seconde=0;
+            }
+            if(minute==60) //on repart à 0
+            {
+                minute=0;
+            }
+            if(heure==60) //on repart à 0
+            {
+                heure=0;
+            }
+
+        }while (seconde < 60);//une minute
+
+    } while (compteur <= 7200);//tourne pendant deux heures
+
+    ///-----
+    // Lancer allegro et le mode graphique
+    allegro_init();
+    // Pour disposer du clavier
+    install_keyboard();
+    // pour disposer de la souris
+    install_mouse();
+
+    // Permet d'installer le clavier et de vérifier l'installation
+    if(install_keyboard() == -1)
+        allegro_message("ERREUR CLAVIER");
+
+    // Initialisation et choix du mode graphique
+    set_color_depth(desktop_color_depth());
+    if (set_gfx_mode(GFX_AUTODETECT_FULLSCREEN,1024,768,0,0)!=0)
+    {
+        allegro_message("probleme gfx mode");
+        allegro_exit();
+        exit(EXIT_FAILURE);
+    }
+
+
+    /// Déclaration des pointeurs sur BITMAP devant recevoir les images
+    // Buffer
+    BITMAP *page;
+    BITMAP *decor;
+    BITMAP *horloge0;
+    BITMAP *horloge1;
+    int done;
+    // buffer
+    page=create_bitmap(SCREEN_W,SCREEN_H);
+    clear_bitmap(page);
+
+    // charger images de fond
+    decor=load_bitmap("images/test_ecran.bmp",NULL);
+    horloge0=load_bitmap("images/horloge/0.bmp",NULL);
+    horloge1=load_bitmap("images/horloge/1.bmp",NULL);
+
+    // pour voir le pointeur de la souris
+    show_mouse(screen);
+
+    if (!decor)
+    {
+        allegro_message("pas pu trouver les images");
+        exit(EXIT_FAILURE);
+    }
+    while (done!=1)
+    {
+
+        //sortie de l'ecran si on appuie sur la touche s
+        while (key[KEY_S])
+        {
+            done=1;
+            destroy_bitmap(page);
+        }
+        // effacer buffer en appliquant décor  (pas de clear_bitmap)
+        blit(decor,page,0,0,0,0,SCREEN_W,SCREEN_H);
+
+        // afficher coordonnées de la souris (%4d = format numérique largeur fixe sur 4 caractères)
+        textprintf_ex(page,font,1,750,makecol(0,255,0),makecol(0,0,0),"%4d %4d",mouse_x,mouse_y);
+
+
+        // afficher tout ça à l'écran
+        blit(page,screen,0,0,0,0,SCREEN_W,SCREEN_H);
+    }
+    ///-----
+}
+void allegro()
+{
+    printf("test!!");
+    // Lancer allegro et le mode graphique
+    allegro_init();
+    // Pour disposer du clavier
+    install_keyboard();
+    // pour disposer de la souris
+    install_mouse();
+
+
+    int xseconde=90;
+    int yseconde=25;
+
+    // Permet d'installer le clavier et de vérifier l'installation
+    if(install_keyboard() == -1)
+        allegro_message("ERREUR CLAVIER");
+
+    // Initialisation et choix du mode graphique
+    set_color_depth(desktop_color_depth());
+    if (set_gfx_mode(GFX_AUTODETECT_FULLSCREEN,1024,768,0,0)!=0)
+    {
+        allegro_message("probleme gfx mode");
+        allegro_exit();
+        exit(EXIT_FAILURE);
+    }
+
+    /// Déclaration des pointeurs sur BITMAP devant recevoir les images
+    // Buffer
+    BITMAP *page;
+    BITMAP *decor;
+    BITMAP *horloge0;
+    BITMAP *horloge1;
+    int done;
+    // buffer
+    page=create_bitmap(SCREEN_W,SCREEN_H);
+    clear_bitmap(page);
+
+    // charger images de fond
+    decor=load_bitmap("images/test_ecran.bmp",NULL);
+    horloge0=load_bitmap("images/horloge/0.bmp",NULL);
+    horloge1=load_bitmap("images/horloge/1.bmp",NULL);
+
+    // pour voir le pointeur de la souris
+    show_mouse(screen);
+
+    if (!decor)
+    {
+        allegro_message("pas pu trouver les images");
+        exit(EXIT_FAILURE);
+    }
+    while (done!=1)
+    {
+
+        //sortie de l'ecran si on appuie sur la touche s
+        while (key[KEY_S])
+        {
+            done=1;
+            destroy_bitmap(page);
+        }
+        // effacer buffer en appliquant décor  (pas de clear_bitmap)
+        blit(decor,page,0,0,0,0,SCREEN_W,SCREEN_H);
+
+        // afficher coordonnées de la souris (%4d = format numérique largeur fixe sur 4 caractères)
+        textprintf_ex(page,font,1,750,makecol(0,255,0),makecol(0,0,0),"%4d %4d",mouse_x,mouse_y);
+
+
+        // afficher tout ça à l'écran
+        blit(page,screen,0,0,0,0,SCREEN_W,SCREEN_H);
+    }
+}*/
+
 
 //gestion de l'eau
 
