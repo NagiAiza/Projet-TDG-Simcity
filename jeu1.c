@@ -412,3 +412,4 @@ t_graphe* A_star(t_graphe* g, t_tile* depart, t_tile* arrive/*position souris*/)
     liberer(liste_ferme);
     return g;
 }
+
