@@ -87,7 +87,7 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
                             {
                                 while (parcour_chemin != NULL) {
                                     map = placementElement(map, parcour_chemin->position.ligne,parcour_chemin->position.colonne, *choix, *rotation);
-                                    map = remplissage_matrice_adjacence(map, parcour_chemin->position.ligne,parcour_chemin->position.colonne, *choix, *rotation);
+                                    map = remplissage_matrice_adjacence(map, parcour_chemin->position.ligne,parcour_chemin->position.colonne, *choix, NULL);
                                     parcour_chemin = parcour_chemin->parent;
                                 }
                                 *argent_restant-=depense;
@@ -132,8 +132,7 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
                                 {
                                     for (int j = -2; j < 4; j++)
                                     {
-
-                                        map = remplissage_matrice_adjacence(map, souris.ligne + i, souris.colonne + j,*choix, *rotation);
+                                        map = remplissage_matrice_adjacence(map, souris.ligne + i, souris.colonne + j,*choix, map->grille[souris.ligne][souris.colonne]);
                                     }
                                 }
                                 *argent_restant-=depense;
@@ -159,7 +158,7 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
                                 {
                                     for (int j = -1; j < 3; j++)
                                     {
-                                        map = remplissage_matrice_adjacence(map, souris.ligne + i, souris.colonne + j,*choix, *rotation);
+                                        map = remplissage_matrice_adjacence(map, souris.ligne + i, souris.colonne + j,*choix, map->grille[souris.ligne][souris.colonne]);
                                     }
                                 }
                                 *argent_restant-=depense;
@@ -199,7 +198,7 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
                                     for (int j = -2; j < 4; j++)
                                     {
 
-                                        map = remplissage_matrice_adjacence(map, souris.ligne + i, souris.colonne + j,*choix, *rotation);
+                                        map = remplissage_matrice_adjacence(map, souris.ligne + i, souris.colonne + j,*choix, map->grille[souris.ligne][souris.colonne]);
                                     }
                                 }
                                 *argent_restant-=depense;
@@ -225,7 +224,7 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
                                 {
                                     for (int j = -1; j < 3; j++)
                                     {
-                                        map = remplissage_matrice_adjacence(map, souris.ligne + i, souris.colonne + j,*choix, *rotation);
+                                        map = remplissage_matrice_adjacence(map, souris.ligne + i, souris.colonne + j,*choix, map->grille[souris.ligne][souris.colonne]);
                                     }
                                 }
                                 *argent_restant-=depense;
@@ -259,7 +258,7 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
                             {
                                 for(int j=-1; j<2; j++)
                                 {
-                                    map= remplissage_matrice_adjacence(map, souris.ligne+i, souris.colonne+j, *choix, *rotation);
+                                    map= remplissage_matrice_adjacence(map, souris.ligne+i, souris.colonne+j, *choix, map->grille[souris.ligne][souris.colonne]);
                                 }
                             }
                             *argent_restant-=depense;

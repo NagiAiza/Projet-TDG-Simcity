@@ -59,6 +59,8 @@ t_graphe* initialiserGrille(t_graphe* g) //premiere initialisation a faire
 
             g->grille[i][j]->parent = NULL;
 
+            g->grille[i][j]->case_mere = NULL;
+
             g->grille[i][j]->element=(t_batiment*)calloc(1, sizeof(t_batiment));
             g->grille[i][j]->element->position.ligne=i;
             g->grille[i][j]->element->position.colonne=j;
@@ -145,9 +147,10 @@ t_graphe* placementElement(t_graphe* g, int ligne, int colonne, int type, int ro
     return g;
 }
 
-t_graphe* remplissage_matrice_adjacence(t_graphe* g, int ligne, int colonne, int type, int rotation)//à remplir en fonction de la rotation du bail
+t_graphe* remplissage_matrice_adjacence(t_graphe* g, int ligne, int colonne, int type, t_tile* case_mere)//à remplir en fonction de la rotation du bail
 {
     g->mat_adjacence[ligne][colonne]=type;
+    g->grille[ligne][colonne]->case_mere=case_mere
     return g;
 }
 
@@ -362,6 +365,9 @@ t_graphe* A_star(t_graphe* g, t_tile* depart, t_tile* arrive/*position souris*/)
         for(int j=0; j<NBCOLONNE; j++)
         {
             g->grille[i][j]->parent=NULL;//on n'oublie pas de dire que les noeuds n'ont pas de prédécésseur au debut de l'algo
+            g->grille[i][j]->g=-1;//ces trois lignes sont pas utiles mais plus par précuations
+            g->grille[i][j]->h=-1;
+            g->grille[i][j]->f=-1;
         }
     }
 
