@@ -45,7 +45,47 @@ int validation_depense(int depense, long argent_restant)
 
 //--------------------------------------------------------------------
 ///horloge
+///horloge
+/*
+void horloge(int CLK_depuis_debut_prog,int* seconde,int* minute,int* heure)
+{
 
+//    printf("%d",CLK_depuis_debut_prog);
+//    system("CLS");
+
+    *seconde=CLK_depuis_debut_prog%60;
+    if(*seconde==60)
+    {
+        *minute++;
+        *seconde=0;
+    }
+    if(*minute%60==0)
+    {
+        *heure++;
+    }
+
+}
+int main()
+{
+    clock_t CLK;
+    int heure=0;
+    int min=0;
+    int sec=0;
+    //allegro();
+    //horloge();
+    do
+    {
+        CLK=clock() / CLOCKS_PER_SEC;
+        horloge((int)CLK,&sec,&min, &heure);
+        printf("%d:%d:%d",heure,min,sec);
+        system("CLS");
+    } while (1);//tourne pendant deux heures
+
+
+
+}
+END_OF_MAIN();
+}*/
 
 
 //gestion de l'eau
@@ -238,3 +278,40 @@ t_graphe* distribution_eau(t_graphe* map)
     }
     return map;
 }
+///Usines electricite (num 3 sur la map)
+t_graphe* electricite(t_graphe* map)
+{
+    int compteur_usine=0;
+    int capa_usine=0;
+    for(int i=0 ; i<NBLIGNE; i++)//parcours de toute les cases du tableau pour trouver les usines elec
+    {
+        for(int j=0; j<NBCOLONNE; j++)
+        {
+            if (map->grille[i][j]->element->type == 3)//dès qu'on a trouvé on la compte
+            {
+                compteur_usine++;
+
+            }
+        }
+    }
+    //On calcul la capacite totale de la ville
+    capa_usine=(compteur_usine*5000);
+
+    do {
+        for (int i = 0; i < NBLIGNE; i++)//parcours de toute les cases du tableau pour trouver les habitations
+        {
+            for (int j = 0; j < NBCOLONNE; j++) {
+                    if ((map->grille[i][j]->element->type > 4) && (map->grille[i][j]->element->type <9) )//dès qu'on a trouve une habitation
+                    {
+                        //on note le batiment trouve comme etant alimente
+                        map->grille[i][j]->element->alimente=1;
+                        //on soustrait le nombre d'habitants de cette habitation a la capacite totale de la ville
+                        capa_usine = (capa_usine - map->grille[i][j]->element->nb_habitant);
+                    }
+                }
+
+            }
+        }
+    }while(capa_usine!=0);
+}
+
