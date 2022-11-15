@@ -62,7 +62,6 @@ int validation_depense(int depense, long argent_restant)
 }
 void horloge()
 {
-
     int compteur= 0;
     int seconde=0;
     int minute=0;
@@ -98,22 +97,12 @@ void horloge()
             if(seconde==60) //les minutes s'incrémentes toutes les 60 secondes
             {
                 minute++;//on incremente les minutes
+                seconde=0;
             }
             if(minute==60) //les heures s'incrémentes toutes les 60 minutes
             {
                 heure++;//on incremente les heures
-            }
-            if(seconde==60) //on repart à 0
-            {
-                seconde=0;
-            }
-            if(minute==60) //on repart à 0
-            {
                 minute=0;
-            }
-            if(heure==60) //on repart à 0
-            {
-                heure=0;
             }
 
         }while (seconde < 60);//une minute
@@ -122,11 +111,6 @@ void horloge()
 
     ///-----
     // Lancer allegro et le mode graphique
-    allegro_init();
-    // Pour disposer du clavier
-    install_keyboard();
-    // pour disposer de la souris
-    install_mouse();
 
     // Permet d'installer le clavier et de vérifier l'installation
     if(install_keyboard() == -1)
@@ -321,6 +305,26 @@ t_graphe* initialisation_distance_chateau (t_graphe* map, t_tile* case_chateau)
  * et ensuite penser a modifier le fichier du niveau -1 pour l'affichage des chemins
  */
 
+t_graphe* ecriture_fichier_eau(t_graphe* map, t_tile* case_arrive)
+{
+    t_tile* temp=case_arrive;
+    while(temp->parent!=NULL)
+    {
+        map->mat_chemin_eau[temp->position.ligne][temp->position.colonne]=1;
+        temp=temp->parent;
+    }
+    FILE* map_eau= fopen("map_eau.txt", "w");
+
+    for(int i=0; i<NBLIGNE; i++)
+    {
+        for(int j=0; j<NBCOLONNE; j++)
+        {
+            fprintf(map_eau, "%d ", map->mat_chemin_eau[i][j]);
+        }
+    }
+
+}
+
 t_graphe* distribution_eau(t_graphe* map)
 {
     for(int i=0 ; i<NBLIGNE; i++)//parcours de toute les cases du tableau pour trouver les chateaux d'eau
@@ -384,7 +388,9 @@ void dijkstra(t_graphe* map, t_tile* sommet_de_depart)
                 if(voisin_actuel->case_mere->element->compteur>0)//si il reste des habitants qui doivent être alimenté en eau
                 {
                     //faire toute les maj sur l'habitation en fonction de l'eau distrib
+
                     //retracer le chemin et le mettre sur la map -1
+                    map=ecriture_fichier_eau(map, voisin_actuel);
                 }
 
             }

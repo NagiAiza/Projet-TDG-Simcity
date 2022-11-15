@@ -51,6 +51,7 @@ typedef struct tile{//pour faire la map on fait un tableau à 2 dimensions de ti
 typedef struct graphe{
     t_tile*** grille;
     int** mat_adjacence;//vraie matrice d'adjacence avec toutes les cases qui sont remplies pour les batiments
+    int** mat_chemin_eau;//matrice pour repertorier les chemins en eau
 }t_graphe;
 
 

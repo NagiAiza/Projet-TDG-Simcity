@@ -82,9 +82,11 @@ t_graphe* makeGrid()//penser a crer la libération de données
     g= initialiserGrille(g);
 
     g->mat_adjacence=(int **) calloc(NBLIGNE,sizeof(int*));
+    g->mat_chemin_eau=(int **) calloc(NBLIGNE,sizeof(int*));
     for(int i=0; i<NBLIGNE; i++)
     {
         g->mat_adjacence[i]=(int*)calloc(NBCOLONNE,sizeof(int));
+        g->mat_chemin_eau[i]=(int*) calloc(NBCOLONNE,sizeof(int));
     }
 
     return g;
@@ -150,7 +152,7 @@ t_graphe* placementElement(t_graphe* g, int ligne, int colonne, int type, int ro
 t_graphe* remplissage_matrice_adjacence(t_graphe* g, int ligne, int colonne, int type, t_tile* case_mere)//à remplir en fonction de la rotation du bail
 {
     g->mat_adjacence[ligne][colonne]=type;
-    g->grille[ligne][colonne]->case_mere=case_mere
+    g->grille[ligne][colonne]->case_mere=case_mere;
     return g;
 }
 
