@@ -45,7 +45,12 @@ t_graphe* initialiserGrille(t_graphe* g) //premiere initialisation a faire
     {
         for (j = 0; j < NBCOLONNE; j++)
         {
-            g->grille[i][j] = (t_tile*)malloc(1*sizeof(t_tile));//Verifier la ligne peut etre une erreur
+            g->grille[i][j] = (t_tile*)malloc(sizeof(t_tile));//Verifier la ligne peut etre une erreur
+            if(g->grille[i][j]==NULL)
+            {
+                printf("Erreur maloc\n");
+                exit(EXIT_FAILURE);
+            }
             g->grille[i][j]->position.colonne = j;
             g->grille[i][j]->position.ligne = i;
 
@@ -59,7 +64,7 @@ t_graphe* initialiserGrille(t_graphe* g) //premiere initialisation a faire
 
             g->grille[i][j]->parent = NULL;
 
-            g->grille[i][j]->case_mere = NULL;
+            g->grille[i][j]->case_mere = g->grille[i][j];
 
             g->grille[i][j]->element=(t_batiment*)calloc(1, sizeof(t_batiment));
             g->grille[i][j]->element->position.ligne=i;
@@ -421,3 +426,14 @@ t_graphe* A_star(t_graphe* g, t_tile* depart, t_tile* arrive/*position souris*/)
     return g;
 }
 
+void initialisation_habitation(t_tile* case_hab)
+{
+    case_hab->element->nb_habitant=1500;
+    case_hab->element->stade=1;
+    case_hab->element->eau_actuelle=0;
+}
+
+void initialisation_chateau_eau(t_tile* case_chateau)
+{
+    case_chateau->element->capacite=5000;
+}

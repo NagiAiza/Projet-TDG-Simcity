@@ -73,7 +73,7 @@ void jeu()//sous programme qui fera tourner tout le jeu
    {
        for(int j=0; j<NBCOLONNE; j++)
        {
-           printf("%d ", map->mat_adjacence[i][j]);
+           printf("%d ", map->mat_chemin_eau[i][j]);
        }
        printf("\n");
    }

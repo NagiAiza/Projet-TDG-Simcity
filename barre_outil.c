@@ -135,6 +135,9 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
                                         map = remplissage_matrice_adjacence(map, souris.ligne + i, souris.colonne + j,*choix, map->grille[souris.ligne][souris.colonne]);
                                     }
                                 }
+                                initialisation_chateau_eau(map->grille[souris.ligne][souris.colonne]);
+
+                                map=distribution_eau(map);
                                 *argent_restant-=depense;
                             }
                         }
@@ -161,6 +164,9 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
                                         map = remplissage_matrice_adjacence(map, souris.ligne + i, souris.colonne + j,*choix, map->grille[souris.ligne][souris.colonne]);
                                     }
                                 }
+                                initialisation_chateau_eau(map->grille[souris.ligne][souris.colonne]);
+                                printf("eau : %d", map->grille[souris.ligne][souris.colonne]->element->capacite);
+                                map=distribution_eau(map);
                                 *argent_restant-=depense;
                             }
                         }
@@ -250,6 +256,7 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
                     if(!verification_chevauchement(map, souris.ligne, souris.colonne, *choix, *rotation))
                     {
                         depense= calcul_depenses(*choix, 0);
+                        initialisation_habitation(map->grille[souris.ligne][souris.colonne]);
                         if(validation_depense(depense, *argent_restant))
                         {
                             map = placementElement(map, souris.ligne, souris.colonne, *choix, *rotation);
@@ -262,7 +269,10 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
                                 }
                             }
                             *argent_restant-=depense;
+                            map=distribution_eau(map);
                         }
+
+
                     }
                     *choix=0; // dès qu'on a fait l'action on peut revenir a un etat neutre de choix
                 }

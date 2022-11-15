@@ -21,12 +21,13 @@ typedef struct pos{
 
 typedef struct batiment{
     t_pos position;//elle est déjà dans tile, est ce que je l'utilise quand meme?
-    int type; //1 si route, 2 si chateau d'eau, 3 si elec, 4 a 10 les maisons
+    int type; //1 si route, 2 si chateau d'eau, 3 si elec, 4 a 9 les maisons !!!
     int orientation;//connaitre l'orientation du bat 1 ou 2
 
     // si c'est une habitation
     int stade;//niveau d'évolution
     int nb_habitant;
+    int eau_actuelle;
     int compteur;//timer à la création de l'habitation
 
     //si c'est un chateau d'eau
@@ -68,6 +69,9 @@ void liberation_donnee(t_graphe* g);// pas forcément utile
 
 int placement_route(t_graphe* map, int ligne, int colonne);
 int verification_chevauchement(t_graphe* map, int ligne, int colonne, int choix, int rotation);
+
+void initialisation_habitation(t_tile* case_hab);
+void initialisation_chateau_eau(t_tile* case_chateau);
 
 ///algo A*
 int distance(t_pos a, t_pos b);
