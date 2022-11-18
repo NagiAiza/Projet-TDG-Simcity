@@ -32,6 +32,9 @@ typedef struct batiment{
 
     //si c'est un chateau d'eau
     int capacite;
+
+    //si centrale_elec
+    int alimente;//1 si alimenté 0 sionon
 }t_batiment;
 
 typedef struct tile{//pour faire la map on fait un tableau à 2 dimensions de tile
@@ -65,6 +68,7 @@ t_graphe* remplissage_matrice_adjacence(t_graphe* g, int ligne, int colonne, int
 void rajouterVoisin(t_tile* spot, t_tile ***map, int colonne, int ligne);//initialise les voisins de chaque case de la grille
 void initialiserVoisin(t_tile*** map, int ligne, int colonne);//pour donner une liste de voisins à chaque noeuds
 void liberation_donnee(t_graphe* g);// pas forcément utile
+void affichageGridMere(t_graphe* g);
 
 
 int placement_route(t_graphe* map, int ligne, int colonne);

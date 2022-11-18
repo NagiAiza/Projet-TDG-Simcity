@@ -83,11 +83,12 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
                         {
                             parcour_chemin = map->grille[souris.ligne][souris.colonne];
                             depense= calcul_depenses(*choix, tailleChemin(parcour_chemin));
+
                             if(validation_depense(depense, *argent_restant))
                             {
                                 while (parcour_chemin != NULL) {
                                     map = placementElement(map, parcour_chemin->position.ligne,parcour_chemin->position.colonne, *choix, *rotation);
-                                    map = remplissage_matrice_adjacence(map, parcour_chemin->position.ligne,parcour_chemin->position.colonne, *choix, NULL);
+                                    map = remplissage_matrice_adjacence(map, parcour_chemin->position.ligne,parcour_chemin->position.colonne, *choix, map->grille[parcour_chemin->position.ligne][parcour_chemin->position.colonne]);//ici
                                     parcour_chemin = parcour_chemin->parent;
                                 }
                                 *argent_restant-=depense;
@@ -136,7 +137,7 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
                                     }
                                 }
                                 initialisation_chateau_eau(map->grille[souris.ligne][souris.colonne]);
-
+                                //printf("eau : %d", map->grille[souris.ligne][souris.colonne]->element->capacite);
                                 map=distribution_eau(map);
                                 *argent_restant-=depense;
                             }
@@ -165,7 +166,7 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
                                     }
                                 }
                                 initialisation_chateau_eau(map->grille[souris.ligne][souris.colonne]);
-                                printf("eau : %d", map->grille[souris.ligne][souris.colonne]->element->capacite);
+                                //printf("eau : %d", map->grille[souris.ligne][souris.colonne]->element->capacite);
                                 map=distribution_eau(map);
                                 *argent_restant-=depense;
                             }

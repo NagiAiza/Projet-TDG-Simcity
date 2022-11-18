@@ -28,7 +28,6 @@ void jeu()//sous programme qui fera tourner tout le jeu
     t_graphe* map=makeGrid();
 
 
-
     // Ici initialisation du scrolling en haut à gauche du décor
     //  (on peut décider de partir autrement...)
     decalageX=0;
