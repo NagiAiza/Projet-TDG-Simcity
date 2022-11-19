@@ -219,7 +219,7 @@ t_graphe* dijkstra(t_graphe* map, t_tile* sommet_de_depart)
                     if(existe(liste_ouverte, voisin_actuel))
                     {
                         //printf("actu\n");
-                        liste_ouverte= actualisation(liste_ouverte, voisin_actuel);//on actualise le sommet pour le remettre à la bonne place
+                        liste_ouverte = actualisation(liste_ouverte, voisin_actuel);//on actualise le sommet pour le remettre à la bonne place
                     }
                 }
                 if(!existe(liste_ouverte, voisin_actuel) && voisin_actuel->element->type==1)//on verifie que le sommet n'est pas dans la liste ouverte et fermé et que c'est une route
@@ -254,8 +254,28 @@ t_graphe* dijkstra(t_graphe* map, t_tile* sommet_de_depart)
 }
 //la forme est faite, il faut maintenant verifier les conditions et mettre à jour le niveau -1 à chaque fois que l'on tombe sur une maison
 
+t_graphe* reinitialisation_eau(t_graphe* map)
+{
+    for(int i=0 ; i<NBLIGNE; i++)//parcours de toute les cases du tableau pour trouver les chateaux d'eau
+    {
+        for(int j=0; j<NBCOLONNE; j++)
+        {
+            if(map->grille[i][j]->element->type == 2)
+            {
+                map->grille[i][j]->element->capacite=5000;//valeur max
+            }
+            else if(map->grille[i][j]->element->type>=4 && map->grille[i][j]->element->type<=10)
+            {
+                map->grille[i][j]->element->eau_actuelle=0;
+            }
+        }
+    }
+    return map;
+}
+
 t_graphe* distribution_eau(t_graphe* map)
 {
+    map= reinitialisation_eau(map);
     for(int i=0 ; i<NBLIGNE; i++)//parcours de toute les cases du tableau pour trouver les chateaux d'eau
     {
         for(int j=0; j<NBCOLONNE; j++)

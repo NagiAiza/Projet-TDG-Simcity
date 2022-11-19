@@ -353,8 +353,6 @@ int estArrive(t_tile *actuel, t_tile *arrive)
 int distance(t_pos a, t_pos b)
 {
     int d = abs(a.colonne - b.colonne) + abs(a.ligne - b.ligne);//valeur absolu pour éviter d'avoir des problèmes avec une différence de coordoonées négative
-    //printf("Vi: %i ",abs(a.x - b.x) + abs(a.y - b.y));
-    //printf(" Vd: %d ",d);
     return d;
 }
 

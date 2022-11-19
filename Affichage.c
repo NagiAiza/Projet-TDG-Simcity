@@ -26,6 +26,7 @@ IMAGE* initialisation_liste_image()//on initialise une seule fois les bitmaps en
     liste->batiment = load_bitmap_check("batiment.bmp");
     liste->chateau_eau = load_bitmap_check("chateau_eau.bmp");
     liste->centrale = load_bitmap_check("centrale.bmp");
+    liste->canalisation = load_bitmap_check("canalisation.bmp");
     return liste;
 }
 
@@ -53,6 +54,7 @@ void liberation_memoire_bitmaps(IMAGE* liste_image, BUFFER* liste_buffer)//on n'
     destroy_bitmap(liste_image->sous_map);
     destroy_bitmap(liste_image->chateau_eau);
     destroy_bitmap(liste_image->centrale);
+    destroy_bitmap(liste_image->canalisation);
     free(liste_image);
     destroy_bitmap(liste_buffer->buffer_map);
     destroy_bitmap(liste_buffer->buffer_menu);
@@ -160,4 +162,9 @@ void affichageTotal(t_graphe* map, IMAGE* liste_image, BUFFER* liste_buffer, t_p
         textprintf_ex(liste_buffer->buffer_map,font,10,10,makecol(0,255,0),makecol(0,0,0),"%4d %4d",mouse_x,mouse_y);
         textprintf_ex(liste_buffer->buffer_map,font,10,20,makecol(0,255,0),makecol(0,0,0),"case[%d][%d]",souris.ligne,souris.colonne);
         affichageElementsCarte(liste_buffer->buffer_map, liste_image);
+}
+
+void affichage_canalisation(t_graphe* map, IMAGE* liste_image, BUFFER* liste_buffer)
+{
+
 }
