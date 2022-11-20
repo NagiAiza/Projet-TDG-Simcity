@@ -171,6 +171,7 @@ void initialisationElementCarte()
 {
     FILE* elementCarte= fopen("element_map.txt", "w+");
     FILE* rotation_element_map=fopen("rotation_element_map.txt", "w+");
+    FILE* map_eau=fopen("map_eau.txt", "w+");
     for(int i=0; i<NBLIGNE; i++)
     {
         for(int j=0; j<NBCOLONNE; j++)
@@ -184,12 +185,15 @@ void initialisationElementCarte()
                 fprintf(elementCarte, "%d ", 1);//aucun element n'est sur la carte SAUF 1 route a l'emplacement [17][0]
             }
             fprintf(rotation_element_map, "%d ", 1);
+            fprintf(map_eau, "%d ", 0);
         }
         fprintf(elementCarte, "\n");
         fprintf(rotation_element_map, "\n");
+        fprintf(map_eau, "\n");
     }
     fclose(rotation_element_map);
     fclose(elementCarte);
+    fclose(map_eau);
 }
 
 
@@ -434,6 +438,8 @@ void initialisation_habitation(t_tile* case_hab)
     case_hab->element->nb_habitant=1500;
     case_hab->element->stade=1;
     case_hab->element->eau_actuelle=0;
+    case_hab->element->chateau_approvisionnement=creer2();
+    case_hab->element->centrale_approvisionnement=creer2();
 }
 
 void initialisation_chateau_eau(t_tile* case_chateau)

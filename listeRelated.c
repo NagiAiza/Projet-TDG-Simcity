@@ -9,6 +9,11 @@ t_liste *creer(void)
     return NULL;
 }
 
+t_liste2 *creer2(void)
+{
+    return NULL;
+}
+
 t_liste *insererNoeud(t_liste *liste, t_tile *n) //inserer noeud debut de la liste dans la liste
 {
     t_liste *nouv = (t_liste *)malloc(sizeof(t_liste));
@@ -22,6 +27,17 @@ t_liste *insererNoeud(t_liste *liste, t_tile *n) //inserer noeud debut de la lis
     }
     return nouv;
 }
+
+t_liste2 *insererNoeud2(t_liste2 *liste, t_tile * n, int montant_distribue) //inserer noeud debut de la liste dans la liste
+{
+    t_liste2 *nouv = (t_liste2 *)malloc(sizeof(t_liste2));
+    nouv->n = n;
+    nouv->montant_distribue=montant_distribue;
+    nouv->next = liste;
+    return nouv;
+}
+
+
 
 t_liste *enleverNoeud(t_liste *liste, t_tile *n)
 {
@@ -63,11 +79,9 @@ t_liste *enleverNoeud(t_liste *liste, t_tile *n)
 
 int existe(t_liste *l, t_tile *n)
 {
-    //printf("entree dans existe\n");
     t_liste *aux = l;
     while (aux != NULL)
     {
-
         if ((aux->n->position.colonne == n->position.colonne) && (aux->n->position.ligne == n->position.ligne))
         {
             return 1;
@@ -188,6 +202,18 @@ t_liste* enlever_noeud_debut(t_liste* liste, t_tile** noeud_a_conserver)//enleve
     liste=liste->next;
     free(temp);
     return liste;
+}
+
+t_liste2* vider_liste(t_liste2* liste)//enlever en debut + mettre l'adresse du noeud à conserveer
+{
+    t_liste2 *aux;
+    while (liste != NULL)
+    {
+        aux=liste;
+        liste = liste->next;
+        free(aux);
+    }
+    return NULL;
 }
 
 t_liste* actualisation(t_liste* l, t_tile* noeud_a_retrier)//si jamais la valeur f du noeud change
