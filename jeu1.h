@@ -32,9 +32,6 @@ typedef struct batiment{
 
     //si c'est un chateau d'eau
     int capacite;
-
-    //si usine electricite
-    int alimente;
 }t_batiment;
 
 typedef struct tile{//pour faire la map on fait un tableau à 2 dimensions de tile

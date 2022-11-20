@@ -45,7 +45,7 @@ t_graphe* initialiserGrille(t_graphe* g) //premiere initialisation a faire
     {
         for (j = 0; j < NBCOLONNE; j++)
         {
-            g->grille[i][j] = (t_tile*)malloc(sizeof(t_tile));//Verifier la ligne peut etre une erreur
+            g->grille[i][j] = (t_tile*)calloc(1, sizeof(t_tile));//Verifier la ligne peut etre une erreur
             if(g->grille[i][j]==NULL)
             {
                 printf("Erreur maloc\n");
@@ -53,16 +53,6 @@ t_graphe* initialiserGrille(t_graphe* g) //premiere initialisation a faire
             }
             g->grille[i][j]->position.colonne = j;
             g->grille[i][j]->position.ligne = i;
-
-            g->grille[i][j]->f = 0;
-            g->grille[i][j]->g = 0;
-            g->grille[i][j]->h = 0;
-
-            g->grille[i][j]->f = g->grille[i][j]->g + g->grille[i][j]->h;
-
-            g->grille[i][j]->voisin = NULL;
-
-            g->grille[i][j]->parent = NULL;
 
             g->grille[i][j]->case_mere = g->grille[i][j];
 
@@ -78,11 +68,11 @@ t_graphe* initialiserGrille(t_graphe* g) //premiere initialisation a faire
 
 t_graphe* makeGrid()//penser a crer la libération de données
 {
-    t_graphe* g=(t_graphe*) malloc(sizeof(t_graphe));
-    g->grille=(t_tile***)malloc(sizeof(t_tile**)*NBLIGNE);
+    t_graphe* g=(t_graphe*) calloc(1, sizeof(t_graphe));
+    g->grille=(t_tile***)calloc(NBLIGNE, sizeof(t_tile**));
     for(int i=0; i<NBCOLONNE; i++)
     {
-        g->grille[i] = (t_tile**) malloc(NBCOLONNE*sizeof(t_tile*));
+        g->grille[i] = (t_tile**) calloc (NBCOLONNE, sizeof(t_tile*));
     }
     g= initialiserGrille(g);
 
@@ -93,11 +83,26 @@ t_graphe* makeGrid()//penser a crer la libération de données
         g->mat_adjacence[i]=(int*)calloc(NBCOLONNE,sizeof(int));
         g->mat_chemin_eau[i]=(int*) calloc(NBCOLONNE,sizeof(int));
     }
+    g->mat_adjacence[17][0]=1;
 
     return g;
 }
 
-
+void affichageGridMere(t_graphe* g)
+{
+    for(int i=0; i<NBLIGNE; i++)
+    {
+        for(int j=0; j<NBCOLONNE; j++)
+        {
+            if( g->grille[i][j]->case_mere==NULL)
+            {
+                printf("pas de case mere\n");
+                exit(EXIT_FAILURE);
+            }
+            printf("case [%d][%d] mere-> [%d][%d]\n", i, j, g->grille[i][j]->case_mere->position.ligne, g->grille[i][j]->case_mere->position.colonne);
+        }
+    }
+}
 void rajouterVoisin(t_tile* spot, t_tile ***map, int colonne, int ligne)//les arretes existes que entre les voisins
 {
     int i = spot->position.ligne;// on récupère les coordonnées
@@ -348,8 +353,6 @@ int estArrive(t_tile *actuel, t_tile *arrive)
 int distance(t_pos a, t_pos b)
 {
     int d = abs(a.colonne - b.colonne) + abs(a.ligne - b.ligne);//valeur absolu pour éviter d'avoir des problèmes avec une différence de coordoonées négative
-    //printf("Vi: %i ",abs(a.x - b.x) + abs(a.y - b.y));
-    //printf(" Vd: %d ",d);
     return d;
 }
 

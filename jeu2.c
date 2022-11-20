@@ -152,12 +152,19 @@ t_graphe* initialisation_distance_chateau (t_graphe* map, t_tile* case_chateau)
 t_graphe* ecriture_fichier_eau(t_graphe* map, t_tile* case_arrive)
 {
     t_tile* temp=case_arrive;
-    while(temp->parent!=NULL)
+
+    while(temp!=NULL)
     {
+        printf("ecriture\n");
         map->mat_chemin_eau[temp->position.ligne][temp->position.colonne]=1;
         temp=temp->parent;
     }
     FILE* map_eau= fopen("map_eau.txt", "w");
+    if(map_eau==NULL)
+    {
+        printf("Erreur d'ouverture du fichier\n");
+        exit(EXIT_FAILURE);
+    }
 
     for(int i=0; i<NBLIGNE; i++)
     {
@@ -165,6 +172,7 @@ t_graphe* ecriture_fichier_eau(t_graphe* map, t_tile* case_arrive)
         {
             fprintf(map_eau, "%d ", map->mat_chemin_eau[i][j]);
         }
+        fprintf(map_eau, "\n");
     }
     return map;
 }
@@ -186,7 +194,7 @@ void maj_capacite(t_tile* chateau_eau, t_tile* maison)//tester avec ça sinon ut
 
 t_graphe* dijkstra(t_graphe* map, t_tile* sommet_de_depart)
 {
-
+    printf("\nlancement dijkstra\n");
     int poids_temp;
     t_tile* case_analysee,* voisin_actuel;
     t_liste* liste_voisin;
@@ -212,48 +220,72 @@ t_graphe* dijkstra(t_graphe* map, t_tile* sommet_de_depart)
             if(map->grille[i][j]->g==0)
             {
                 liste_ouverte=insererNoeud(liste_ouverte, map->grille[i][j]);
+                liste_voisin=map->grille[i][j]->voisin;
+                while(liste_voisin!=NULL)
+                {
+                    voisin_actuel=liste_voisin->n;
+                    if(voisin_actuel->g==-1 && voisin_actuel->element->type==1)
+                    {
+                        voisin_actuel->g=1;
+                        //voisin_actuel->parent=map->grille[i][j];
+                        liste_ouverte= insererNoeud(liste_ouverte, voisin_actuel);
+                    }
+                    liste_voisin=liste_voisin->next;
+                }
             }
         }
     }
+
     //debut de l'analyse
     while(!estVide(liste_ouverte) && sommet_de_depart->element->capacite>0)//tant qu'il reste des noeuds à analyser et que le chateau d'eau peut encore distribuer de l'eau
     {
-
         liste_ouverte = enlever_noeud_debut(liste_ouverte, &case_analysee);
         liste_ferme = insererNoeud(liste_ferme, case_analysee);
-        printf("noeud actuel [%d][%d]\n", case_analysee->position.ligne, case_analysee->position.colonne);
+        //printf("noeud actuel [%d][%d]\n", case_analysee->position.ligne, case_analysee->position.colonne);
         liste_voisin=case_analysee->voisin;
         while(liste_voisin!=NULL)
         {
             voisin_actuel=liste_voisin->n;
-            printf("case :[%d][%d]\n", voisin_actuel->position.ligne, voisin_actuel->position.colonne);
+            //printf("case :[%d][%d]\n", voisin_actuel->position.ligne, voisin_actuel->position.colonne);
             poids_temp=case_analysee->g+ heuristic(case_analysee, voisin_actuel);
-            if(voisin_actuel->case_mere->element->type>=4 && voisin_actuel->case_mere->element->type<=10)//le voisin est une habitation
+
+
+            if(!existe(liste_ferme, voisin_actuel))
             {
-                printf("ici\n");
-                if(voisin_actuel->case_mere->element->compteur>0)//si il reste des habitants qui doivent être alimenté en eau
+                if((poids_temp<voisin_actuel->g && voisin_actuel->g!=-1) && voisin_actuel->element->type==1)//si la nouvelle valeur de distance est inférieure à l'ancienne on actualise la distance et si c'est une route
                 {
+                    voisin_actuel->g=poids_temp;
+                    voisin_actuel->parent=case_analysee;
+                    if(existe(liste_ouverte, voisin_actuel))
+                    {
+                        //printf("actu\n");
+                        liste_ouverte = actualisation(liste_ouverte, voisin_actuel);//on actualise le sommet pour le remettre à la bonne place
+                    }
+                }
+                if(!existe(liste_ouverte, voisin_actuel) && voisin_actuel->element->type==1)//on verifie que le sommet n'est pas dans la liste ouverte et fermé et que c'est une route
+                {
+                    //printf("insertion\n");
+                    voisin_actuel->parent=case_analysee;
+                    liste_ouverte= insertion_en_triant2(liste_ouverte, voisin_actuel);//dans ce cas on l'insère dans la liste
+                }
+            }
+            ///ATTENTION IL N Y A PAS DE REALLOCATION D'EAU SI ON MET UNE MAISON PLUS PROCHE, IL FAUDRAIT FAIRE LA REALOCCATION DEAU APRES DIJKSTRA
+            //il faudrait lancer dijkstra, regarder toute les distances à partir des maisons en remontant avec les parents et ensuite allouer de l'eau a celle qui sont les plus prohces
+            if(voisin_actuel->case_mere->element->type>=4 && voisin_actuel->case_mere->element->type<=10)//le voisin est une habitation pb ici
+            {
+                if(voisin_actuel->case_mere->element->eau_actuelle<voisin_actuel->case_mere->element->nb_habitant)//si il reste des habitants qui doivent être alimenté en eau
+                {
+                    //voisin_actuel->parent=case_analysee;
+                    printf("maison trouve\n");
+                    //printf("case [%d][%d] -> parent [%d][%d]\n", voisin_actuel->position.ligne, voisin_actuel->position.colonne, voisin_actuel->parent->position.ligne, voisin_actuel->parent->position.colonne);
                     //faire toute les maj sur l'habitation en fonction de l'eau distrib
                     maj_capacite(sommet_de_depart, voisin_actuel->case_mere);
                     //retracer le chemin et le mettre sur la map -1
-                    map=ecriture_fichier_eau(map, voisin_actuel);
+                    printf("capacite chateau : %d\n", sommet_de_depart->element->capacite);
+                    printf("capacite maison : %d\n", voisin_actuel->case_mere->element->eau_actuelle);
+                    map=ecriture_fichier_eau(map, case_analysee);//on part de la route adajacente à la maison
                 }
 
-            }
-            if((poids_temp<voisin_actuel->g || voisin_actuel->g!=-1) && voisin_actuel->element->type==1)//si la nouvelle valeur de distance est inférieure à l'ancienne on actualise la distance et si c'est une route
-            {
-                voisin_actuel->g=poids_temp;
-                voisin_actuel->parent=case_analysee;
-                if(existe(liste_ouverte, voisin_actuel))
-                {
-                    printf("actu\n");
-                    liste_ouverte= actualisation(liste_ouverte, voisin_actuel);//on actualise le sommet pour le remettre à la bonne place
-                }
-            }
-            if(!existe(liste_ouverte, voisin_actuel) && !existe(liste_ferme, voisin_actuel) && voisin_actuel->element->type==1)//on verifie que le sommet n'est pas dans la liste ouverte et fermé et que c'est une route
-            {
-                printf("insertion\n");
-                liste_ouverte= insertion_en_triant2(liste_ouverte, voisin_actuel);//dans ce cas on l'insère dans la liste
             }
             liste_voisin=liste_voisin->next;
         }
@@ -262,17 +294,35 @@ t_graphe* dijkstra(t_graphe* map, t_tile* sommet_de_depart)
 }
 //la forme est faite, il faut maintenant verifier les conditions et mettre à jour le niveau -1 à chaque fois que l'on tombe sur une maison
 
+t_graphe* reinitialisation_eau(t_graphe* map)
+{
+    for(int i=0 ; i<NBLIGNE; i++)//parcours de toute les cases du tableau pour trouver les chateaux d'eau
+    {
+        for(int j=0; j<NBCOLONNE; j++)
+        {
+            if(map->grille[i][j]->element->type == 2)
+            {
+                map->grille[i][j]->element->capacite=5000;//valeur max
+            }
+            else if(map->grille[i][j]->element->type>=4 && map->grille[i][j]->element->type<=10)
+            {
+                map->grille[i][j]->element->eau_actuelle=0;
+            }
+        }
+    }
+    return map;
+}
+
 t_graphe* distribution_eau(t_graphe* map)
 {
+    map= reinitialisation_eau(map);
     for(int i=0 ; i<NBLIGNE; i++)//parcours de toute les cases du tableau pour trouver les chateaux d'eau
     {
         for(int j=0; j<NBCOLONNE; j++)
         {
             if (map->grille[i][j]->element->type == 2)//dès qu'on a trouver on lance dijkstra pour ensuite trouver les chemins menant aux dif bat
             {
-
                 map=dijkstra(map, (map->grille[i][j]));
-                //majFichier-1
             }
         }
     }

@@ -14,6 +14,7 @@ typedef struct IMAGE{//liste de tout les buffer d'image qu'on va utiliser, on va
     BITMAP* map;
     BITMAP* menu;
     BITMAP* route;
+    BITMAP* canalisation;
     BITMAP* batiment;
     BITMAP* chateau_eau;
     BITMAP* centrale;
