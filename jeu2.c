@@ -379,22 +379,23 @@ t_graphe* electricite(t_graphe* map)
     //On calcul la capacite totale de la ville
     capa_usine=(compteur_usine*5000);
 
-    do {
         for (int i = 0; i < NBLIGNE; i++)//parcours de toute les cases du tableau pour trouver les habitations
         {
             for (int j = 0; j < NBCOLONNE; j++) {
                     if ((map->grille[i][j]->element->type > 4) && (map->grille[i][j]->element->type <9) )//dès qu'on a trouve une habitation
                     {
-                        //on note le batiment trouve comme etant alimente
-                        map->grille[i][j]->element->alimente=1;
-                        //on soustrait le nombre d'habitants de cette habitation a la capacite totale de la ville
-                        capa_usine = (capa_usine - map->grille[i][j]->element->nb_habitant);
+                        if(map->grille[i][j]->element->nb_habitant > capa_usine)
+                        {
+                            //on note le batiment trouve comme etant alimente
+                            map->grille[i][j]->element->alimente=1;
+                            //on soustrait le nombre d'habitants de cette habitation a la capacite totale de la ville
+                            capa_usine = (capa_usine - map->grille[i][j]->element->nb_habitant);
+                        }
                     }
                 }
 
             }
+    return map;
         }
-    //jj
-    }while(capa_usine!=0);
-}
+
 
