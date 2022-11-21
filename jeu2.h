@@ -16,5 +16,7 @@ t_graphe* dijkstra(t_graphe* map, t_tile* sommet_de_depart);
 t_graphe* distribution_eau(t_graphe* map);
 t_graphe* reinitialisation_eau(t_graphe* map);
 
+t_graphe* electricite(t_graphe* map, int* capa_usine);
+int verification_connexite_route(t_graphe* map, t_tile* case_actu);
 
 #endif //PROJET_TDG_SIMCITY_JEU2_H

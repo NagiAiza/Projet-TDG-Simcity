@@ -47,7 +47,7 @@ int choixAction()
     return 0;
 }
 
-t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* choix, t_pos souris, int* rotation, int* niv_visu, t_tile** case_select, int* algo_A, long* argent_restant)
+t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* choix, t_pos souris, int* rotation, int* niv_visu, t_tile** case_select, int* algo_A, long* argent_restant, int* capa_usine)
 {
     int depense;
     t_tile* parcour_chemin=NULL;//tuile auxilière pour reparcourir les chemins calculé
@@ -92,6 +92,8 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
                                     parcour_chemin = parcour_chemin->parent;
                                 }
                                 *argent_restant-=depense;
+                                map= distribution_eau(map);
+                                map= electricite(map, capa_usine);
                             }
                             *algo_A = 0;//et on sort de l'affichage A*
                         }
@@ -208,6 +210,8 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
                                         map = remplissage_matrice_adjacence(map, souris.ligne + i, souris.colonne + j,3, map->grille[souris.ligne][souris.colonne]);
                                     }
                                 }
+                                initialisation_centrale(map->grille[souris.ligne][souris.colonne]);
+                                map= electricite(map, capa_usine);
                                 *argent_restant-=depense;
                             }
                         }
@@ -234,6 +238,8 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
                                         map = remplissage_matrice_adjacence(map, souris.ligne + i, souris.colonne + j,3, map->grille[souris.ligne][souris.colonne]);
                                     }
                                 }
+                                initialisation_centrale(map->grille[souris.ligne][souris.colonne]);
+                                map= electricite(map, capa_usine);
                                 *argent_restant-=depense;
                             }
                         }
@@ -269,6 +275,7 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
                                     map= remplissage_matrice_adjacence(map, souris.ligne+i, souris.colonne+j, 4, map->grille[souris.ligne][souris.colonne]);
                                 }
                             }
+                            map= electricite(map, capa_usine);
                             *argent_restant-=depense;
                             map=distribution_eau(map);
                         }

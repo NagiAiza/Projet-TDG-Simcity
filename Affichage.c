@@ -189,7 +189,7 @@ void affichage_level_0(BUFFER* liste_buffer, IMAGE* liste_image)//on pourra peut
 }
 
 
-void affichage_habitation(BUFFER* liste_buffer, IMAGE* liste_image, t_tile* habitation)//BUG D AFFICHAGE QUAND UNE HABITATION A PLUSIEURS CHATEAU DEAU L ALIMENTANT
+void affichage_habitation(BUFFER* liste_buffer, IMAGE* liste_image, t_tile* habitation)//il manque la pourcentage non alimente
 {
     BITMAP* temp= create_bitmap(liste_image->batiment->w, liste_image->batiment->h);
     int compteur=0;
@@ -198,13 +198,25 @@ void affichage_habitation(BUFFER* liste_buffer, IMAGE* liste_image, t_tile* habi
     int b;
     float pourcentage[50];
     pourcentage[0]=0;
+    float pourcentage_non_alimente=0;
+    int non_alimente=0;
+    if(habitation->element->eau_actuelle!=habitation->element->nb_habitant)
+    {
+        pourcentage_non_alimente=(float)habitation->element->eau_actuelle/(float)habitation->element->nb_habitant;
+        non_alimente=1;
+    }
     t_liste2* liste_chateau=habitation->element->chateau_approvisionnement;
     while(liste_chateau!=NULL)
     {
         compteur++;
-        pourcentage[compteur]=(float)liste_chateau->montant_distribue/(float)habitation->element->nb_habitant;
-
+        pourcentage[compteur]=(float)liste_chateau->montant_distribue/(float)habitation->element->nb_habitant+pourcentage[compteur-1];
         liste_chateau=liste_chateau->next;
+    }
+    if(non_alimente==1 && compteur!=0)
+    {
+        compteur++;
+        pourcentage[compteur]=pourcentage_non_alimente+pourcentage[compteur-1];
+        printf("pourcentage non alimente : %f\n", pourcentage[compteur]*100);
     }
     pourcentage[compteur+1]=1;
     if(compteur==0)
@@ -213,6 +225,7 @@ void affichage_habitation(BUFFER* liste_buffer, IMAGE* liste_image, t_tile* habi
     }
     else
     {
+        liste_chateau=habitation->element->chateau_approvisionnement;
         for(int i=0; i<compteur; i++)
         {
             for(int j=0; j<temp->h; j++)
@@ -229,15 +242,26 @@ void affichage_habitation(BUFFER* liste_buffer, IMAGE* liste_image, t_tile* habi
                     }
                     else
                     {
-                        liste_chateau=habitation->element->chateau_approvisionnement;
-                        for(int l=0; l<i; l++)
+                        if(non_alimente==0)
                         {
-                            liste_chateau=liste_chateau->next;
+                            putpixel(temp, k, j, makecol(0,0, makecol(0,0,liste_chateau->n->element->couleur*50)));
                         }
-                        putpixel(temp, k, j, makecol(0,0, makecol(0,0,liste_chateau->n->element->couleur*50)));
+                        else
+                        {
+
+                            /*if(i<compteur-1)
+                            {
+                                putpixel(temp, k, j, makecol(0,0, makecol(0,0,liste_chateau->n->element->couleur*50)));
+                            }
+                            else
+                            {*/
+                                putpixel(temp, k, j, makecol(0,0, makecol(255,0,0)));
+                            //}
+                        }
                     }
                 }
             }
+            liste_chateau=liste_chateau->next;
         }
 
         draw_sprite(liste_buffer->buffer_map, temp, (SCREEN_W/2-36)+(habitation->position.colonne-2)*14-habitation->position.ligne*14, (habitation->position.colonne-2)*8+habitation->position.ligne*8);
@@ -285,7 +309,7 @@ void affichage_level_1(t_graphe* map, IMAGE* liste_image, BUFFER* liste_buffer)
 }
 
 
-void affichageTotal(t_graphe* map, IMAGE* liste_image, BUFFER* liste_buffer, t_pos souris, long compteur_argent, int niveau_visu)//doit etre independant du jeu en lui meme mais affiche toute les données nécéssaire à l'utilisateur
+void affichageTotal(t_graphe* map, IMAGE* liste_image, BUFFER* liste_buffer, t_pos souris, long compteur_argent, int niveau_visu, int capa_usine)//doit etre independant du jeu en lui meme mais affiche toute les données nécéssaire à l'utilisateur
 {
         clear_bitmap(liste_buffer->buffer_menu);
         clear_bitmap(liste_buffer->buffer_map);
@@ -293,12 +317,14 @@ void affichageTotal(t_graphe* map, IMAGE* liste_image, BUFFER* liste_buffer, t_p
 
         blit(liste_image->menu, liste_buffer->buffer_menu, 0, 0, 0, 0, SCREEN_W, SCREEN_H);
         textprintf_ex(liste_buffer->buffer_menu,font,10,645,makecol(0,0,0),-1,"%ld$",compteur_argent);
+        textprintf_ex(liste_buffer->buffer_menu,font,750,645,makecol(0,0,0),-1,"%d",capa_usine);
+
 
         draw_sprite(liste_buffer->buffer_map, liste_image->map, 0, 0);
 
         textprintf_ex(liste_buffer->buffer_map,font,10,10,makecol(0,255,0),makecol(0,0,0),"%4d %4d",mouse_x,mouse_y);
         textprintf_ex(liste_buffer->buffer_map,font,10,20,makecol(0,255,0),makecol(0,0,0),"case[%d][%d]",souris.ligne,souris.colonne);
-
+        textprintf_ex(liste_buffer->buffer_map,font,10,30,makecol(0,255,0),makecol(0,0,0),"niveau %d",niveau_visu);
         if(niveau_visu==0)
         {
             affichage_level_0(liste_buffer, liste_image);

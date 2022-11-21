@@ -361,41 +361,137 @@ t_graphe* distribution_eau(t_graphe* map)
     return map;
 }
 ///Usines electricite (num 3 sur la map)
-t_graphe* electricite(t_graphe* map)
+t_graphe* electricite(t_graphe* map, int* capa_usine)
 {
     int compteur_usine=0;
-    int capa_usine=0;
+    int elec_distrib=0;
+    int verif_route;
     for(int i=0 ; i<NBLIGNE; i++)//parcours de toute les cases du tableau pour trouver les usines elec
     {
         for(int j=0; j<NBCOLONNE; j++)
         {
-            if (map->grille[i][j]->element->type == 3)//dès qu'on a trouvé on la compte
+            if (map->grille[i][j]->element->type == 3)//dès qu'on a trouvé on la compte && on verifie si elle est connecté a la route
             {
-                compteur_usine++;
-
+                verif_route= verification_connexite_route(map, map->grille[i][j]);
+                if(verif_route==1)
+                {
+                    compteur_usine++;
+                }
             }
         }
     }
     //On calcul la capacite totale de la ville
-    capa_usine=(compteur_usine*5000);
+    *capa_usine=(compteur_usine*5000);
 
-        for (int i = 0; i < NBLIGNE; i++)//parcours de toute les cases du tableau pour trouver les habitations
-        {
-            for (int j = 0; j < NBCOLONNE; j++) {
-                    if ((map->grille[i][j]->element->type > 4) && (map->grille[i][j]->element->type <9) )//dès qu'on a trouve une habitation
+    for (int i = 0; i < NBLIGNE; i++)//parcours de toute les cases du tableau pour trouver les habitations
+    {
+        for (int j = 0; j < NBCOLONNE; j++) {
+            if ((map->grille[i][j]->element->type >= 4) && (map->grille[i][j]->element->type <=9) )//dès qu'on a trouve une habitation
+            {
+                verif_route= verification_connexite_route(map, map->grille[i][j]);
+                if(verif_route==1)
+                {
+                    if(map->grille[i][j]->element->nb_habitant < *capa_usine)
                     {
-                        if(map->grille[i][j]->element->nb_habitant > capa_usine)
-                        {
-                            //on note le batiment trouve comme etant alimente
-                            map->grille[i][j]->element->alimente=1;
-                            //on soustrait le nombre d'habitants de cette habitation a la capacite totale de la ville
-                            capa_usine = (capa_usine - map->grille[i][j]->element->nb_habitant);
-                        }
+                        //on note le batiment trouve comme etant alimente
+                        map->grille[i][j]->element->alimente=1;
+                        //on soustrait le nombre d'habitants de cette habitation a la capacite totale de la ville
+                        *capa_usine = (*capa_usine - map->grille[i][j]->element->nb_habitant);
+                        elec_distrib+=map->grille[i][j]->element->nb_habitant;
                     }
                 }
-//
             }
+        }
+    }
+    for(int i=0; i<NBLIGNE; i++)
+    {
+        for(int j=0; j<NBCOLONNE; j++)
+        {
+            if(map->grille[i][j]->element->type==2)
+            {
+                verif_route= verification_connexite_route(map, map->grille[i][j]);
+                if(verif_route==1)
+                {
+                    if(elec_distrib>map->grille[i][j]->element->capacite)
+                    {
+                        map->grille[i][j]->element->capacite=0;
+                        elec_distrib-=map->grille[i][j]->element->capacite;
+                    }
+                    else if(elec_distrib>0)
+                    {
+                        map->grille[i][j]->element->capacite-=elec_distrib;
+                        elec_distrib=0;
+                    }
+                }
+            }
+        }
+    }
     return map;
+}
+
+
+int verification_connexite_route(t_graphe* map, t_tile* case_actu)
+{
+    int verif_route=0;
+    t_liste* voisin_case;
+    if(case_actu->element->type==3)
+    {
+        if(case_actu->element->orientation==1)
+        {
+            for(int i=-2; i<2; i++)
+            {
+                for(int j=-2; j<4; j++)
+                {
+                    voisin_case=map->grille[case_actu->position.ligne+i][case_actu->position.colonne+j]->voisin;
+                    while(voisin_case!=NULL)
+                    {
+                        if(voisin_case->n->element->type==1)
+                        {
+                            verif_route=1;
+                        }
+                        voisin_case=voisin_case->next;
+                    }
+                }
+            }
+        }
+        else if(case_actu->element->orientation==-1)
+        {
+            for(int i = -3; i < 3; i++)
+            {
+                for(int j = -1; j < 3; j++)
+                {
+                    voisin_case=map->grille[case_actu->position.ligne+i][case_actu->position.colonne+j]->voisin;
+                    while(voisin_case!=NULL)
+                    {
+                        if(voisin_case->n->element->type==1)
+                        {
+                            verif_route=1;
+                        }
+                        voisin_case=voisin_case->next;
+                    }
+                }
+            }
         }
 
+    }
+    else if(case_actu->element->type>=4 && case_actu->element->type<=10)
+    {
+        for(int i=-1; i<2; i++)
+        {
+            for(int j=-1; j<2; j++)
+            {
+                voisin_case=map->grille[case_actu->position.ligne+i][case_actu->position.colonne+j]->voisin;
+                while(voisin_case!=NULL)
+                {
+                    if(voisin_case->n->element->type==1)
+                    {
+                        verif_route=1;
+                    }
+                    voisin_case=voisin_case->next;
+                }
+            }
+        }
+    }
+    return verif_route;
 
+}

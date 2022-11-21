@@ -9,6 +9,7 @@ void jeu()//sous programme qui fera tourner tout le jeu
     //initialisation des variables
     int decalageX; // Position de l'écran réel dans le repère du décor...
     long compteur_argent=500000;
+    int capa_usine=0;
     t_pos souris;
     souris.ligne=0;
     souris.colonne=0;
@@ -38,7 +39,7 @@ void jeu()//sous programme qui fera tourner tout le jeu
         if ( decalageX < 0 ) decalageX=0;
         if ( decalageX > liste_buffer->buffer_map->w - SCREEN_W +124) decalageX=liste_buffer->buffer_map->w - SCREEN_W+124;
 
-        affichageTotal(map, liste_image, liste_buffer, souris, compteur_argent, niv_visu);
+        affichageTotal(map, liste_image, liste_buffer, souris, compteur_argent, niv_visu, capa_usine);
 
 
         if(mouse_x>124 && mouse_y<640)
@@ -58,7 +59,7 @@ void jeu()//sous programme qui fera tourner tout le jeu
 
         //dès qu'on a récup ce qu'il veut faire on conserve son action et en fonction de l'action on lance le sous pgrm pour l'effectuer
 
-        map=action(map, liste_buffer, liste_image, &choix, souris, &rotation, &niv_visu, &case_select, &algo_A, &compteur_argent);
+        map=action(map, liste_buffer, liste_image, &choix, souris, &rotation, &niv_visu, &case_select, &algo_A, &compteur_argent, &capa_usine);
 
 
         blit(liste_buffer->buffer_menu, liste_buffer->buffer_final, 0, 0, 0, 0, SCREEN_W, SCREEN_H);

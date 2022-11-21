@@ -81,6 +81,7 @@ int verification_chevauchement(t_graphe* map, int ligne, int colonne, int choix,
 
 void initialisation_habitation(t_tile* case_hab);
 void initialisation_chateau_eau(t_tile* case_chateau);
+void initialisation_centrale(t_tile* case_elec);
 
 ///algo A*
 int distance(t_pos a, t_pos b);

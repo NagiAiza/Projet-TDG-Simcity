@@ -446,3 +446,8 @@ void initialisation_chateau_eau(t_tile* case_chateau)
 {
     case_chateau->element->capacite=5000;
 }
+
+void initialisation_centrale(t_tile* case_elec)
+{
+    case_elec->element->capacite=5000;
+}
