@@ -29,9 +29,16 @@ typedef struct batiment{
     int nb_habitant;
     int eau_actuelle;
     int compteur;//timer à la création de l'habitation
+    struct liste2* chateau_approvisionnement;//liste chateaux d'eau qui approvisionnent
+    struct liste2* centrale_approvisionnement;//liste centrales qui approvisionnent
+
 
     //si c'est un chateau d'eau
     int capacite;
+    int couleur;//pour l'affichage des % dans chaque hab
+
+    //si centrale_elec
+    int alimente;//1 si alimenté 0 sionon
 }t_batiment;
 
 typedef struct tile{//pour faire la map on fait un tableau à 2 dimensions de tile
@@ -46,7 +53,9 @@ typedef struct tile{//pour faire la map on fait un tableau à 2 dimensions de ti
     struct tile* parent;//pour garder le prédécesseur de chaque case et ainsi retracer le chemin à la fin
     struct liste* voisin;//on initialise les voisins de chaque case en début de programme
 
-    struct tile* case_mere;//donne la case principale du bat
+    struct tile* case_mere;//donne la case principale du batiment
+
+
 }t_tile;//rajouter un emplacement qui permette de differencier l'affichage du truc en globalité
 
 typedef struct graphe{

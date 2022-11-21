@@ -3,6 +3,7 @@
 //
 
 #include "Affichage.h"
+#include "listeRelated.h"
 
 //simplification du code pour load une bitmap avec une erreur si pb
 BITMAP * load_bitmap_check(char *nomImage){
@@ -27,6 +28,7 @@ IMAGE* initialisation_liste_image()//on initialise une seule fois les bitmaps en
     liste->chateau_eau = load_bitmap_check("chateau_eau.bmp");
     liste->centrale = load_bitmap_check("centrale.bmp");
     liste->canalisation = load_bitmap_check("canalisation.bmp");
+    liste->case_selec = load_bitmap_check("tuileBaseSelec.bmp");
     return liste;
 }
 
@@ -55,6 +57,7 @@ void liberation_memoire_bitmaps(IMAGE* liste_image, BUFFER* liste_buffer)//on n'
     destroy_bitmap(liste_image->chateau_eau);
     destroy_bitmap(liste_image->centrale);
     destroy_bitmap(liste_image->canalisation);
+    destroy_bitmap(liste_image->case_selec);
     free(liste_image);
     destroy_bitmap(liste_buffer->buffer_map);
     destroy_bitmap(liste_buffer->buffer_menu);
@@ -71,9 +74,9 @@ t_pos calcul_pos_souris(BITMAP* sousMap, int decalageScreenX/*pour savoir où pl
 }
 
 //affichage de la case selectionné, pas utile en soit mais ça permettra de bien placer les sprites avec la formule
-void affichageCaseSelec(BITMAP* map, BITMAP* selec, t_pos souris)//R correspond à la colonne, B à la ligne
+void affichageCaseSelec(BUFFER* liste_buffer, IMAGE* liste_image, t_pos souris)//R correspond à la colonne, B à la ligne
 {
-    draw_sprite(map, selec, (SCREEN_W/2-36)+souris.colonne*14-souris.ligne*14, souris.colonne*8+souris.ligne*8);
+    draw_sprite(liste_buffer->buffer_map, liste_image->case_selec, (SCREEN_W/2-36)+souris.colonne*14-souris.ligne*14, souris.colonne*8+souris.ligne*8);
 }
 
 void affichageElement(BITMAP* bufferMap, IMAGE* liste, int type, int ligne, int colonne, int rotation)//pour avoir la rotation du batiment il va falloir un autre fichier qui a l'emplacement de notre batiment mettra un 1 ou -1 en fonction du sens de rotation
@@ -121,7 +124,48 @@ void affichageElement(BITMAP* bufferMap, IMAGE* liste, int type, int ligne, int 
     }
 }
 
-void affichageElementsCarte(BITMAP* bufferMap, IMAGE* liste_image)//on pourra peut etre rajouter des obstacles du style montagne etc...
+void affichage_element_eau(BUFFER* liste_buffer, IMAGE* liste, int type, int ligne, int colonne, int rotation, t_tile* chateau)
+{
+    int rgb;
+    int r, b;
+    BITMAP* temp= create_bitmap(liste->chateau_eau->w, liste->chateau_eau->h);
+    switch (type) {
+        case 1://route
+            draw_sprite(liste_buffer->buffer_map, liste->route, (SCREEN_W/2-36)+colonne*14-ligne*14, colonne*8+ligne*8);
+            break;
+        case 2://chateau eau
+            for(int i=0; i<temp->h; i++)
+            {
+                for(int j=0; j<temp->w; j++)
+                {
+                    rgb= getpixel(liste->chateau_eau, j, i);
+                    r=getr(rgb);
+                    b=getb(rgb);
+                    if(r==255 && b==255)
+                    {
+                        putpixel(temp, j, i, rgb);
+                    }
+                    else
+                    {
+                        putpixel(temp, j, i, makecol(0, 0, chateau->element->couleur*50));
+                    }
+                }
+            }
+            if(rotation==1)
+            {
+                draw_sprite(liste_buffer->buffer_map, temp, (SCREEN_W / 2 - 36) + (colonne - 3) * 14 - (ligne) * 14, (colonne - 3) * 8 + (ligne) * 8 - 8);//pq le -8? jsp j'ai tatonné
+            }
+            else if(rotation==-1)
+            {
+                draw_sprite_h_flip(liste_buffer->buffer_map, temp, (SCREEN_W/2-36)+(colonne-3)*14-(ligne)*14, (colonne-3)*8+(ligne)*8-8);
+            }
+            break;
+        default:
+            break;
+    }
+}
+
+void affichage_level_0(BUFFER* liste_buffer, IMAGE* liste_image)//on pourra peut etre rajouter des obstacles du style montagne etc...
 {
     //peut etre 2 fichiers texte, un pour l'affichage, l'autre pour les données de la map
     //parce que avec ça on va avoir un problème pour l'affichage des batiments > 1x1
@@ -137,7 +181,7 @@ void affichageElementsCarte(BITMAP* bufferMap, IMAGE* liste_image)//on pourra pe
         {
             fscanf(elementMap, "%d", &type);
             fscanf(rotation_element_map, "%d", &rotation);
-            affichageElement(bufferMap, liste_image, type, i, j, rotation);
+            affichageElement(liste_buffer->buffer_map, liste_image, type, i, j, rotation);
         }
     }
     fclose(rotation_element_map);
@@ -145,7 +189,103 @@ void affichageElementsCarte(BITMAP* bufferMap, IMAGE* liste_image)//on pourra pe
 }
 
 
-void affichageTotal(t_graphe* map, IMAGE* liste_image, BUFFER* liste_buffer, t_pos souris, long compteur_argent)//doit etre independant du jeu en lui meme mais affiche toute les données nécéssaire à l'utilisateur
+void affichage_habitation(BUFFER* liste_buffer, IMAGE* liste_image, t_tile* habitation)//BUG D AFFICHAGE QUAND UNE HABITATION A PLUSIEURS CHATEAU DEAU L ALIMENTANT
+{
+    BITMAP* temp= create_bitmap(liste_image->batiment->w, liste_image->batiment->h);
+    int compteur=0;
+    int rgb;
+    int r;
+    int b;
+    float pourcentage[50];
+    pourcentage[0]=0;
+    t_liste2* liste_chateau=habitation->element->chateau_approvisionnement;
+    while(liste_chateau!=NULL)
+    {
+        compteur++;
+        pourcentage[compteur]=(float)liste_chateau->montant_distribue/(float)habitation->element->nb_habitant;
+
+        liste_chateau=liste_chateau->next;
+    }
+    pourcentage[compteur+1]=1;
+    if(compteur==0)
+    {
+        draw_sprite(liste_buffer->buffer_map, liste_image->batiment, (SCREEN_W/2-36)+(habitation->position.colonne-2)*14-habitation->position.ligne*14, (habitation->position.colonne-2)*8+habitation->position.ligne*8);
+    }
+    else
+    {
+        for(int i=0; i<compteur; i++)
+        {
+            for(int j=0; j<temp->h; j++)
+            {
+                for(int k=(int)(pourcentage[i]*temp->w); k<(int)(pourcentage[i+1]*temp->w); k++)
+                {
+                    //recuperer le pixel, si il est magenta on le met sur la bitmap temporaire, sinon si il est rouge on change la couleur
+                    rgb= getpixel(liste_image->batiment, k, j);
+                    r=getr(rgb);
+                    b=getb(rgb);
+                    if(r==255 && b==255)
+                    {
+                        putpixel(temp, k, j, rgb);
+                    }
+                    else
+                    {
+                        liste_chateau=habitation->element->chateau_approvisionnement;
+                        for(int l=0; l<i; l++)
+                        {
+                            liste_chateau=liste_chateau->next;
+                        }
+                        putpixel(temp, k, j, makecol(0,0, makecol(0,0,liste_chateau->n->element->couleur*50)));
+                    }
+                }
+            }
+        }
+
+        draw_sprite(liste_buffer->buffer_map, temp, (SCREEN_W/2-36)+(habitation->position.colonne-2)*14-habitation->position.ligne*14, (habitation->position.colonne-2)*8+habitation->position.ligne*8);
+    }
+}
+
+void affichage_level_1(t_graphe* map, IMAGE* liste_image, BUFFER* liste_buffer)
+{
+    FILE* elementMap=fopen("element_map.txt", "r");//pour la nouvelle partie tout les elements sont à 0
+    FILE* rotation_element_map=fopen("rotation_element_map.txt", "r");// la rotation indique dans quel sens on doit mettre le batiment sur la carte et donc la place qu'il prend
+    FILE* map_eau=fopen("map_eau.txt", "r");//pour la nouvelle partie tout les elements sont à 0
+
+    int canalisation=0;
+    int type=0;
+    int rotation=0;
+    for(int i=0; i<NBLIGNE; i++)
+    {
+        for(int j=0; j<NBCOLONNE; j++)
+        {
+            fscanf(elementMap, "%d", &type);
+            fscanf(rotation_element_map, "%d", &rotation);
+            fscanf(map_eau, "%d", &canalisation);
+            if(canalisation==1)
+            {
+
+                draw_sprite(liste_buffer->buffer_map, liste_image->canalisation, (SCREEN_W/2-36)+j*14-i*14, j*8+i*8);
+            }
+            else
+            {
+                if(type==1 || type ==2)
+                {
+                    affichage_element_eau(liste_buffer, liste_image, type, i, j, rotation, map->grille[i][j]);
+                }
+                else if(type>=4 && type <=10)
+                {
+                    affichage_habitation(liste_buffer, liste_image, map->grille[i][j]);
+                }
+            }
+        }
+    }
+
+    fclose(map_eau);
+    fclose(rotation_element_map);
+    fclose(elementMap);
+}
+
+
+void affichageTotal(t_graphe* map, IMAGE* liste_image, BUFFER* liste_buffer, t_pos souris, long compteur_argent, int niveau_visu)//doit etre independant du jeu en lui meme mais affiche toute les données nécéssaire à l'utilisateur
 {
         clear_bitmap(liste_buffer->buffer_menu);
         clear_bitmap(liste_buffer->buffer_map);
@@ -154,17 +294,19 @@ void affichageTotal(t_graphe* map, IMAGE* liste_image, BUFFER* liste_buffer, t_p
         blit(liste_image->menu, liste_buffer->buffer_menu, 0, 0, 0, 0, SCREEN_W, SCREEN_H);
         textprintf_ex(liste_buffer->buffer_menu,font,10,645,makecol(0,0,0),-1,"%ld$",compteur_argent);
 
-
         draw_sprite(liste_buffer->buffer_map, liste_image->map, 0, 0);
-
-        affichageElementsCarte(liste_buffer->buffer_map, liste_image);
 
         textprintf_ex(liste_buffer->buffer_map,font,10,10,makecol(0,255,0),makecol(0,0,0),"%4d %4d",mouse_x,mouse_y);
         textprintf_ex(liste_buffer->buffer_map,font,10,20,makecol(0,255,0),makecol(0,0,0),"case[%d][%d]",souris.ligne,souris.colonne);
-        affichageElementsCarte(liste_buffer->buffer_map, liste_image);
+
+        if(niveau_visu==0)
+        {
+            affichage_level_0(liste_buffer, liste_image);
+        }
+        else if (niveau_visu==1)
+        {
+            affichage_level_1(map, liste_image, liste_buffer);
+        }
+
 }
 
-void affichage_canalisation(t_graphe* map, IMAGE* liste_image, BUFFER* liste_buffer)
-{
-
-}
