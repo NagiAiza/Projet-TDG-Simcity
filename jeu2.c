@@ -393,7 +393,7 @@ t_graphe* electricite(t_graphe* map)
                         }
                     }
                 }
-
+//
             }
     return map;
         }
