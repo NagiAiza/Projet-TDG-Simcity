@@ -362,6 +362,7 @@ t_graphe* electricite(t_graphe* map)
 
             }
         }
+    //jj
     }while(capa_usine!=0);
 }
 

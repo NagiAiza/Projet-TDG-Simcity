@@ -18,7 +18,7 @@ typedef struct pos{
     int colonne;
 }t_pos;
 
-
+//j
 typedef struct batiment{
     t_pos position;//elle est déjà dans tile, est ce que je l'utilise quand meme?
     int type; //1 si route, 2 si chateau d'eau, 3 si elec, 4 a 9 les maisons !!!
