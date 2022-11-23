@@ -19,4 +19,6 @@ t_graphe* reinitialisation_eau(t_graphe* map);
 t_graphe* electricite(t_graphe* map, int* capa_usine);
 int verification_connexite_route(t_graphe* map, t_tile* case_actu);
 
+t_graphe* cycle_habitation(t_graphe* map);
+
 #endif //PROJET_TDG_SIMCITY_JEU2_H

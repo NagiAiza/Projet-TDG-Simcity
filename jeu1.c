@@ -441,8 +441,8 @@ t_graphe* A_star(t_graphe* g, t_tile* depart, t_tile* arrive/*position souris*/)
 void initialisation_habitation(t_tile* case_hab)
 {
     case_hab->element->nb_habitant=1500;
-    case_hab->element->stade=1;
     case_hab->element->eau_actuelle=0;
+    case_hab->element->compteur=clock()/CLOCKS_PER_SEC;
     case_hab->element->chateau_approvisionnement=creer2();
     case_hab->element->centrale_approvisionnement=creer2();
 }

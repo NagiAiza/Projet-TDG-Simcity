@@ -6,7 +6,6 @@
 #define PROJET_S1_MOTEUR_DU_JEU_H
 
 #include "jeu1.h"
-#include "time.h"
 #include "listeRelated.h"
 #include "Affichage.h"
 #include "barre_outil.h"

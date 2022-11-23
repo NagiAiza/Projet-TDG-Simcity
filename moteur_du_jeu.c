@@ -3,6 +3,7 @@
 //
 
 #include "moteur_du_jeu.h"
+#include "jeu2.h"
 
 void jeu()//sous programme qui fera tourner tout le jeu
 {
@@ -34,12 +35,13 @@ void jeu()//sous programme qui fera tourner tout le jeu
     clock_t CLK_debut=clock() / CLOCKS_PER_SEC;
     while(!key[KEY_ESC])
     {
+
         if (key[KEY_RIGHT])   decalageX+=5;
         if (key[KEY_LEFT] )   decalageX-=5;
         if ( decalageX < 0 ) decalageX=0;
         if ( decalageX > liste_buffer->buffer_map->w - SCREEN_W +124) decalageX=liste_buffer->buffer_map->w - SCREEN_W+124;
 
-        affichageTotal(map, liste_image, liste_buffer, souris, compteur_argent, niv_visu, capa_usine);
+        affichageTotal(map, liste_image, liste_buffer, souris, compteur_argent, niv_visu, capa_usine, CLK_debut);
 
 
         if(mouse_x>124 && mouse_y<640)
@@ -61,7 +63,7 @@ void jeu()//sous programme qui fera tourner tout le jeu
 
         map=action(map, liste_buffer, liste_image, &choix, souris, &rotation, &niv_visu, &case_select, &algo_A, &compteur_argent, &capa_usine);
 
-
+        map=cycle_habitation(map);
         blit(liste_buffer->buffer_menu, liste_buffer->buffer_final, 0, 0, 0, 0, SCREEN_W, SCREEN_H);
         blit(liste_buffer->buffer_map, liste_buffer->buffer_final, decalageX, 0, 124, 0, SCREEN_W, SCREEN_H);
         blit(liste_buffer->buffer_final, screen, 0, 0, 0, 0, SCREEN_W, SCREEN_H);

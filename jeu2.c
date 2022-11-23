@@ -44,48 +44,6 @@ int validation_depense(int depense, long argent_restant)
 }
 
 //--------------------------------------------------------------------
-///horloge
-///horloge
-/*
-void horloge(int CLK_depuis_debut_prog,int* seconde,int* minute,int* heure)
-{
-
-//    printf("%d",CLK_depuis_debut_prog);
-//    system("CLS");
-
-    *seconde=CLK_depuis_debut_prog%60;
-    if(*seconde==60)
-    {
-        *minute++;
-        *seconde=0;
-    }
-    if(*minute%60==0)
-    {
-        *heure++;
-    }
-
-}
-int main()
-{
-    clock_t CLK;
-    int heure=0;
-    int min=0;
-    int sec=0;
-    //allegro();
-    //horloge();
-    do
-    {
-        CLK=clock() / CLOCKS_PER_SEC;
-        horloge((int)CLK,&sec,&min, &heure);
-        printf("%d:%d:%d",heure,min,sec);
-        system("CLS");
-    } while (1);//tourne pendant deux heures
-
-
-
-}
-END_OF_MAIN();
-}*/
 
 
 //gestion de l'eau
@@ -494,4 +452,28 @@ int verification_connexite_route(t_graphe* map, t_tile* case_actu)
     }
     return verif_route;
 
+}
+
+t_graphe* cycle_habitation(t_graphe* map)
+{
+    //parcours du tableau des maisons au lieu du parcours de toute la map
+    for(int i=0 ; i<NBLIGNE; i++)
+    {
+        for(int j=0; j<NBCOLONNE; j++)
+        {
+            if(map->grille[i][j]->element->type>=4 && map->grille[i][j]->element->type<=10)
+            {
+                if(clock()/CLOCKS_PER_SEC-map->grille[i][j]->element->compteur==5)
+                {
+                    map->grille[i][j]->element->compteur=clock()/CLOCKS_PER_SEC;
+                    if(map->grille[i][j]->element->type<9)
+                    {
+                        map->grille[i][j]->element->type++;
+                    }
+                }
+            }
+        }
+    }
+    majFichierPlacementElement(map);
+    return map;
 }

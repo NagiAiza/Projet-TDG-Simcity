@@ -20,7 +20,7 @@ BITMAP * load_bitmap_check(char *nomImage){
 IMAGE* initialisation_liste_image()//on initialise une seule fois les bitmaps en début de prgm
 {
     IMAGE* liste=(IMAGE*)malloc(sizeof(IMAGE));
-    liste->menu= load_bitmap_check("test_ecran.bmp");
+    liste->menu= load_bitmap_check("barre_outils.bmp");
     liste->map= load_bitmap_check("map.bmp");
     liste->sous_map= load_bitmap_check("damierFond.bmp");
     liste->route = load_bitmap_check("route.bmp");
@@ -46,7 +46,7 @@ IMAGE* initialisation_liste_image()//on initialise une seule fois les bitmaps en
 BUFFER* initialisation_liste_buffer()//meme chose avec les buffer
 {
     BUFFER* liste=(BUFFER*)malloc(sizeof(BUFFER));
-    liste->buffer_menu=create_bitmap(900, 700);
+    liste->buffer_menu=create_bitmap(1024, 740);
     clear_bitmap(liste->buffer_menu);
 
     liste->buffer_map= create_bitmap(1120, 640);
@@ -110,21 +110,21 @@ void affichageElement(BITMAP* bufferMap, IMAGE* liste, int type, int ligne, int 
         case 2://chateau eau
             if(rotation==1)
             {
-                draw_sprite(bufferMap, liste->chateau_eau, (SCREEN_W / 2 - 36) + (colonne - 3) * 14 - (ligne) * 14, (colonne - 3) * 8 + (ligne) * 8 - 8);//pq le -8? jsp j'ai tatonné
+                draw_sprite(bufferMap, liste->eau_fini, (SCREEN_W / 2 - 36) + (colonne - 3) * 14 - (ligne) * 14, (colonne - 3) * 8 + (ligne) * 8 - 8);//pq le -8? jsp j'ai tatonné
             }
             else if(rotation==-1)
             {
-                draw_sprite_h_flip(bufferMap, liste->chateau_eau, (SCREEN_W/2-36)+(colonne-3)*14-(ligne)*14, (colonne-3)*8+(ligne)*8-8);
+                draw_sprite_h_flip(bufferMap, liste->eau_fini, (SCREEN_W/2-36)+(colonne-3)*14-(ligne)*14, (colonne-3)*8+(ligne)*8-8);
             }
             break;
         case 3://centrale
             if(rotation==1)
             {
-                draw_sprite(bufferMap, liste->centrale, (SCREEN_W / 2 - 36) + (colonne - 3) * 14 - (ligne) * 14, (colonne - 3) * 8 + (ligne) * 8 - 8);//pq le -8? jsp j'ai tatonné
+                draw_sprite(bufferMap, liste->elec_fini, (SCREEN_W / 2 - 36) + (colonne - 3) * 14 - (ligne) * 14, (colonne - 3) * 8 + (ligne) * 8 - 8);//pq le -8? jsp j'ai tatonné
             }
             else if(rotation==-1)
             {
-                draw_sprite_h_flip(bufferMap, liste->centrale, (SCREEN_W/2-36)+(colonne-3)*14-(ligne)*14, (colonne-3)*8+(ligne)*8-8);
+                draw_sprite_h_flip(bufferMap, liste->elec_fini, (SCREEN_W/2-36)+(colonne-3)*14-(ligne)*14, (colonne-3)*8+(ligne)*8-8);
             }
             //Chateau Deau;
             break;
@@ -341,7 +341,7 @@ void affichage_level_1(t_graphe* map, IMAGE* liste_image, BUFFER* liste_buffer)
 }
 
 
-void affichageTotal(t_graphe* map, IMAGE* liste_image, BUFFER* liste_buffer, t_pos souris, long compteur_argent, int niveau_visu, int capa_usine)//doit etre independant du jeu en lui meme mais affiche toute les données nécéssaire à l'utilisateur
+void affichageTotal(t_graphe* map, IMAGE* liste_image, BUFFER* liste_buffer, t_pos souris, long compteur_argent, int niveau_visu, int capa_usine, clock_t CLK_debut)//doit etre independant du jeu en lui meme mais affiche toute les données nécéssaire à l'utilisateur
 {
         clear_bitmap(liste_buffer->buffer_menu);
         clear_bitmap(liste_buffer->buffer_map);
@@ -350,6 +350,8 @@ void affichageTotal(t_graphe* map, IMAGE* liste_image, BUFFER* liste_buffer, t_p
         blit(liste_image->menu, liste_buffer->buffer_menu, 0, 0, 0, 0, SCREEN_W, SCREEN_H);
         textprintf_ex(liste_buffer->buffer_menu,font,10,645,makecol(0,0,0),-1,"%ld$",compteur_argent);
         textprintf_ex(liste_buffer->buffer_menu,font,750,645,makecol(0,0,0),-1,"%d",capa_usine);
+        textprintf_ex(liste_buffer->buffer_menu,font,10,20,makecol(0,0,0),-1,"%ld secondes",clock()/CLOCKS_PER_SEC-CLK_debut);
+
 
 
         draw_sprite(liste_buffer->buffer_map, liste_image->map, 0, 0);

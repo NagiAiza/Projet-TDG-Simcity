@@ -8,6 +8,8 @@
 #include "stdio.h"
 #include "stdlib.h"
 #include "allegro.h"
+#include "time.h"
+
 
 
 #define NBLIGNE 35
@@ -28,7 +30,7 @@ typedef struct batiment{
     int stade;//niveau d'évolution
     int nb_habitant;
     int eau_actuelle;
-    int compteur;//timer à la création de l'habitation
+    long compteur;//timer à la création de l'habitation
     struct liste2* chateau_approvisionnement;//liste chateaux d'eau qui approvisionnent
     struct liste2* centrale_approvisionnement;//liste centrales qui approvisionnent
 
