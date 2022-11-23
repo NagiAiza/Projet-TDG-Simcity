@@ -20,7 +20,7 @@ BITMAP * load_bitmap_check(char *nomImage){
 IMAGE* initialisation_liste_image()//on initialise une seule fois les bitmaps en début de prgm
 {
     IMAGE* liste=(IMAGE*)malloc(sizeof(IMAGE));
-    liste->menu= load_bitmap_check("barre_outils.bmp");
+    liste->menu= load_bitmap_check("test_ecran.bmp");//barre_outils.bmp
     liste->map= load_bitmap_check("map.bmp");
     liste->sous_map= load_bitmap_check("damierFond.bmp");
     liste->route = load_bitmap_check("route.bmp");
@@ -110,21 +110,21 @@ void affichageElement(BITMAP* bufferMap, IMAGE* liste, int type, int ligne, int 
         case 2://chateau eau
             if(rotation==1)
             {
-                draw_sprite(bufferMap, liste->eau_fini, (SCREEN_W / 2 - 36) + (colonne - 3) * 14 - (ligne) * 14, (colonne - 3) * 8 + (ligne) * 8 - 8);//pq le -8? jsp j'ai tatonné
+                draw_sprite(bufferMap, liste->eau_fini, (SCREEN_W / 2 - 36) + (colonne - 3) * 14 - (ligne) * 14, (colonne - 3) * 8 + (ligne) * 8 - 11);//pq le -8? jsp j'ai tatonné
             }
             else if(rotation==-1)
             {
-                draw_sprite_h_flip(bufferMap, liste->eau_fini, (SCREEN_W/2-36)+(colonne-3)*14-(ligne)*14, (colonne-3)*8+(ligne)*8-8);
+                draw_sprite_h_flip(bufferMap, liste->eau_fini, (SCREEN_W/2-36)+(colonne-3)*14-(ligne)*14, (colonne-3)*8+(ligne)*8-11);
             }
             break;
         case 3://centrale
             if(rotation==1)
             {
-                draw_sprite(bufferMap, liste->elec_fini, (SCREEN_W / 2 - 36) + (colonne - 3) * 14 - (ligne) * 14, (colonne - 3) * 8 + (ligne) * 8 - 8);//pq le -8? jsp j'ai tatonné
+                draw_sprite(bufferMap, liste->elec_fini, (SCREEN_W / 2 - 36) + (colonne - 3) * 14 - (ligne) * 14, (colonne - 3) * 8 + (ligne) * 8 - 22);//pq le -8? jsp j'ai tatonné
             }
             else if(rotation==-1)
             {
-                draw_sprite_h_flip(bufferMap, liste->elec_fini, (SCREEN_W/2-36)+(colonne-3)*14-(ligne)*14, (colonne-3)*8+(ligne)*8-8);
+                draw_sprite_h_flip(bufferMap, liste->elec_fini, (SCREEN_W/2-36)+(colonne-3)*14-(ligne)*14, (colonne-3)*8+(ligne)*8-22);
             }
             //Chateau Deau;
             break;

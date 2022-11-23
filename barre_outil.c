@@ -121,7 +121,7 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
             {
                 if (souris.ligne >= 2 && souris.ligne < 35 - 1 && souris.colonne >= 2 && souris.colonne < 45 - 3)//blindage pour pas sortir de la map en fonction des deux moyens de rotation
                 {
-                    draw_sprite(liste_buffer->buffer_map, liste_image->eau_fini, (SCREEN_W / 2 - 36) + (souris.colonne - 3) * 14 - (souris.ligne) * 14, (souris.colonne - 3) * 8 + (souris.ligne) * 8 - 8);//pq le -8? jsp j'ai tatonné
+                    draw_sprite(liste_buffer->buffer_map, liste_image->eau_fini, (SCREEN_W / 2 - 36) + (souris.colonne - 3) * 14 - (souris.ligne) * 14 , (souris.colonne - 3) * 8 + (souris.ligne) * 8 - 11);//pq le -8? jsp j'ai tatonné
                     if(mouse_b & 1)
                     {
                         if(!verification_chevauchement(map, souris.ligne, souris.colonne, 2, *rotation))
@@ -151,7 +151,7 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
             {
                 if (souris.ligne >= 3 && souris.ligne < 35-2 && souris.colonne >= 1 && souris.colonne < 45-2 )//blindage pour pas sortir de la map en fonction des deux moyens de rotation
                 {
-                    draw_sprite_h_flip(liste_buffer->buffer_map, liste_image->eau_fini, (SCREEN_W/2-36)+(souris.colonne-3)*14-(souris.ligne)*14, (souris.colonne-3)*8+(souris.ligne)*8-8);
+                    draw_sprite_h_flip(liste_buffer->buffer_map, liste_image->eau_fini, (SCREEN_W/2-36)+(souris.colonne-3)*14-(souris.ligne)*14, (souris.colonne-3)*8+(souris.ligne)*8-11);//-3 par rapport a l'autre orientation pour palier la différence de hauteur
                     if(mouse_b & 1)
                     {
                         if (!verification_chevauchement(map, souris.ligne, souris.colonne, 2, *rotation))
@@ -192,7 +192,7 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
             {
                 if (souris.ligne >= 2 && souris.ligne < 35 - 1 && souris.colonne >= 2 && souris.colonne < 45 - 3)//blindage pour pas sortir de la map en fonction des deux moyens de rotation
                 {
-                    draw_sprite(liste_buffer->buffer_map, liste_image->centrale, (SCREEN_W / 2 - 36) + (souris.colonne - 3) * 14 - (souris.ligne) * 14, (souris.colonne - 3) * 8 + (souris.ligne) * 8 - 8);//pq le -8? jsp j'ai tatonné
+                    draw_sprite(liste_buffer->buffer_map, liste_image->elec_fini, (SCREEN_W / 2 - 36) + (souris.colonne - 3) * 14 - (souris.ligne) * 14, (souris.colonne - 3) * 8 + (souris.ligne) * 8 - 22);//pq le -8? jsp j'ai tatonné
                     if(mouse_b & 1)
                     {
                         if(!verification_chevauchement(map, souris.ligne, souris.colonne, 3, *rotation))
@@ -222,7 +222,7 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
             {
                 if (souris.ligne >= 3 && souris.ligne < 35-2 && souris.colonne >= 1 && souris.colonne < 45-2 )//blindage pour pas sortir de la map en fonction des deux moyens de rotation
                 {
-                    draw_sprite_h_flip(liste_buffer->buffer_map, liste_image->centrale, (SCREEN_W/2-36)+(souris.colonne-3)*14-(souris.ligne)*14, (souris.colonne-3)*8+(souris.ligne)*8-8);
+                    draw_sprite_h_flip(liste_buffer->buffer_map, liste_image->elec_fini, (SCREEN_W/2-36)+(souris.colonne-3)*14-(souris.ligne)*14, (souris.colonne-3)*8+(souris.ligne)*8-22);//-14 par rapport a l'autre orientation pour palier la différence de hauteur
                     if(mouse_b & 1)
                     {
                         if (!verification_chevauchement(map, souris.ligne, souris.colonne, 3, *rotation))
