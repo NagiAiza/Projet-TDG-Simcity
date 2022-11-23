@@ -54,8 +54,6 @@ typedef struct tile{//pour faire la map on fait un tableau à 2 dimensions de ti
     struct liste* voisin;//on initialise les voisins de chaque case en début de programme
 
     struct tile* case_mere;//donne la case principale du batiment
-
-
 }t_tile;//rajouter un emplacement qui permette de differencier l'affichage du truc en globalité
 
 typedef struct graphe{

@@ -19,6 +19,15 @@ typedef struct IMAGE{//liste de tout les buffer d'image qu'on va utiliser, on va
     BITMAP* chateau_eau;
     BITMAP* centrale;
     BITMAP* case_selec;
+    BITMAP* eau_fini;
+    BITMAP* elec_fini;
+    BITMAP* terrain_vague;
+    BITMAP* cabane;
+    BITMAP* maison;
+    BITMAP* immeuble;
+    BITMAP* gratte_ciel;
+    BITMAP* ruine;
+    BITMAP* pompiers;
 }IMAGE;
 
 typedef struct BUFFER{//liste des buffer qu'on utilisera qui correspondent à chaque element d'affichage

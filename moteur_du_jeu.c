@@ -20,7 +20,6 @@ void jeu()//sous programme qui fera tourner tout le jeu
     //initialisation des bitmaps
     IMAGE* liste_image=initialisation_liste_image();
     BUFFER* liste_buffer=initialisation_liste_buffer();
-
     //generation du fichier
     initialisationElementCarte();//genere le fichier
 
@@ -31,7 +30,8 @@ void jeu()//sous programme qui fera tourner tout le jeu
     // Ici initialisation du scrolling en haut à gauche du décor
     //  (on peut décider de partir autrement...)
     decalageX=0;
-
+    show_mouse(screen);
+    clock_t CLK_debut=clock() / CLOCKS_PER_SEC;
     while(!key[KEY_ESC])
     {
         if (key[KEY_RIGHT])   decalageX+=5;
@@ -64,7 +64,6 @@ void jeu()//sous programme qui fera tourner tout le jeu
 
         blit(liste_buffer->buffer_menu, liste_buffer->buffer_final, 0, 0, 0, 0, SCREEN_W, SCREEN_H);
         blit(liste_buffer->buffer_map, liste_buffer->buffer_final, decalageX, 0, 124, 0, SCREEN_W, SCREEN_H);
-        show_mouse(liste_buffer->buffer_final);
         blit(liste_buffer->buffer_final, screen, 0, 0, 0, 0, SCREEN_W, SCREEN_H);
 
 

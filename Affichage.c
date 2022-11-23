@@ -21,7 +21,7 @@ IMAGE* initialisation_liste_image()//on initialise une seule fois les bitmaps en
 {
     IMAGE* liste=(IMAGE*)malloc(sizeof(IMAGE));
     liste->menu= load_bitmap_check("test_ecran.bmp");
-    liste->map= load_bitmap_check("damierTestProvisoire.bmp");
+    liste->map= load_bitmap_check("map.bmp");
     liste->sous_map= load_bitmap_check("damierFond.bmp");
     liste->route = load_bitmap_check("route.bmp");
     liste->batiment = load_bitmap_check("batiment.bmp");
@@ -29,6 +29,17 @@ IMAGE* initialisation_liste_image()//on initialise une seule fois les bitmaps en
     liste->centrale = load_bitmap_check("centrale.bmp");
     liste->canalisation = load_bitmap_check("canalisation.bmp");
     liste->case_selec = load_bitmap_check("tuileBaseSelec.bmp");
+
+    //VRAIS SPRITE
+    liste->eau_fini= load_bitmap_check("eau-fini.bmp");
+    liste->elec_fini= load_bitmap_check("elec-fini.bmp");
+    liste->terrain_vague= load_bitmap_check("terrain-vague.bmp");
+    liste->cabane=load_bitmap_check("cabanefinie.bmp");
+    liste->maison=load_bitmap_check("maison-finie.bmp");
+    liste->immeuble=load_bitmap_check("immeuble-fini.bmp");
+    liste->gratte_ciel= load_bitmap_check("gratte-ciel-fini.bmp");
+    liste->ruine=load_bitmap_check("ruines-finie.bmp");
+    liste->pompiers=load_bitmap_check("pompiers.bmp");
     return liste;
 }
 
@@ -58,6 +69,17 @@ void liberation_memoire_bitmaps(IMAGE* liste_image, BUFFER* liste_buffer)//on n'
     destroy_bitmap(liste_image->centrale);
     destroy_bitmap(liste_image->canalisation);
     destroy_bitmap(liste_image->case_selec);
+
+    destroy_bitmap(liste_image->eau_fini);
+    destroy_bitmap(liste_image->elec_fini);
+    destroy_bitmap(liste_image->terrain_vague);
+    destroy_bitmap(liste_image->cabane);
+    destroy_bitmap(liste_image->maison);
+    destroy_bitmap(liste_image->immeuble);
+    destroy_bitmap(liste_image->gratte_ciel);
+    destroy_bitmap(liste_image->ruine);
+    destroy_bitmap(liste_image->pompiers);
+
     free(liste_image);
     destroy_bitmap(liste_buffer->buffer_map);
     destroy_bitmap(liste_buffer->buffer_menu);
@@ -107,63 +129,28 @@ void affichageElement(BITMAP* bufferMap, IMAGE* liste, int type, int ligne, int 
             //Chateau Deau;
             break;
         case 4://habitation
-            draw_sprite(bufferMap, liste->batiment, (SCREEN_W/2-36)+(colonne-2)*14-ligne*14, (colonne-2)*8+ligne*8);
+            draw_sprite(bufferMap, liste->terrain_vague, (SCREEN_W/2-36)+(colonne-2)*14-ligne*14, (colonne-2)*8+ligne*8);
             break;
         case 5://habitation de stade 1
+            draw_sprite(bufferMap, liste->cabane, (SCREEN_W/2-36)+(colonne-2)*14-ligne*14, (colonne-2)*8+ligne*8-11);//-11 parce que l'image est 11 pixel plus grande que le sprite de base
             break;
         case 6://habitation de stade 2
+            draw_sprite(bufferMap, liste->maison, (SCREEN_W/2-36)+(colonne-2)*14-ligne*14, (colonne-2)*8+ligne*8-27);
             break;
         case 7://habitation de stade 3
+            draw_sprite(bufferMap, liste->immeuble, (SCREEN_W/2-36)+(colonne-2)*14-ligne*14, (colonne-2)*8+ligne*8-36);
             break;
         case 8://habitation de stade 4
+            draw_sprite(bufferMap, liste->gratte_ciel, (SCREEN_W/2-36)+(colonne-2)*14-ligne*14, (colonne-2)*8+ligne*8-87);
             break;
         case 9://habitation au stade de ruine
+            draw_sprite(bufferMap, liste->ruine, (SCREEN_W/2-36)+(colonne-2)*14-ligne*14, (colonne-2)*8+ligne*8);
             break;
         default:
             break;
     }
 }
 
-void affichage_element_eau(BUFFER* liste_buffer, IMAGE* liste, int type, int ligne, int colonne, int rotation, t_tile* chateau)
-{
-    int rgb;
-    int r, b;
-    BITMAP* temp= create_bitmap(liste->chateau_eau->w, liste->chateau_eau->h);
-    switch (type) {
-        case 1://route
-            draw_sprite(liste_buffer->buffer_map, liste->route, (SCREEN_W/2-36)+colonne*14-ligne*14, colonne*8+ligne*8);
-            break;
-        case 2://chateau eau
-            for(int i=0; i<temp->h; i++)
-            {
-                for(int j=0; j<temp->w; j++)
-                {
-                    rgb= getpixel(liste->chateau_eau, j, i);
-                    r=getr(rgb);
-                    b=getb(rgb);
-                    if(r==255 && b==255)
-                    {
-                        putpixel(temp, j, i, rgb);
-                    }
-                    else
-                    {
-                        putpixel(temp, j, i, makecol(0, 0, chateau->element->couleur*50));
-                    }
-                }
-            }
-            if(rotation==1)
-            {
-                draw_sprite(liste_buffer->buffer_map, temp, (SCREEN_W / 2 - 36) + (colonne - 3) * 14 - (ligne) * 14, (colonne - 3) * 8 + (ligne) * 8 - 8);//pq le -8? jsp j'ai tatonné
-            }
-            else if(rotation==-1)
-            {
-                draw_sprite_h_flip(liste_buffer->buffer_map, temp, (SCREEN_W/2-36)+(colonne-3)*14-(ligne)*14, (colonne-3)*8+(ligne)*8-8);
-            }
-            break;
-        default:
-            break;
-    }
-}
 
 void affichage_level_0(BUFFER* liste_buffer, IMAGE* liste_image)//on pourra peut etre rajouter des obstacles du style montagne etc...
 {
@@ -189,6 +176,49 @@ void affichage_level_0(BUFFER* liste_buffer, IMAGE* liste_image)//on pourra peut
 }
 
 
+void affichage_element_eau(BUFFER* liste_buffer, IMAGE* liste, int type, int ligne, int colonne, int rotation, t_tile* chateau)
+{
+    int rgb;
+    int r, b;
+    BITMAP* temp= create_bitmap(liste->chateau_eau->w, liste->chateau_eau->h);
+    switch (type) {
+        case 1://route
+            draw_sprite(liste_buffer->buffer_map, liste->route, (SCREEN_W/2-36)+colonne*14-ligne*14, colonne*8+ligne*8);
+            break;
+        case 2://chateau eau
+            for(int i=0; i<temp->h; i++)
+            {
+                for(int j=0; j<temp->w; j++)
+                {
+                    rgb= getpixel(liste->chateau_eau, j, i);
+                    r=getr(rgb);
+                    b=getb(rgb);
+                    if(r==255 && b==255)
+                    {
+                        putpixel(temp, j, i, rgb);
+                    }
+                    else
+                    {
+                        putpixel(temp, j, i, makecol(0, 0, chateau->element->couleur*30));
+                    }
+                }
+            }
+            if(rotation==1)
+            {
+                draw_sprite(liste_buffer->buffer_map, temp, (SCREEN_W / 2 - 36) + (colonne - 3) * 14 - (ligne) * 14, (colonne - 3) * 8 + (ligne) * 8 - 8);//pq le -8? jsp j'ai tatonné
+            }
+            else if(rotation==-1)
+            {
+                draw_sprite_h_flip(liste_buffer->buffer_map, temp, (SCREEN_W/2-36)+(colonne-3)*14-(ligne)*14, (colonne-3)*8+(ligne)*8-8);
+            }
+            textprintf_ex(liste_buffer->buffer_map,font,(SCREEN_W/2-36)+(colonne-3)*14-(ligne)*14+35,(colonne-3)*8+(ligne)*8+26,makecol(0,255,0),-1,"%d/%d",chateau->element->capacite,5000);
+            break;
+        default:
+            break;
+    }
+}
+
+
 void affichage_habitation(BUFFER* liste_buffer, IMAGE* liste_image, t_tile* habitation)//il manque la pourcentage non alimente
 {
     BITMAP* temp= create_bitmap(liste_image->batiment->w, liste_image->batiment->h);
@@ -200,9 +230,9 @@ void affichage_habitation(BUFFER* liste_buffer, IMAGE* liste_image, t_tile* habi
     pourcentage[0]=0;
     float pourcentage_non_alimente=0;
     int non_alimente=0;
-    if(habitation->element->eau_actuelle!=habitation->element->nb_habitant)
+    if(habitation->element->eau_actuelle<habitation->element->nb_habitant)
     {
-        pourcentage_non_alimente=(float)habitation->element->eau_actuelle/(float)habitation->element->nb_habitant;
+        pourcentage_non_alimente=1-(float)habitation->element->eau_actuelle/(float)habitation->element->nb_habitant;
         non_alimente=1;
     }
     t_liste2* liste_chateau=habitation->element->chateau_approvisionnement;
@@ -216,7 +246,6 @@ void affichage_habitation(BUFFER* liste_buffer, IMAGE* liste_image, t_tile* habi
     {
         compteur++;
         pourcentage[compteur]=pourcentage_non_alimente+pourcentage[compteur-1];
-        printf("pourcentage non alimente : %f\n", pourcentage[compteur]*100);
     }
     pourcentage[compteur+1]=1;
     if(compteur==0)
@@ -244,24 +273,27 @@ void affichage_habitation(BUFFER* liste_buffer, IMAGE* liste_image, t_tile* habi
                     {
                         if(non_alimente==0)
                         {
-                            putpixel(temp, k, j, makecol(0,0, makecol(0,0,liste_chateau->n->element->couleur*50)));
+                            putpixel(temp, k, j, makecol(0,0, makecol(0,0,liste_chateau->n->element->couleur*30)));
                         }
                         else
                         {
 
-                            /*if(i<compteur-1)
+                            if(i<compteur-1)
                             {
-                                putpixel(temp, k, j, makecol(0,0, makecol(0,0,liste_chateau->n->element->couleur*50)));
+                                putpixel(temp, k, j, makecol(0,0, makecol(0,0,liste_chateau->n->element->couleur*30)));
                             }
                             else
-                            {*/
+                            {
                                 putpixel(temp, k, j, makecol(0,0, makecol(255,0,0)));
-                            //}
+                            }
                         }
                     }
                 }
             }
-            liste_chateau=liste_chateau->next;
+            if(liste_chateau!=NULL)
+            {
+                liste_chateau=liste_chateau->next;
+            }
         }
 
         draw_sprite(liste_buffer->buffer_map, temp, (SCREEN_W/2-36)+(habitation->position.colonne-2)*14-habitation->position.ligne*14, (habitation->position.colonne-2)*8+habitation->position.ligne*8);

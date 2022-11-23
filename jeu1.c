@@ -69,11 +69,16 @@ t_graphe* initialiserGrille(t_graphe* g) //premiere initialisation a faire
 t_graphe* makeGrid()//penser a crer la libération de données
 {
     t_graphe* g=(t_graphe*) calloc(1, sizeof(t_graphe));
+
     g->grille=(t_tile***)calloc(NBLIGNE, sizeof(t_tile**));
-    for(int i=0; i<NBCOLONNE; i++)
+
+    for(int i=0; i<NBLIGNE; i++)
     {
+
         g->grille[i] = (t_tile**) calloc (NBCOLONNE, sizeof(t_tile*));
     }
+    printf("hello\n");
+
     g= initialiserGrille(g);
 
     g->mat_adjacence=(int **) calloc(NBLIGNE,sizeof(int*));

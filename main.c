@@ -24,6 +24,8 @@ int main() {
     int Mode_de_Jeu;
 
     initialisation_allegro();
+
+
     //Sous-programme menu
     //Mode_de_Jeu = menu(); //si 1 communiste si 2 capitaliste si 0 nada
     //Sous-programme jeu
