@@ -12,25 +12,25 @@
 int choixAction(BUFFER* liste_buffer, IMAGE*liste_image)
 {
     ///passer la souris sur la case compteur habitants pour afficher le nom de la case
-    if(((mouse_x>=62)&&(mouse_x<=117)&&(mouse_y>=675)&&(mouse_y<=702)))
+    if(((mouse_x>=164)&&(mouse_x<=295)&&(mouse_y>=647)&&(mouse_y<=672)))
     {
         //textprintf_ex(liste_buffer->buffer_menu,font,10,20,makecol(0,0,0),makecol(255,255,255),"bouton selec");
-        blit(liste_image->info_habitants, liste_buffer->buffer_menu,0, 0,  12, 708, 100, 13);
+        blit(liste_image->info_habitants, liste_buffer->buffer_menu,0, 0,  201, 654, 100, 13);
     }
     ///passer la souris sur la case compteur eau pour afficher le nom de la case
-    if(((mouse_x>=801)&&(mouse_x<=935)&&(mouse_y>=676)&&(mouse_y<=703)))
+    if(((mouse_x>=798)&&(mouse_x<=931)&&(mouse_y>=648)&&(mouse_y<=672)))
     {
-        blit(liste_image->info_eau, liste_buffer->buffer_menu,0, 0,  802, 711, 100, 13);
+        blit(liste_image->info_eau, liste_buffer->buffer_menu,0, 0,  833, 649, 100, 13);
     }
     ///passer la souris sur la case compteur elec pour afficher le nom de la case
-    if(((mouse_x>=548)&&(mouse_x<=683)&&(mouse_y>=675)&&(mouse_y<=703)))
+    if(((mouse_x>=482)&&(mouse_x<=613)&&(mouse_y>=647)&&(mouse_y<=672)))
     {
-        blit(liste_image->info_elec, liste_buffer->buffer_menu,0, 0,  549, 708, 100, 13);
+        blit(liste_image->info_elec, liste_buffer->buffer_menu,0, 0,  521, 651, 100, 13);
     }
     ///passer la souris sur la case compteur monaie pour afficher le nom de la case
-    if(((mouse_x>=2)&&(mouse_x<=105)&&(mouse_y>=674)&&(mouse_y<=702)))
+    if(((mouse_x>=4)&&(mouse_x<=108)&&(mouse_y>=592)&&(mouse_y<=612)))
     {
-        blit(liste_image->info_monnaie, liste_buffer->buffer_menu,0, 0,  7, 707, 100, 13);
+        blit(liste_image->info_monnaie, liste_buffer->buffer_menu,0, 0,  15, 600, 100, 13);
     }
     ///passer la souris sur la case compteur habitants pour afficher le nom de la case
     if(((mouse_x>=288)&&(mouse_x<=420)&&(mouse_y>=671)&&(mouse_y<=702)))
@@ -38,47 +38,47 @@ int choixAction(BUFFER* liste_buffer, IMAGE*liste_image)
         blit(liste_image->info_habitants, liste_buffer->buffer_menu,0, 0,  288, 705, 100, 13);
     }
 
-    if(((mouse_x>=7)&&(mouse_x<=120)&&(mouse_y>=137)&&(mouse_y<=166))&&(mouse_b&1)) //Si on clique sur la case route
+    if(((mouse_x>=5)&&(mouse_x<=121)&&(mouse_y>=124)&&(mouse_y<=158))&&(mouse_b&1)) //Si on clique sur la case route
     {
         return 1;
     }
-    if(((mouse_x>=6)&&(mouse_x<=119)&&(mouse_y>=184)&&(mouse_y<=209))&&(mouse_b&1)) //Si on clique sur case batiments
+    if(((mouse_x>=6)&&(mouse_x<=119)&&(mouse_y>=165)&&(mouse_y<=196))&&(mouse_b&1)) //Si on clique sur case batiments
     {
         return 4;
     }
-    if(((mouse_x>=8)&&(mouse_x<=118)&&(mouse_y>=225)&&(mouse_y<=254))&&(mouse_b&1)) //elec
+    if(((mouse_x>=5)&&(mouse_x<=121)&&(mouse_y>=207)&&(mouse_y<=236))&&(mouse_b&1)) //elec
     {
         return 3;
     }
-    if(((mouse_x>=7)&&(mouse_x<=116)&&(mouse_y>=270)&&(mouse_y<=299))&&(mouse_b&1)) // eau
+    if(((mouse_x>=5)&&(mouse_x<=117)&&(mouse_y>=246)&&(mouse_y<=275))&&(mouse_b&1)) // eau
     {
         return 2;
     }
-    if(((mouse_x>=5)&&(mouse_x<=119)&&(mouse_y>=311)&&(mouse_y<=343))&&(mouse_b&1)) // pompiers
+    if(((mouse_x>=7)&&(mouse_x<=118)&&(mouse_y>=288)&&(mouse_y<=313))&&(mouse_b&1)) // pompiers
     {
         return 5;
     }
-    if(((mouse_x>=6)&&(mouse_x<=115)&&(mouse_y>=313)&&(mouse_y<=339))&&(mouse_b&1))//fleches
+    if(((mouse_x>=7)&&(mouse_x<=59)&&(mouse_y>=326)&&(mouse_y<=350))&&(mouse_b&1))//fleches
     {
 
     }
-    if(((mouse_x>=8)&&(mouse_x<=53)&&(mouse_y>=357)&&(mouse_y<=383))&&(mouse_b&1))//pelle
+    if(((mouse_x>=65)&&(mouse_x<=115)&&(mouse_y>=328)&&(mouse_y<=354))&&(mouse_b&1))//pelle
     {
 
     }
-    if(((mouse_x>=7)&&(mouse_x<=82)&&(mouse_y>=443)&&(mouse_y<=472))&&(mouse_b&1))//0
+    if(((mouse_x>=9)&&(mouse_x<=81)&&(mouse_y>=408)&&(mouse_y<=434))&&(mouse_b&1))//0
     {
         return 6;
     }
-    if(((mouse_x>=10)&&(mouse_x<=77)&&(mouse_y>=486)&&(mouse_y<=511))&&(mouse_b&1))//-1
+    if(((mouse_x>=12)&&(mouse_x<=77)&&(mouse_y>=446)&&(mouse_y<=471))&&(mouse_b&1))//-1
     {
         return 7;
     }
-    if(((mouse_x>=8)&&(mouse_x<=78)&&(mouse_y>=524)&&(mouse_y<=552))&&(mouse_b&1))//-2
+    if(((mouse_x>=11)&&(mouse_x<=79)&&(mouse_y>=486)&&(mouse_y<=507))&&(mouse_b&1))//-2
     {
         return 8;
     }
-    if(((mouse_x>=47)&&(mouse_x<=116)&&(mouse_y>=602)&&(mouse_y<=629))&&(mouse_b&1))//exit
+    if(((mouse_x>=50)&&(mouse_x<=115)&&(mouse_y>=557)&&(mouse_y<=583))&&(mouse_b&1))//exit
     {
         return 9;
     }
