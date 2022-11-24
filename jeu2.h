@@ -22,6 +22,11 @@ int verification_connexite_route(t_graphe* map, t_tile* case_actu);
 int validation_evolution(t_tile* batiment, int* nb_habitant);//renvoie 1 pour améliorer, 0 pour rien faire, -1 pour regresser?
 t_graphe* cycle_habitation(t_graphe* map, int* capa_usine, long* compteur_argent, int* nb_habitant);
 
+t_graphe* ecriture_fichier_elec(t_graphe* map, t_tile* case_arrive);
+t_graphe* BFS(t_graphe* map, t_tile* sommet_depart);
+t_graphe* distribution_elec(t_graphe* map);
+
+
 int compte_eau(t_graphe* map);
 
 #endif //PROJET_TDG_SIMCITY_JEU2_H

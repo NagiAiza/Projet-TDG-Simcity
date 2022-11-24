@@ -20,7 +20,7 @@ BITMAP * load_bitmap_check(char *nomImage){
 IMAGE* initialisation_liste_image()//on initialise une seule fois les bitmaps en début de prgm
 {
     IMAGE* liste=(IMAGE*)malloc(sizeof(IMAGE));
-    liste->menu= load_bitmap_check("test_ecran.bmp");//barre_outils.bmp
+    liste->menu= load_bitmap_check("barre_outils.bmp");//barre_outils.bmp
     liste->map= load_bitmap_check("map.bmp");
     liste->sous_map= load_bitmap_check("damierFond.bmp");
     liste->route = load_bitmap_check("route.bmp");
@@ -360,7 +360,7 @@ void affichageTotal(t_graphe* map, IMAGE* liste_image, BUFFER* liste_buffer, t_p
     textprintf_ex(liste_buffer->buffer_menu,font,750,645,makecol(0,0,0),-1,"%d",capa_usine);
     textprintf_ex(liste_buffer->buffer_menu,font,575,645,makecol(0,0,0),-1,"%d",capa_eau);
     textprintf_ex(liste_buffer->buffer_menu,font,400,645,makecol(0,0,0),-1,"%d",compteur_hab);
-    textprintf_ex(liste_buffer->buffer_menu,font,10,20,makecol(0,0,0),-1,"%ld secondes",clock()/CLOCKS_PER_SEC-CLK_debut);
+    textprintf_ex(liste_buffer->buffer_menu,font,41,90,makecol(0,0,0),-1,"%ld secondes",clock()/CLOCKS_PER_SEC-CLK_debut);
 
 
 

@@ -33,13 +33,19 @@ t_liste* insererNoeudFin(t_liste* liste, t_tile* n)//enfiler
     t_liste *nouv = (t_liste *)malloc(sizeof(t_liste));
     nouv->n=n;
     nouv->next=NULL;
+    nouv->prev=NULL;
     t_liste* temp=liste;
 
+    if(liste==NULL)
+    {
+        return nouv;
+    }
     while(temp->next!=NULL)
     {
         temp=temp->next;
     }
     temp->next=nouv;
+    return liste;
 }
 
 t_liste2 *insererNoeud2(t_liste2 *liste, t_tile * n, int montant_distribue) //inserer noeud debut de la liste dans la liste
@@ -101,6 +107,7 @@ int existe(t_liste *l, t_tile *n)
             return 1;
         }
         aux = aux->next;
+
     }
     return 0;
 }

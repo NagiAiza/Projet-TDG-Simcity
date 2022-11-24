@@ -238,7 +238,7 @@ t_graphe* dijkstra(t_graphe* map, t_tile* sommet_de_depart)
 
             }
 
-            if(voisin_actuel->case_mere->element->type>=4 && voisin_actuel->case_mere->element->type<=10)//le voisin est une habitation pb ici
+            if(voisin_actuel->case_mere->element->type>=4 && voisin_actuel->case_mere->element->type<=9)//le voisin est une habitation pb ici
             {
                 if(voisin_actuel->case_mere->element->eau_actuelle<voisin_actuel->case_mere->element->nb_habitant)//si il reste des habitants qui doivent être alimenté en eau
                 {
@@ -386,23 +386,144 @@ t_graphe* electricite(t_graphe* map, int* capa_usine)
     }
     return map;
 }
- /*
 
-    for(int i=0; i<graphe->grille; i++)
+t_graphe* ecriture_fichier_elec(t_graphe* map, t_tile* case_arrive)
+{
+    t_tile* temp=case_arrive;
+
+    while(temp!=NULL)
     {
-        for(int j=0; j<graphe->grille; j++)
+        map->mat_chemin_elec[temp->position.ligne][temp->position.colonne]=1;
+        temp=temp->parent;
+    }
+    FILE* map_elec= fopen("map_elec.txt", "w");
+    if(map_elec==NULL)
+    {
+        printf("Erreur d'ouverture du fichier\n");
+        exit(EXIT_FAILURE);
+    }
+
+    for(int i=0; i<NBLIGNE; i++)
+    {
+        for(int j=0; j<NBCOLONNE; j++)
         {
-            graphe->tile[i][j]->parent=NULL;
+            fprintf(map_elec, "%d ", map->mat_chemin_elec[i][j]);
         }
-
+        fprintf(map_elec, "\n");
     }
+    fclose(map_elec);
+    return map;
+}
 
-    for(int i=0; i<graphe->grille; i++)
+
+
+t_graphe* BFS(t_graphe* map, t_tile* sommet_depart)
+{
+    t_tile*noeud, *temp;
+    for(int i=0; i<NBLIGNE; i++) //initialisation du bfs
     {
-        struct tile *parent[i]=-1; //pas de parent actuel
+        for(int j=0; j<NBCOLONNE; j++) //initialisation du bfs
+        {
+            map->grille[i][j]->parent=NULL; //initialisation du bfs
+        }
     }
-*/
 
+    t_liste* liste_ouverte=creer(); //liste des elem qu'on modifie
+    t_liste* liste_sommet_plus_toucher=creer(); //liste pour noircir
+    t_liste* liste_temporaire; //liste des sommets qu'on étudie
+
+
+    if (sommet_depart->element->orientation == 1)
+    {
+        for (int i = -2; i < 2; i++)
+        {
+            for (int j = -2; j < 4; j++)
+            {
+                liste_temporaire=map->grille[sommet_depart->position.ligne+i][sommet_depart->position.colonne+j]->voisin;
+                while(liste_temporaire!=NULL)
+                {
+                   if(liste_temporaire->n->element->type==1 && !existe(liste_ouverte, liste_temporaire->n)) //si route
+                   {
+                       liste_ouverte=insererNoeudFin(liste_ouverte,liste_temporaire->n);//on insère
+                       liste_temporaire->n->parent=map->grille[sommet_depart->position.ligne+i][sommet_depart->position.colonne+j];
+                   }
+                    liste_temporaire=liste_temporaire->next;
+                }
+            }
+        }
+    }
+    else if (sommet_depart->element->orientation == -1)
+    {
+        for (int i = -3; i < 3; i++)
+        {
+            for (int j = -1; j < 3; j++)
+            {
+                liste_temporaire=map->grille[i][j]->voisin;
+                while(liste_temporaire!=NULL)
+                {
+                    if(liste_temporaire->n->element->type==1) //si route
+                    {
+                        liste_ouverte=insererNoeudFin(liste_ouverte,liste_temporaire->n); //on insère
+                    }
+                    liste_temporaire=liste_temporaire->next;
+                }
+            }
+        }
+    }
+    while(!estVide(liste_ouverte))// parcours de la liste
+    {
+
+        enlever_noeud_debut(liste_ouverte, &noeud);
+        liste_sommet_plus_toucher= insererNoeud(liste_sommet_plus_toucher, noeud);//pour noircir
+        liste_temporaire=noeud->voisin;
+        printf("case de depart [%d][%d]:\n", noeud->position.ligne, noeud->position.colonne);
+
+        while(liste_temporaire!=NULL)
+        {
+            printf("case [%d][%d]\n", liste_temporaire->n->position.ligne, liste_temporaire->n->position.colonne);
+            if(liste_temporaire->n->element->type>=4 && liste_temporaire->n->element->type<=9)
+            {
+                printf("ecriture fichier\n");
+                map= ecriture_fichier_elec(map, noeud);
+
+            }
+            if(!existe(liste_ouverte,liste_temporaire->n)   && !existe(liste_sommet_plus_toucher,liste_temporaire->n)  && liste_temporaire->n->element->type==1)
+            {
+                printf("insertion liste\n");
+                liste_ouverte=insererNoeudFin(liste_ouverte,liste_temporaire->n);
+                liste_temporaire->n->parent=noeud;
+            }
+            printf("ici\n");
+
+            liste_temporaire=liste_temporaire->next;
+        }
+    }
+    return map;
+}
+
+t_graphe* distribution_elec(t_graphe* map)
+{
+    for(int i=0; i<NBLIGNE; i++)
+    {
+        for(int j=0; j<NBCOLONNE; j++)
+        {
+            map->mat_chemin_elec[i][j]=0;
+        }
+    }
+    for(int i=0 ; i<NBLIGNE; i++)//parcours de toute les cases du tableau pour trouver les chateaux d'eau
+    {
+        for(int j=0; j<NBCOLONNE; j++)
+        {
+            if (map->grille[i][j]->element->type == 3)//dès qu'on a trouver on lance dijkstra pour ensuite trouver les chemins menant aux dif bat
+            {
+                printf("usine electricite\n");
+                map=BFS(map, (map->grille[i][j]));
+            }
+        }
+    }
+
+    return map;
+}
 int verification_connexite_route(t_graphe* map, t_tile* case_actu)
 {
     int verif_route=0;
