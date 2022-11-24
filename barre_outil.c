@@ -351,3 +351,4 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
     return map;
 }
 #pragma clang diagnostic pop
+//
