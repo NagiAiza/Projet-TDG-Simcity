@@ -349,7 +349,7 @@ t_graphe* electricite(t_graphe* map, int* capa_usine)
                 verif_route= verification_connexite_route(map, map->grille[i][j]);
                 if(verif_route==1)
                 {
-                    if(map->grille[i][j]->element->nb_habitant < *capa_usine)
+                    if(map->grille[i][j]->element->nb_habitant <= *capa_usine)
                     {
                         //on note le batiment trouve comme etant alimente
                         map->grille[i][j]->element->alimente=1;
@@ -590,7 +590,7 @@ int verification_connexite_route(t_graphe* map, t_tile* case_actu)
 
 }
 
-int validation_evolution(t_tile* batiment, int* nb_habitant)//renvoie 1 pour amÃ©liorer, 0 pour rien faire, -1 pour regresser?
+int validation_evolution(t_tile* batiment, int* nb_habitant, int compteur_eau)//renvoie 1 pour amÃ©liorer, 0 pour rien faire, -1 pour regresser?
 {
     switch (batiment->element->type) {
         case 4:
@@ -731,7 +731,7 @@ int validation_evolution(t_tile* batiment, int* nb_habitant)//renvoie 1 pour amÃ
         case 9:
             printf("evolution\n");
 
-            if(batiment->element->alimente==1)
+            if(batiment->element->alimente==1 && !compteur_eau==0)
             {
                 batiment->element->type=5;
                 batiment->element->nb_habitant=10;
@@ -747,7 +747,7 @@ int validation_evolution(t_tile* batiment, int* nb_habitant)//renvoie 1 pour amÃ
     }
 }
 
-t_graphe* cycle_habitation(t_graphe* map, int* capa_usine, long* compteur_argent, int* nb_habitant)
+t_graphe* cycle_habitation(t_graphe* map, int* capa_usine, long* compteur_argent, int* nb_habitant, int compteur_eau)
 {
     int changement;
     //parcours du tableau des maisons au lieu du parcours de toute la map
@@ -758,7 +758,7 @@ t_graphe* cycle_habitation(t_graphe* map, int* capa_usine, long* compteur_argent
         {
             parcours_habitation->n->element->compteur=clock()/CLOCKS_PER_SEC;
             *compteur_argent=*compteur_argent+parcours_habitation->n->element->nb_habitant;
-            changement=validation_evolution(parcours_habitation->n, nb_habitant);
+            changement=validation_evolution(parcours_habitation->n, nb_habitant, compteur_eau);
             if(changement==1)
             {
                 map=distribution_eau(map);

@@ -83,8 +83,6 @@ int choixAction(BUFFER* liste_buffer, IMAGE*liste_image)
         return 9;
     }
     return 0;
-    return 0;
-
 }
 
 t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* choix, t_pos souris, int* rotation, int* niv_visu, t_tile** case_select, int* algo_A, long* argent_restant, int* capa_usine)
