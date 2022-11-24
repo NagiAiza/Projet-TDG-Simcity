@@ -386,7 +386,22 @@ t_graphe* electricite(t_graphe* map, int* capa_usine)
     }
     return map;
 }
+ /*
 
+    for(int i=0; i<graphe->grille; i++)
+    {
+        for(int j=0; j<graphe->grille; j++)
+        {
+            graphe->tile[i][j]->parent=NULL;
+        }
+
+    }
+
+    for(int i=0; i<graphe->grille; i++)
+    {
+        struct tile *parent[i]=-1; //pas de parent actuel
+    }
+*/
 
 int verification_connexite_route(t_graphe* map, t_tile* case_actu)
 {

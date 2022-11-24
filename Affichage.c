@@ -40,6 +40,14 @@ IMAGE* initialisation_liste_image()//on initialise une seule fois les bitmaps en
     liste->gratte_ciel= load_bitmap_check("gratte-ciel-fini.bmp");
     liste->ruine=load_bitmap_check("ruines-finie.bmp");
     liste->pompiers=load_bitmap_check("pompiers.bmp");
+
+    liste->barre_outils=load_bitmap_check("barre_outils.bmp");
+    liste->info_eau=load_bitmap_check("info_eau.bmp");
+    liste->info_elec=load_bitmap_check("info_elec.bmp");
+    liste->info_monnaie=load_bitmap_check("info_monnaie.bmp");
+    liste->info_habitants=load_bitmap_check("info_habitants.bmp");
+    liste->info_deplacer=load_bitmap_check("info_deplacer.bmp");
+    liste->info_supprimer=load_bitmap_check("info_supprimer.bmp");
     return liste;
 }
 

@@ -28,6 +28,20 @@ t_liste *insererNoeud(t_liste *liste, t_tile *n) //inserer noeud debut de la lis
     return nouv;
 }
 
+t_liste* insererNoeudFin(t_liste* liste, t_tile* n)//enfiler
+{
+    t_liste *nouv = (t_liste *)malloc(sizeof(t_liste));
+    nouv->n=n;
+    nouv->next=NULL;
+    t_liste* temp=liste;
+
+    while(temp->next!=NULL)
+    {
+        temp=temp->next;
+    }
+    temp->next=nouv;
+}
+
 t_liste2 *insererNoeud2(t_liste2 *liste, t_tile * n, int montant_distribue) //inserer noeud debut de la liste dans la liste
 {
     t_liste2 *nouv = (t_liste2 *)malloc(sizeof(t_liste2));
@@ -195,6 +209,7 @@ t_liste* insertion_en_triant2(t_liste* liste, t_tile* noeud)//pour file de prior
     }
 }
 
+//defiler
 t_liste* enlever_noeud_debut(t_liste* liste, t_tile** noeud_a_conserver)//enlever en debut + mettre l'adresse du noeud à conserveer
 {
     t_liste* temp=liste;

@@ -36,6 +36,7 @@ t_liste* insertion_en_triant(t_liste* liste, t_tile* noeud);//pour file de prior
 t_liste* insertion_en_triant2(t_liste* liste, t_tile* noeud);
 t_liste* enlever_noeud_debut(t_liste* liste, t_tile** noeud_a_conserver);
 t_liste* actualisation(t_liste* l, t_tile* noeud_a_retrier);
+t_liste* insererNoeudFin(t_liste* liste, t_tile* n);//enfiler
 
 //LISTE 2
 t_liste2 *creer2(void);

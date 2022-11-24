@@ -1,3 +1,5 @@
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "Simplify"
 //
 // Created by alexi on 03/11/2022.
 //
@@ -6,45 +8,83 @@
 #include "jeu2.h"
 #include "listeRelated.h"
 
-int choixAction()
+
+int choixAction(BUFFER* liste_buffer, IMAGE*liste_image)
 {
-    if(((mouse_x>=6)&&(mouse_x<=39)&&(mouse_y>=90)&&(mouse_y<=126))&&(mouse_b&1)) //Si on clique sur la premiere case
+    ///passer la souris sur la case compteur habitants pour afficher le nom de la case
+    if(((mouse_x>=62)&&(mouse_x<=117)&&(mouse_y>=675)&&(mouse_y<=702)))
+    {
+        //textprintf_ex(liste_buffer->buffer_menu,font,10,20,makecol(0,0,0),makecol(255,255,255),"bouton selec");
+        blit(liste_image->info_habitants, liste_buffer->buffer_menu,0, 0,  12, 708, 100, 13);
+    }
+    ///passer la souris sur la case compteur eau pour afficher le nom de la case
+    if(((mouse_x>=801)&&(mouse_x<=935)&&(mouse_y>=676)&&(mouse_y<=703)))
+    {
+        blit(liste_image->info_eau, liste_buffer->buffer_menu,0, 0,  802, 711, 100, 13);
+    }
+    ///passer la souris sur la case compteur elec pour afficher le nom de la case
+    if(((mouse_x>=548)&&(mouse_x<=683)&&(mouse_y>=675)&&(mouse_y<=703)))
+    {
+        blit(liste_image->info_elec, liste_buffer->buffer_menu,0, 0,  549, 708, 100, 13);
+    }
+    ///passer la souris sur la case compteur monaie pour afficher le nom de la case
+    if(((mouse_x>=2)&&(mouse_x<=105)&&(mouse_y>=674)&&(mouse_y<=702)))
+    {
+        blit(liste_image->info_monnaie, liste_buffer->buffer_menu,0, 0,  7, 707, 100, 13);
+    }
+    ///passer la souris sur la case compteur habitants pour afficher le nom de la case
+    if(((mouse_x>=288)&&(mouse_x<=420)&&(mouse_y>=671)&&(mouse_y<=702)))
+    {
+        blit(liste_image->info_habitants, liste_buffer->buffer_menu,0, 0,  288, 705, 100, 13);
+    }
+
+    if(((mouse_x>=7)&&(mouse_x<=120)&&(mouse_y>=137)&&(mouse_y<=166))&&(mouse_b&1)) //Si on clique sur la case route
     {
         return 1;
     }
-    if(((mouse_x>=44)&&(mouse_x<=78)&&(mouse_y>=88)&&(mouse_y<=122))&&(mouse_b&1)) //Si on clique sur la deuxieme case
-    {
-        return 2;
-    }
-    if(((mouse_x>=87)&&(mouse_x<=119)&&(mouse_y>=91)&&(mouse_y<=123))&&(mouse_b&1)) //3eme case
-    {
-        return 3;
-    }
-    if(((mouse_x>=7)&&(mouse_x<=37)&&(mouse_y>=138)&&(mouse_y<=170))&&(mouse_b&1))
+    if(((mouse_x>=6)&&(mouse_x<=119)&&(mouse_y>=184)&&(mouse_y<=209))&&(mouse_b&1)) //Si on clique sur case batiments
     {
         return 4;
     }
-    if(((mouse_x>=45)&&(mouse_x<=77)&&(mouse_y>=137)&&(mouse_y<=170))&&(mouse_b&1))
+    if(((mouse_x>=8)&&(mouse_x<=118)&&(mouse_y>=225)&&(mouse_y<=254))&&(mouse_b&1)) //elec
+    {
+        return 3;
+    }
+    if(((mouse_x>=7)&&(mouse_x<=116)&&(mouse_y>=270)&&(mouse_y<=299))&&(mouse_b&1)) // eau
+    {
+        return 2;
+    }
+    if(((mouse_x>=5)&&(mouse_x<=119)&&(mouse_y>=311)&&(mouse_y<=343))&&(mouse_b&1)) // pompiers
     {
         return 5;
     }
-    if(((mouse_x>=85)&&(mouse_x<=119)&&(mouse_y>=137)&&(mouse_y<=172))&&(mouse_b&1))
+    if(((mouse_x>=6)&&(mouse_x<=115)&&(mouse_y>=313)&&(mouse_y<=339))&&(mouse_b&1))//fleches
+    {
+
+    }
+    if(((mouse_x>=8)&&(mouse_x<=53)&&(mouse_y>=357)&&(mouse_y<=383))&&(mouse_b&1))//pelle
+    {
+
+    }
+    if(((mouse_x>=7)&&(mouse_x<=82)&&(mouse_y>=443)&&(mouse_y<=472))&&(mouse_b&1))//0
     {
         return 6;
     }
-    if(((mouse_x>=6)&&(mouse_x<=37)&&(mouse_y>=182)&&(mouse_y<=218))&&(mouse_b&1))
+    if(((mouse_x>=10)&&(mouse_x<=77)&&(mouse_y>=486)&&(mouse_y<=511))&&(mouse_b&1))//-1
     {
         return 7;
     }
-    if(((mouse_x>=45)&&(mouse_x<=75)&&(mouse_y>=182)&&(mouse_y<=214))&&(mouse_b&1))
+    if(((mouse_x>=8)&&(mouse_x<=78)&&(mouse_y>=524)&&(mouse_y<=552))&&(mouse_b&1))//-2
     {
         return 8;
     }
-    if(((mouse_x>=86)&&(mouse_x<=119)&&(mouse_y>=182)&&(mouse_y<=215))&&(mouse_b&1))//9eme case
+    if(((mouse_x>=47)&&(mouse_x<=116)&&(mouse_y>=602)&&(mouse_y<=629))&&(mouse_b&1))//exit
     {
         return 9;
     }
     return 0;
+    return 0;
+
 }
 
 t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* choix, t_pos souris, int* rotation, int* niv_visu, t_tile** case_select, int* algo_A, long* argent_restant, int* capa_usine)
@@ -293,11 +333,11 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
             *niv_visu=0;
             *choix=0;
             break;
-        case 7://visualisation eau
+        case 7://visualisation eau -1
             *niv_visu=1;
             *choix=0;
             break;
-        case 8://visualisation elec
+        case 8://visualisation elec -2
             *niv_visu=2;
             *choix=0;
             break;
@@ -310,3 +350,4 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
     }
     return map;
 }
+#pragma clang diagnostic pop

@@ -58,7 +58,7 @@ void jeu()//sous programme qui fera tourner tout le jeu
         {
             if(mouse_x<124 || mouse_y>640)
             {
-                choix = choixAction();
+                choix = choixAction(liste_buffer, liste_image);
                 rest(100);
             }
         }
@@ -74,6 +74,17 @@ void jeu()//sous programme qui fera tourner tout le jeu
 
 
     }
+   for(int i=0 ; i<NBLIGNE; i++)
+   {
+       for(int j=0; j<NBCOLONNE; j++)
+       {
+           if(map->grille[i][j]->element->type==4)
+           {
+               printf("maison [%d][%d] :\n", i, j);
+               printf("compteur eau : %d\n", map->grille[i][j]->element->eau_actuelle);
+           }
+       }
+   }
     //libération de la mémoire
     show_mouse(NULL);
     liberation_memoire_bitmaps(liste_image, liste_buffer);
