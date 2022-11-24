@@ -19,6 +19,9 @@ t_graphe* reinitialisation_eau(t_graphe* map);
 t_graphe* electricite(t_graphe* map, int* capa_usine);
 int verification_connexite_route(t_graphe* map, t_tile* case_actu);
 
-t_graphe* cycle_habitation(t_graphe* map);
+int validation_evolution(t_tile* batiment, int* nb_habitant);//renvoie 1 pour améliorer, 0 pour rien faire, -1 pour regresser?
+t_graphe* cycle_habitation(t_graphe* map, int* capa_usine, long* compteur_argent, int* nb_habitant);
+
+int compte_eau(t_graphe* map);
 
 #endif //PROJET_TDG_SIMCITY_JEU2_H

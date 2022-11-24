@@ -341,32 +341,34 @@ void affichage_level_1(t_graphe* map, IMAGE* liste_image, BUFFER* liste_buffer)
 }
 
 
-void affichageTotal(t_graphe* map, IMAGE* liste_image, BUFFER* liste_buffer, t_pos souris, long compteur_argent, int niveau_visu, int capa_usine, clock_t CLK_debut)//doit etre independant du jeu en lui meme mais affiche toute les données nécéssaire à l'utilisateur
+void affichageTotal(t_graphe* map, IMAGE* liste_image, BUFFER* liste_buffer, t_pos souris, long compteur_argent, int niveau_visu, int capa_usine, clock_t CLK_debut, int compteur_hab,  int capa_eau)//doit etre independant du jeu en lui meme mais affiche toute les données nécéssaire à l'utilisateur
 {
-        clear_bitmap(liste_buffer->buffer_menu);
-        clear_bitmap(liste_buffer->buffer_map);
+    clear_bitmap(liste_buffer->buffer_menu);
+    clear_bitmap(liste_buffer->buffer_map);
 
 
-        blit(liste_image->menu, liste_buffer->buffer_menu, 0, 0, 0, 0, SCREEN_W, SCREEN_H);
-        textprintf_ex(liste_buffer->buffer_menu,font,10,645,makecol(0,0,0),-1,"%ld$",compteur_argent);
-        textprintf_ex(liste_buffer->buffer_menu,font,750,645,makecol(0,0,0),-1,"%d",capa_usine);
-        textprintf_ex(liste_buffer->buffer_menu,font,10,20,makecol(0,0,0),-1,"%ld secondes",clock()/CLOCKS_PER_SEC-CLK_debut);
+    blit(liste_image->menu, liste_buffer->buffer_menu, 0, 0, 0, 0, SCREEN_W, SCREEN_H);
+    textprintf_ex(liste_buffer->buffer_menu,font,10,645,makecol(0,0,0),-1,"%ld$",compteur_argent);
+    textprintf_ex(liste_buffer->buffer_menu,font,750,645,makecol(0,0,0),-1,"%d",capa_usine);
+    textprintf_ex(liste_buffer->buffer_menu,font,575,645,makecol(0,0,0),-1,"%d",capa_eau);
+    textprintf_ex(liste_buffer->buffer_menu,font,400,645,makecol(0,0,0),-1,"%d",compteur_hab);
+    textprintf_ex(liste_buffer->buffer_menu,font,10,20,makecol(0,0,0),-1,"%ld secondes",clock()/CLOCKS_PER_SEC-CLK_debut);
 
 
 
-        draw_sprite(liste_buffer->buffer_map, liste_image->map, 0, 0);
+    draw_sprite(liste_buffer->buffer_map, liste_image->map, 0, 0);
 
-        textprintf_ex(liste_buffer->buffer_map,font,10,10,makecol(0,255,0),makecol(0,0,0),"%4d %4d",mouse_x,mouse_y);
-        textprintf_ex(liste_buffer->buffer_map,font,10,20,makecol(0,255,0),makecol(0,0,0),"case[%d][%d]",souris.ligne,souris.colonne);
-        textprintf_ex(liste_buffer->buffer_map,font,10,30,makecol(0,255,0),makecol(0,0,0),"niveau %d",niveau_visu);
-        if(niveau_visu==0)
-        {
-            affichage_level_0(liste_buffer, liste_image);
-        }
-        else if (niveau_visu==1)
-        {
-            affichage_level_1(map, liste_image, liste_buffer);
-        }
+    textprintf_ex(liste_buffer->buffer_map,font,10,10,makecol(0,255,0),makecol(0,0,0),"%4d %4d",mouse_x,mouse_y);
+    textprintf_ex(liste_buffer->buffer_map,font,10,20,makecol(0,255,0),makecol(0,0,0),"case[%d][%d]",souris.ligne,souris.colonne);
+    textprintf_ex(liste_buffer->buffer_map,font,10,30,makecol(0,255,0),makecol(0,0,0),"niveau %d",niveau_visu);
+    if(niveau_visu==0)
+    {
+        affichage_level_0(liste_buffer, liste_image);
+    }
+    else if (niveau_visu==1)
+    {
+        affichage_level_1(map, liste_image, liste_buffer);
+    }
 
 }
 

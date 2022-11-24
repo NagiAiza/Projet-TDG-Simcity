@@ -263,7 +263,7 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
                     if(!verification_chevauchement(map, souris.ligne, souris.colonne, 4, *rotation))
                     {
                         depense= calcul_depenses(4, 0);
-                        initialisation_habitation(map->grille[souris.ligne][souris.colonne]);
+                        initialisation_habitation(map, map->grille[souris.ligne][souris.colonne]);
                         if(validation_depense(depense, *argent_restant))
                         {
                             map = placementElement(map, souris.ligne, souris.colonne, 4, *rotation);

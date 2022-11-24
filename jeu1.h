@@ -11,7 +11,6 @@
 #include "time.h"
 
 
-
 #define NBLIGNE 35
 #define NBCOLONNE 45
 
@@ -32,7 +31,6 @@ typedef struct batiment{
     int eau_actuelle;
     long compteur;//timer à la création de l'habitation
     struct liste2* chateau_approvisionnement;//liste chateaux d'eau qui approvisionnent
-    struct liste2* centrale_approvisionnement;//liste centrales qui approvisionnent
 
 
     //si c'est un chateau d'eau
@@ -62,6 +60,7 @@ typedef struct graphe{
     t_tile*** grille;
     int** mat_adjacence;//vraie matrice d'adjacence avec toutes les cases qui sont remplies pour les batiments
     int** mat_chemin_eau;//matrice pour repertorier les chemins en eau
+    struct liste* liste_hab;
 }t_graphe;
 
 
@@ -79,7 +78,7 @@ void liberation_donnee(t_graphe* g);// pas forcément utile
 int placement_route(t_graphe* map, int ligne, int colonne);
 int verification_chevauchement(t_graphe* map, int ligne, int colonne, int choix, int rotation);
 
-void initialisation_habitation(t_tile* case_hab);
+void initialisation_habitation(t_graphe* map, t_tile* case_hab);
 void initialisation_chateau_eau(t_tile* case_chateau);
 void initialisation_centrale(t_tile* case_elec);
 

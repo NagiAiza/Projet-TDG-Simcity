@@ -135,7 +135,7 @@ t_graphe* ecriture_fichier_eau(t_graphe* map, t_tile* case_arrive)
     return map;
 }
 
-void maj_capacite(t_tile* chateau_eau, t_tile* maison)//tester avec ça sinon utiliser un double pointeur
+void maj_capacite(t_tile* chateau_eau, t_tile* maison)
 {
     int nb_habitant_restant=maison->element->nb_habitant-maison->element->eau_actuelle;
     if(chateau_eau->element->capacite>=nb_habitant_restant)
@@ -154,7 +154,7 @@ void maj_capacite(t_tile* chateau_eau, t_tile* maison)//tester avec ça sinon ut
 
 t_graphe* dijkstra(t_graphe* map, t_tile* sommet_de_depart)
 {
-    printf("\nlancement dijkstra\n");
+    //printf("\nlancement dijkstra\n");
     int poids_temp;
     t_tile* case_analysee,* voisin_actuel;
     t_liste* liste_voisin;
@@ -243,19 +243,19 @@ t_graphe* dijkstra(t_graphe* map, t_tile* sommet_de_depart)
                 if(voisin_actuel->case_mere->element->eau_actuelle<voisin_actuel->case_mere->element->nb_habitant)//si il reste des habitants qui doivent être alimenté en eau
                 {
                     //voisin_actuel->parent=case_analysee; on met cette ligne si on veut que la case de la maison soit prise dans le chemin
-                    printf("maison trouve\n");
+                    //printf("maison trouve\n");
                     //printf("case [%d][%d] -> parent [%d][%d]\n", voisin_actuel->position.ligne, voisin_actuel->position.colonne, voisin_actuel->parent->position.ligne, voisin_actuel->parent->position.colonne);
                     //faire toute les maj sur l'habitation en fonction de l'eau distrib
                     maj_capacite(sommet_de_depart, voisin_actuel->case_mere);
                     //retracer le chemin et le mettre sur la map -1
-                    printf("compteur eau maison [%d][%d] : %d\n", voisin_actuel->case_mere->position.ligne, voisin_actuel->case_mere->position.colonne, voisin_actuel->case_mere->element->eau_actuelle);
-                    temp =voisin_actuel->case_mere->element->chateau_approvisionnement;
-                    printf("Approvisionnement : \n");
+                    //printf("compteur eau maison [%d][%d] : %d\n", voisin_actuel->case_mere->position.ligne, voisin_actuel->case_mere->position.colonne, voisin_actuel->case_mere->element->eau_actuelle);
+                    /*temp =voisin_actuel->case_mere->element->chateau_approvisionnement;
+                    //printf("Approvisionnement : \n");
                     while(temp!=NULL)
                     {
-                        printf("chateau [%d][%d] : %d\n", temp->n->position.ligne, temp->n->position.colonne, temp->montant_distribue);
+                        //printf("chateau [%d][%d] : %d\n", temp->n->position.ligne, temp->n->position.colonne, temp->montant_distribue);
                         temp=temp->next;
-                    }
+                    }*/
                     map=ecriture_fichier_eau(map, case_analysee);//on part de la route adajacente à la maison
                 }
 
@@ -341,7 +341,7 @@ t_graphe* electricite(t_graphe* map, int* capa_usine)
     //On calcul la capacite totale de la ville
     *capa_usine=(compteur_usine*5000);
 
-    for (int i = 0; i < NBLIGNE; i++)//parcours de toute les cases du tableau pour trouver les habitations
+    for (int i = 0; i < NBLIGNE; i++)//parcours de toute les cases du tableau pour trouver les habitations !!! on peut peut etre optimiser en utilisant la liste d'habitation
     {
         for (int j = 0; j < NBCOLONNE; j++) {
             if ((map->grille[i][j]->element->type >= 4) && (map->grille[i][j]->element->type <=9) )//dès qu'on a trouve une habitation
@@ -392,7 +392,7 @@ int verification_connexite_route(t_graphe* map, t_tile* case_actu)
 {
     int verif_route=0;
     t_liste* voisin_case;
-    if(case_actu->element->type==3)
+    if(case_actu->element->type==3 || case_actu->element->type==2)
     {
         if(case_actu->element->orientation==1)
         {
@@ -454,26 +454,202 @@ int verification_connexite_route(t_graphe* map, t_tile* case_actu)
 
 }
 
-t_graphe* cycle_habitation(t_graphe* map)
+int validation_evolution(t_tile* batiment, int* nb_habitant)//renvoie 1 pour améliorer, 0 pour rien faire, -1 pour regresser?
 {
+    switch (batiment->element->type) {
+        case 4:
+            printf("evolution\n");
+            if(batiment->element->alimente==1)//et que le compteur d'eau soit supérieur a 0 a implémenter!
+            {
+                printf("amelioration bat[%d][%d]\n", batiment->position.ligne, batiment->position.colonne);
+                batiment->element->type++;
+                batiment->element->nb_habitant=10;
+                *nb_habitant+=10;
+                return 1;
+            }
+            else
+            {
+                return 0;
+            }
+        case 5:
+            printf("evolution\n");
+
+            if(batiment->element->alimente==1)
+            {
+                if((float)batiment->element->eau_actuelle/(float)batiment->element->nb_habitant==1)//si l'habitation est alimenté a plus de 90% en eau elle s'améliore
+                {
+
+                    batiment->element->type++;
+                    batiment->element->nb_habitant=50;
+                    *nb_habitant+=40;
+                    return 1;
+                }
+                else if((float)batiment->element->eau_actuelle/(float)batiment->element->nb_habitant>0)//0% car si on est a 0 personne n'est alimenté et donc ça passe a l'état de ruine
+                {
+                    return 0;//il se passe rien
+                }
+                else
+                {
+                    batiment->element->type=9;//on passe a l'état de ruine
+                    batiment->element->nb_habitant=0;
+                    *nb_habitant-=10;
+                    return 1;
+
+                }
+            }
+            else
+            {
+                batiment->element->type=9;//on passe a l'état de ruine
+                batiment->element->nb_habitant=0;
+                *nb_habitant-=10;
+                return 1;
+
+            }
+        case 6:
+            printf("evolution\n");
+
+            if(batiment->element->alimente==1)
+            {
+                if((float)batiment->element->eau_actuelle/(float)batiment->element->nb_habitant==1)//si l'habitation est alimenté a plus de 90% en eau elle s'améliore
+                {
+                    batiment->element->type++;
+                    batiment->element->nb_habitant=100;
+                    *nb_habitant+=50;
+                    return 1;
+                }
+                else if((float)batiment->element->eau_actuelle/(float)batiment->element->nb_habitant>0.20)//20% car en dessous on est à 10 habitants alimentés en eau donc regression
+                {
+                    return 0;//il se passe rien
+                }
+                else
+                {
+                    batiment->element->type--;//on passe a l'état de cabane
+                    batiment->element->nb_habitant=10;
+                    *nb_habitant-=40;
+                    return 1;
+                }
+            }
+            else
+            {
+                batiment->element->type--;//on passe a l'état de cabane
+                batiment->element->nb_habitant=10;
+                *nb_habitant-=40;
+                return 1;
+            }
+        case 7:
+            printf("evolution\n");
+
+            if(batiment->element->alimente==1)
+            {
+                if((float)batiment->element->eau_actuelle/(float)batiment->element->nb_habitant==1)//si l'habitation est alimenté a plus de 90% en eau elle s'améliore
+                {
+                    batiment->element->type++;
+                    batiment->element->nb_habitant=1000;
+                    *nb_habitant+=900;
+                    return 1;
+
+                }
+                else if((float)batiment->element->eau_actuelle/(float)batiment->element->nb_habitant>0.50)//50% car en dessous on est à 50 habitants alimentés en eau donc regression
+                {
+                    return 0;//il se passe rien
+                }
+                else
+                {
+                    batiment->element->type--;//on passe a l'état de maison
+                    batiment->element->nb_habitant=50;
+                    *nb_habitant-=50;
+                    return 1;
+                }
+            }
+            else
+            {
+                batiment->element->type--;//on passe a l'état de maison
+                batiment->element->nb_habitant=50;
+                *nb_habitant-=50;
+                return 1;
+            }
+        case 8:
+            printf("evolution\n");
+
+            if(batiment->element->alimente==1)
+            {
+                if((float)batiment->element->eau_actuelle/(float)batiment->element->nb_habitant>0.10)//10% car en dessous on est à 100 habitants alimentés en eau donc regression
+                {
+                    return 0;//il se passe rien
+                }
+                else
+                {
+                    batiment->element->type--;//on passe a l'état d'immeuble
+                    batiment->element->nb_habitant=100;
+                    *nb_habitant-=900;
+                    return 1;
+                }
+            }
+            else
+            {
+                batiment->element->type--;//on passe a l'état d'immeuble
+                batiment->element->nb_habitant=100;
+                *nb_habitant-=900;
+                return 1;
+            }
+        case 9:
+            printf("evolution\n");
+
+            if(batiment->element->alimente==1)
+            {
+                batiment->element->type=5;
+                batiment->element->nb_habitant=10;
+                *nb_habitant+=10;
+                return 1;
+            }
+            else
+            {
+                return 0;
+            }
+        default:
+            return 0;
+    }
+}
+
+t_graphe* cycle_habitation(t_graphe* map, int* capa_usine, long* compteur_argent, int* nb_habitant)
+{
+    int changement;
     //parcours du tableau des maisons au lieu du parcours de toute la map
-    for(int i=0 ; i<NBLIGNE; i++)
+    t_liste* parcours_habitation=map->liste_hab;
+    while(parcours_habitation!=NULL)
+    {
+        if(clock()/CLOCKS_PER_SEC-parcours_habitation->n->element->compteur==5)//si on a fait un cycle
+        {
+            parcours_habitation->n->element->compteur=clock()/CLOCKS_PER_SEC;
+            *compteur_argent=*compteur_argent+parcours_habitation->n->element->nb_habitant;
+            changement=validation_evolution(parcours_habitation->n, nb_habitant);
+            if(changement==1)
+            {
+                map=distribution_eau(map);
+                map=electricite(map, capa_usine);
+            }
+        }
+        parcours_habitation=parcours_habitation->next;
+    }
+    majFichierPlacementElement(map);
+    return map;
+}
+
+int compte_eau(t_graphe* map)
+{
+    int compteur_eau=0;
+    for(int i = 0; i<NBLIGNE; i++)
     {
         for(int j=0; j<NBCOLONNE; j++)
         {
-            if(map->grille[i][j]->element->type>=4 && map->grille[i][j]->element->type<=10)
+            if(map->grille[i][j]->element->type==2)
             {
-                if(clock()/CLOCKS_PER_SEC-map->grille[i][j]->element->compteur==5)
+                if(verification_connexite_route(map, map->grille[i][j]))
                 {
-                    map->grille[i][j]->element->compteur=clock()/CLOCKS_PER_SEC;
-                    if(map->grille[i][j]->element->type<9)
-                    {
-                        map->grille[i][j]->element->type++;
-                    }
+                    compteur_eau+=map->grille[i][j]->element->capacite;
                 }
             }
         }
     }
-    majFichierPlacementElement(map);
-    return map;
+    return compteur_eau;
 }

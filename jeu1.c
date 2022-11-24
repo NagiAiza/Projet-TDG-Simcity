@@ -2,8 +2,8 @@
 // Created by alexi on 02/11/2022.
 //
 #include "jeu1.h"
-#include "listeRelated.h"
 #include "math.h"
+#include "listeRelated.h"
 
 
 t_tile* associerCaseSouris(t_graphe* map, t_pos souris)
@@ -89,6 +89,7 @@ t_graphe* makeGrid()//penser a crer la libération de données
         g->mat_chemin_eau[i]=(int*) calloc(NBCOLONNE,sizeof(int));
     }
     g->mat_adjacence[17][0]=1;
+    g->liste_hab=creer();
 
     return g;
 }
@@ -438,13 +439,14 @@ t_graphe* A_star(t_graphe* g, t_tile* depart, t_tile* arrive/*position souris*/)
     return g;
 }
 
-void initialisation_habitation(t_tile* case_hab)
+void initialisation_habitation(t_graphe* map, t_tile* case_hab)
 {
-    case_hab->element->nb_habitant=1500;
+    case_hab->element->nb_habitant=0;
     case_hab->element->eau_actuelle=0;
+    case_hab->element->alimente=0;
     case_hab->element->compteur=clock()/CLOCKS_PER_SEC;
     case_hab->element->chateau_approvisionnement=creer2();
-    case_hab->element->centrale_approvisionnement=creer2();
+    map->liste_hab= insererNoeud(map->liste_hab, case_hab);
 }
 
 void initialisation_chateau_eau(t_tile* case_chateau)

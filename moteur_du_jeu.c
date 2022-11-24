@@ -11,6 +11,8 @@ void jeu()//sous programme qui fera tourner tout le jeu
     int decalageX; // Position de l'écran réel dans le repère du décor...
     long compteur_argent=500000;
     int capa_usine=0;
+    int nb_habitant=0;
+    int capa_eau=0;
     t_pos souris;
     souris.ligne=0;
     souris.colonne=0;
@@ -41,7 +43,9 @@ void jeu()//sous programme qui fera tourner tout le jeu
         if ( decalageX < 0 ) decalageX=0;
         if ( decalageX > liste_buffer->buffer_map->w - SCREEN_W +124) decalageX=liste_buffer->buffer_map->w - SCREEN_W+124;
 
-        affichageTotal(map, liste_image, liste_buffer, souris, compteur_argent, niv_visu, capa_usine, CLK_debut);
+        capa_eau=compte_eau(map);
+
+        affichageTotal(map, liste_image, liste_buffer, souris, compteur_argent, niv_visu, capa_usine, CLK_debut, nb_habitant, capa_eau);
 
 
         if(mouse_x>124 && mouse_y<640)
@@ -63,24 +67,13 @@ void jeu()//sous programme qui fera tourner tout le jeu
 
         map=action(map, liste_buffer, liste_image, &choix, souris, &rotation, &niv_visu, &case_select, &algo_A, &compteur_argent, &capa_usine);
 
-        map=cycle_habitation(map);
+        map=cycle_habitation(map, &capa_usine, &compteur_argent, &nb_habitant);
         blit(liste_buffer->buffer_menu, liste_buffer->buffer_final, 0, 0, 0, 0, SCREEN_W, SCREEN_H);
         blit(liste_buffer->buffer_map, liste_buffer->buffer_final, decalageX, 0, 124, 0, SCREEN_W, SCREEN_H);
         blit(liste_buffer->buffer_final, screen, 0, 0, 0, 0, SCREEN_W, SCREEN_H);
 
 
     }
-   for(int i=0 ; i<NBLIGNE; i++)
-   {
-       for(int j=0; j<NBCOLONNE; j++)
-       {
-           if(map->grille[i][j]->element->type==4)
-           {
-               printf("maison [%d][%d] :\n", i, j);
-               printf("compteur eau : %d\n", map->grille[i][j]->element->eau_actuelle);
-           }
-       }
-   }
     //libération de la mémoire
     show_mouse(NULL);
     liberation_memoire_bitmaps(liste_image, liste_buffer);
