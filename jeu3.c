@@ -3,6 +3,7 @@
 //
 
 #include "jeu3.h"
+#include "listeRelated.h"
 
 
 t_graphe* remplissage_matrice_caserne(t_graphe* g, int ligne, int colonne, int type)
@@ -11,7 +12,7 @@ t_graphe* remplissage_matrice_caserne(t_graphe* g, int ligne, int colonne, int t
     return g;
 }
 
-t_graphe* caserne_de_pompier(t_graphe* map, int a, int b, int choix)
+t_graphe* caserne_de_pompier(t_graphe* map, int a, int b, int choix)//verifier la connexité a la route
 {
     for (int i = -10; i < 10; i++)
     {
@@ -42,42 +43,22 @@ t_graphe* caserne_de_pompier(t_graphe* map, int a, int b, int choix)
 
 }
 
-/*void incendie (t_graphe* map)
+void incendie (t_graphe* map)
 {
-    srand(time(NULL));
+    //si il y a un incendie on change l'état incendie de la maison a 1, si jusqu'au prochain cycle il n'est pas protégé alors ruine
+    t_liste* parcourt=map->liste_hab;
 
-    int temp = 0;
-    int nbreMaison = 0;
-    //determiner toute les maisons du graphe adjacent
-    nbreMaison = nbre_maison(map);
-
-    printf ("nombre de maison : %d\n", nbreMaison);
-
-    t_pos* tabMaison = (t_pos*) calloc(2,sizeof(t_pos));
-
-    for (int i=0 ; i<NBLIGNE ; i++)
-    {
-        for (int j=0 ; j<NBCOLONNE ; j++)
-        {//map->grille[i][j]->element->type==4 && map->grille[i][j]->element->type>=6 && map->grille[i][j]->element->type<=9
-            if (map->mat_adjacence[i][j] == 4 && map->mat_adjacence[i-1][j] == 4 && map->mat_adjacence[i+1][j] == 4 && map->mat_adjacence[i][j-1] == 4 && map->mat_adjacence[i][j+1] == 4)
-            {
-                printf ("%d / %d\n", i,j);
-                tabMaison[temp].ligne=i;
-                tabMaison[temp].colonne=j;
-                temp++;
-            }
-        }
-    }
     int aleatoire=0;
-    for (int i = 0 ; i<nbreMaison ; i++)
+
+    while(parcourt!=NULL)
     {
         aleatoire = rand() % 4 + 1;
         printf ("nbre aleatoire --> %d\n", aleatoire);
 
         if (aleatoire == 1 )
         {
-            printf ("maison %d a un incendie !", i);
-            if (map->mat_adj_caserne[tabMaison[i].ligne][tabMaison[i].colonne] == 5)
+            printf ("maison [%d][%d] a un incendie !", parcourt->n->position.ligne, parcourt->n->position.colonne);
+            if (map->mat_adj_caserne[parcourt->n->position.ligne][parcourt->n->position.colonne] == 5)
             {
                 printf ("--------->  MAISON PROTEGE\n");
             }
@@ -86,7 +67,8 @@ t_graphe* caserne_de_pompier(t_graphe* map, int a, int b, int choix)
                 printf ("-------- c la desh --------\n");
             }
         }
+        parcourt=parcourt->next;
     }
-}*/
+}
 
 

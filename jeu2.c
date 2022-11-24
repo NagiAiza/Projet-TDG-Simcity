@@ -591,7 +591,7 @@ int verification_connexite_route(t_graphe* map, t_tile* case_actu)
 
 }
 
-int validation_evolution(t_tile* batiment, int* nb_habitant)//renvoie 1 pour améliorer, 0 pour rien faire, -1 pour regresser?
+int validation_evolution(t_tile* batiment, int* nb_habitant, int compteur_eau)//renvoie 1 pour améliorer, 0 pour rien faire, -1 pour regresser?
 {
     switch (batiment->element->type) {
         case 4:
@@ -747,7 +747,7 @@ int validation_evolution(t_tile* batiment, int* nb_habitant)//renvoie 1 pour am�
     }
 }
 
-t_graphe* cycle_habitation(t_graphe* map, int* capa_usine, long* compteur_argent, int* nb_habitant)
+t_graphe* cycle_habitation(t_graphe* map, int* capa_usine, long* compteur_argent, int* nb_habitant, int compteur_eau)
 {
     int changement;
     //parcours du tableau des maisons au lieu du parcours de toute la map
@@ -758,7 +758,7 @@ t_graphe* cycle_habitation(t_graphe* map, int* capa_usine, long* compteur_argent
         {
             parcours_habitation->n->element->compteur=clock()/CLOCKS_PER_SEC;
             *compteur_argent=*compteur_argent+parcours_habitation->n->element->nb_habitant;
-            changement=validation_evolution(parcours_habitation->n, nb_habitant);
+            changement=validation_evolution(parcours_habitation->n, nb_habitant, compteur_eau);
             if(changement==1)
             {
                 map=distribution_eau(map);

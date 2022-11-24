@@ -6,6 +6,7 @@
 
 #include "barre_outil.h"
 #include "jeu2.h"
+#include "jeu3.h"
 #include "listeRelated.h"
 
 
@@ -85,7 +86,7 @@ int choixAction(BUFFER* liste_buffer, IMAGE*liste_image)
     return 0;
 }
 
-t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* choix, t_pos souris, int* rotation, int* niv_visu, t_tile** case_select, int* algo_A, long* argent_restant, int* capa_usine)
+t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* choix, t_pos souris, int* rotation, int* niv_visu, t_tile** case_select, int* algo_A, long* argent_restant, int* capa_usine, int* exit)
 {
     int depense;
     t_tile* parcour_chemin=NULL;//tuile auxilière pour reparcourir les chemins calculé
@@ -338,7 +339,7 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
             {
                 if (souris.ligne >= 2 && souris.ligne < 35 - 1 && souris.colonne >= 2 && souris.colonne < 45 - 3)//blindage pour pas sortir de la map en fonction des deux moyens de rotation
                 {
-                    draw_sprite(liste_buffer->buffer_map, liste_image->caserne_pompiers, (SCREEN_W / 2 - 36) + (souris.colonne - 3) * 14 - (souris.ligne) * 14, (souris.colonne - 3) * 8 + (souris.ligne) * 8 - 8);//pq le -8? jsp j'ai tatonné
+                    draw_sprite(liste_buffer->buffer_map, liste_image->caserne_pompiers, (SCREEN_W / 2 - 36) + (souris.colonne - 3) * 14 - (souris.ligne) * 14, (souris.colonne - 3) * 8 + (souris.ligne) * 8 - 52);//pq le -8? jsp j'ai tatonné
                     if(mouse_b & 1)
                     {
                         if(!verification_chevauchement(map, souris.ligne, souris.colonne, 10, *rotation))
@@ -367,7 +368,7 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
             {
                 if (souris.ligne >= 3 && souris.ligne < 35-2 && souris.colonne >= 1 && souris.colonne < 45-2 )//blindage pour pas sortir de la map en fonction des deux moyens de rotation
                 {
-                    draw_sprite_h_flip(liste_buffer->buffer_map, liste_image->caserne_pompiers, (SCREEN_W/2-36)+(souris.colonne-3)*14-(souris.ligne)*14, (souris.colonne-3)*8+(souris.ligne)*8-8);
+                    draw_sprite_h_flip(liste_buffer->buffer_map, liste_image->caserne_pompiers, (SCREEN_W/2-36)+(souris.colonne-3)*14-(souris.ligne)*14, (souris.colonne-3)*8+(souris.ligne)*8-52);
                     if(mouse_b & 1)
                     {
                         if (!verification_chevauchement(map, souris.ligne, souris.colonne, 10, *rotation))
@@ -383,7 +384,7 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
                                         map = remplissage_matrice_adjacence(map, souris.ligne + i, souris.colonne + j,10, map->grille[souris.ligne][souris.colonne]);
                                     }
                                 }
-                                caserne_de_pompier(map, souris.ligne , souris.colonne , 10);
+                                caserne_de_pompier(map, souris.ligne , souris.colonne , *choix);
 
                                 *argent_restant-=depense;
                             }
@@ -405,8 +406,9 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
             *niv_visu=2;
             *choix=0;
             break;
-        case 9:
-            textout_ex ( liste_buffer->buffer_final, font, "Action 9", 511, 326,makecol (255, 255, 255), -1); //texte explicatif
+        case 9://sortie du jeu
+            *exit=1;
+            *choix=0;
             break;
         default:
             textout_ex ( liste_buffer->buffer_final, font, "Rien de selectionne", 511, 326,makecol (255, 255, 255), -1); //texte explicatif

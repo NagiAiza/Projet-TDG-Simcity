@@ -341,6 +341,33 @@ int verification_chevauchement(t_graphe* map, int ligne, int colonne, int choix,
                 }
             }
             break;
+        case 10:
+            if(rotation==1)
+            {
+                for(int i=-2; i<2; i++)
+                {
+                    for(int j=-2; j<4; j++)
+                    {
+                        if(map->mat_adjacence[ligne+i][colonne+j]!=0)
+                        {
+                            verif=1;
+                        }
+                    }
+                }
+            }
+            else if(rotation==-1)
+            {
+                for(int i = -3; i < 3; i++)
+                {
+                    for(int j = -1; j < 3; j++)
+                    {
+                        if(map->mat_adjacence[ligne+i][colonne+j]!=0)
+                        {
+                            verif=1;
+                        }
+                    }
+                }
+            }
         default:
             break;
     }

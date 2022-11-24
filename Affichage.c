@@ -161,6 +161,16 @@ void affichageElement(BITMAP* bufferMap, IMAGE* liste, int type, int ligne, int 
         case 9://habitation au stade de ruine
             draw_sprite(bufferMap, liste->ruine, (SCREEN_W/2-36)+(colonne-2)*14-ligne*14, (colonne-2)*8+ligne*8);
             break;
+        case 10:
+            if(rotation==1)
+            {
+                draw_sprite(bufferMap, liste->caserne_pompiers, (SCREEN_W / 2 - 36) + (colonne - 3) * 14 - (ligne) * 14, (colonne - 3) * 8 + (ligne) * 8 - 52);//pq le -8 - 44? jsp j'ai tatonné
+            }
+            else if(rotation==-1)
+            {
+                draw_sprite_h_flip(bufferMap, liste->caserne_pompiers, (SCREEN_W/2-36)+(colonne-3)*14-(ligne)*14, (colonne-3)*8+(ligne)*8-52);
+            }
+            break;
         default:
             break;
     }
