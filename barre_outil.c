@@ -1,3 +1,5 @@
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "Simplify"
 //
 // Created by alexi on 03/11/2022.
 //
@@ -6,50 +8,88 @@
 #include "jeu2.h"
 #include "listeRelated.h"
 
-int choixAction()
+
+int choixAction(BUFFER* liste_buffer, IMAGE*liste_image)
 {
-    if(((mouse_x>=6)&&(mouse_x<=39)&&(mouse_y>=90)&&(mouse_y<=126))&&(mouse_b&1)) //Si on clique sur la premiere case
+    ///passer la souris sur la case compteur habitants pour afficher le nom de la case
+    if(((mouse_x>=62)&&(mouse_x<=117)&&(mouse_y>=675)&&(mouse_y<=702)))
+    {
+        //textprintf_ex(liste_buffer->buffer_menu,font,10,20,makecol(0,0,0),makecol(255,255,255),"bouton selec");
+        blit(liste_image->info_habitants, liste_buffer->buffer_menu,0, 0,  12, 708, 100, 13);
+    }
+    ///passer la souris sur la case compteur eau pour afficher le nom de la case
+    if(((mouse_x>=801)&&(mouse_x<=935)&&(mouse_y>=676)&&(mouse_y<=703)))
+    {
+        blit(liste_image->info_eau, liste_buffer->buffer_menu,0, 0,  802, 711, 100, 13);
+    }
+    ///passer la souris sur la case compteur elec pour afficher le nom de la case
+    if(((mouse_x>=548)&&(mouse_x<=683)&&(mouse_y>=675)&&(mouse_y<=703)))
+    {
+        blit(liste_image->info_elec, liste_buffer->buffer_menu,0, 0,  549, 708, 100, 13);
+    }
+    ///passer la souris sur la case compteur monaie pour afficher le nom de la case
+    if(((mouse_x>=2)&&(mouse_x<=105)&&(mouse_y>=674)&&(mouse_y<=702)))
+    {
+        blit(liste_image->info_monnaie, liste_buffer->buffer_menu,0, 0,  7, 707, 100, 13);
+    }
+    ///passer la souris sur la case compteur habitants pour afficher le nom de la case
+    if(((mouse_x>=288)&&(mouse_x<=420)&&(mouse_y>=671)&&(mouse_y<=702)))
+    {
+        blit(liste_image->info_habitants, liste_buffer->buffer_menu,0, 0,  288, 705, 100, 13);
+    }
+
+    if(((mouse_x>=7)&&(mouse_x<=120)&&(mouse_y>=137)&&(mouse_y<=166))&&(mouse_b&1)) //Si on clique sur la case route
     {
         return 1;
     }
-    if(((mouse_x>=44)&&(mouse_x<=78)&&(mouse_y>=88)&&(mouse_y<=122))&&(mouse_b&1)) //Si on clique sur la deuxieme case
-    {
-        return 2;
-    }
-    if(((mouse_x>=87)&&(mouse_x<=119)&&(mouse_y>=91)&&(mouse_y<=123))&&(mouse_b&1)) //3eme case
-    {
-        return 3;
-    }
-    if(((mouse_x>=7)&&(mouse_x<=37)&&(mouse_y>=138)&&(mouse_y<=170))&&(mouse_b&1))
+    if(((mouse_x>=6)&&(mouse_x<=119)&&(mouse_y>=184)&&(mouse_y<=209))&&(mouse_b&1)) //Si on clique sur case batiments
     {
         return 4;
     }
-    if(((mouse_x>=45)&&(mouse_x<=77)&&(mouse_y>=137)&&(mouse_y<=170))&&(mouse_b&1))
+    if(((mouse_x>=8)&&(mouse_x<=118)&&(mouse_y>=225)&&(mouse_y<=254))&&(mouse_b&1)) //elec
+    {
+        return 3;
+    }
+    if(((mouse_x>=7)&&(mouse_x<=116)&&(mouse_y>=270)&&(mouse_y<=299))&&(mouse_b&1)) // eau
+    {
+        return 2;
+    }
+    if(((mouse_x>=5)&&(mouse_x<=119)&&(mouse_y>=311)&&(mouse_y<=343))&&(mouse_b&1)) // pompiers
     {
         return 5;
     }
-    if(((mouse_x>=85)&&(mouse_x<=119)&&(mouse_y>=137)&&(mouse_y<=172))&&(mouse_b&1))
+    if(((mouse_x>=6)&&(mouse_x<=115)&&(mouse_y>=313)&&(mouse_y<=339))&&(mouse_b&1))//fleches
+    {
+
+    }
+    if(((mouse_x>=8)&&(mouse_x<=53)&&(mouse_y>=357)&&(mouse_y<=383))&&(mouse_b&1))//pelle
+    {
+
+    }
+    if(((mouse_x>=7)&&(mouse_x<=82)&&(mouse_y>=443)&&(mouse_y<=472))&&(mouse_b&1))//0
     {
         return 6;
     }
-    if(((mouse_x>=6)&&(mouse_x<=37)&&(mouse_y>=182)&&(mouse_y<=218))&&(mouse_b&1))
+    if(((mouse_x>=10)&&(mouse_x<=77)&&(mouse_y>=486)&&(mouse_y<=511))&&(mouse_b&1))//-1
     {
         return 7;
     }
-    if(((mouse_x>=45)&&(mouse_x<=75)&&(mouse_y>=182)&&(mouse_y<=214))&&(mouse_b&1))
+    if(((mouse_x>=8)&&(mouse_x<=78)&&(mouse_y>=524)&&(mouse_y<=552))&&(mouse_b&1))//-2
     {
         return 8;
     }
-    if(((mouse_x>=86)&&(mouse_x<=119)&&(mouse_y>=182)&&(mouse_y<=215))&&(mouse_b&1))//9eme case
+    if(((mouse_x>=47)&&(mouse_x<=116)&&(mouse_y>=602)&&(mouse_y<=629))&&(mouse_b&1))//exit
     {
         return 9;
     }
     return 0;
+    return 0;
+
 }
 
-t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* choix, t_pos souris, int* rotation, int* action_en_cours, t_tile** case_select, int* algo_A, long* argent_restant)
+t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* choix, t_pos souris, int* rotation, int* niv_visu, t_tile** case_select, int* algo_A, long* argent_restant, int* capa_usine)
 {
-    int depense=0;
+    int depense;
     t_tile* parcour_chemin=NULL;//tuile auxilière pour reparcourir les chemins calculé
     switch (*choix) {
         case 1://route
@@ -60,7 +100,7 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
                     draw_sprite(liste_buffer->buffer_map, liste_image->route,(SCREEN_W / 2 - 36) + souris.colonne * 14 - souris.ligne * 14,souris.colonne * 8 + souris.ligne * 8);
                     if (mouse_b & 1)
                     {
-                        if (!verification_chevauchement(map, souris.ligne, souris.colonne, *choix, *rotation) && placement_route(map, souris.ligne, souris.colonne) == 1)
+                        if (!verification_chevauchement(map, souris.ligne, souris.colonne, 1, *rotation) && placement_route(map, souris.ligne, souris.colonne) == 1)
                         {
                             *algo_A = 1;
                             *case_select = map->grille[souris.ligne][souris.colonne];
@@ -79,18 +119,21 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
                     }
                     if (mouse_b & 2)//on valide le chemin final avec le clic droit
                     {
-                        if (!verification_chevauchement(map, souris.ligne, souris.colonne, *choix, *rotation))
+                        if (!verification_chevauchement(map, souris.ligne, souris.colonne, 1, *rotation))
                         {
                             parcour_chemin = map->grille[souris.ligne][souris.colonne];
-                            depense= calcul_depenses(*choix, tailleChemin(parcour_chemin));
+                            depense= calcul_depenses(1, tailleChemin(parcour_chemin));
+
                             if(validation_depense(depense, *argent_restant))
                             {
                                 while (parcour_chemin != NULL) {
-                                    map = placementElement(map, parcour_chemin->position.ligne,parcour_chemin->position.colonne, *choix, *rotation);
-                                    map = remplissage_matrice_adjacence(map, parcour_chemin->position.ligne,parcour_chemin->position.colonne, *choix, NULL);
+                                    map = placementElement(map, parcour_chemin->position.ligne,parcour_chemin->position.colonne, 1, *rotation);
+                                    map = remplissage_matrice_adjacence(map, parcour_chemin->position.ligne,parcour_chemin->position.colonne, 1, map->grille[parcour_chemin->position.ligne][parcour_chemin->position.colonne]);//ici
                                     parcour_chemin = parcour_chemin->parent;
                                 }
                                 *argent_restant-=depense;
+                                map= distribution_eau(map);
+                                map= electricite(map, capa_usine);
                             }
                             *algo_A = 0;//et on sort de l'affichage A*
                         }
@@ -118,23 +161,26 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
             {
                 if (souris.ligne >= 2 && souris.ligne < 35 - 1 && souris.colonne >= 2 && souris.colonne < 45 - 3)//blindage pour pas sortir de la map en fonction des deux moyens de rotation
                 {
-                    draw_sprite(liste_buffer->buffer_map, liste_image->chateau_eau, (SCREEN_W / 2 - 36) + (souris.colonne - 3) * 14 - (souris.ligne) * 14, (souris.colonne - 3) * 8 + (souris.ligne) * 8 - 8);//pq le -8? jsp j'ai tatonné
+                    draw_sprite(liste_buffer->buffer_map, liste_image->eau_fini, (SCREEN_W / 2 - 36) + (souris.colonne - 3) * 14 - (souris.ligne) * 14 , (souris.colonne - 3) * 8 + (souris.ligne) * 8 - 11);//pq le -8? jsp j'ai tatonné
                     if(mouse_b & 1)
                     {
-                        if(!verification_chevauchement(map, souris.ligne, souris.colonne, *choix, *rotation))
+                        if(!verification_chevauchement(map, souris.ligne, souris.colonne, 2, *rotation))
                         {
-                            depense= calcul_depenses(*choix, 0);
+                            depense= calcul_depenses(2, 0);
                             if(validation_depense(depense, *argent_restant))
                             {
-                                map = placementElement(map, souris.ligne, souris.colonne, *choix, *rotation);
+                                map = placementElement(map, souris.ligne, souris.colonne, 2, *rotation);
 
                                 for (int i = -2; i < 2; i++)
                                 {
                                     for (int j = -2; j < 4; j++)
                                     {
-                                        map = remplissage_matrice_adjacence(map, souris.ligne + i, souris.colonne + j,*choix, map->grille[souris.ligne][souris.colonne]);
+                                        map = remplissage_matrice_adjacence(map, souris.ligne + i, souris.colonne + j,2, map->grille[souris.ligne][souris.colonne]);
                                     }
                                 }
+                                initialisation_chateau_eau(map->grille[souris.ligne][souris.colonne]);
+                                //printf("eau : %d", map->grille[souris.ligne][souris.colonne]->element->capacite);
+                                map=distribution_eau(map);
                                 *argent_restant-=depense;
                             }
                         }
@@ -145,22 +191,25 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
             {
                 if (souris.ligne >= 3 && souris.ligne < 35-2 && souris.colonne >= 1 && souris.colonne < 45-2 )//blindage pour pas sortir de la map en fonction des deux moyens de rotation
                 {
-                    draw_sprite_h_flip(liste_buffer->buffer_map, liste_image->chateau_eau, (SCREEN_W/2-36)+(souris.colonne-3)*14-(souris.ligne)*14, (souris.colonne-3)*8+(souris.ligne)*8-8);
+                    draw_sprite_h_flip(liste_buffer->buffer_map, liste_image->eau_fini, (SCREEN_W/2-36)+(souris.colonne-3)*14-(souris.ligne)*14, (souris.colonne-3)*8+(souris.ligne)*8-11);//-3 par rapport a l'autre orientation pour palier la différence de hauteur
                     if(mouse_b & 1)
                     {
-                        if (!verification_chevauchement(map, souris.ligne, souris.colonne, *choix, *rotation))
+                        if (!verification_chevauchement(map, souris.ligne, souris.colonne, 2, *rotation))
                         {
-                            depense= calcul_depenses(*choix, 0);
+                            depense= calcul_depenses(2, 0);
                             if(validation_depense(depense, *argent_restant))
                             {
-                                map = placementElement(map, souris.ligne, souris.colonne, *choix, *rotation);
+                                map = placementElement(map, souris.ligne, souris.colonne, 2, *rotation);
                                 for (int i = -3; i < 3; i++)
                                 {
                                     for (int j = -1; j < 3; j++)
                                     {
-                                        map = remplissage_matrice_adjacence(map, souris.ligne + i, souris.colonne + j,*choix, map->grille[souris.ligne][souris.colonne]);
+                                        map = remplissage_matrice_adjacence(map, souris.ligne + i, souris.colonne + j,2, map->grille[souris.ligne][souris.colonne]);
                                     }
                                 }
+                                initialisation_chateau_eau(map->grille[souris.ligne][souris.colonne]);
+                                //printf("eau : %d", map->grille[souris.ligne][souris.colonne]->element->capacite);
+                                map=distribution_eau(map);
                                 *argent_restant-=depense;
                             }
                         }
@@ -183,24 +232,26 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
             {
                 if (souris.ligne >= 2 && souris.ligne < 35 - 1 && souris.colonne >= 2 && souris.colonne < 45 - 3)//blindage pour pas sortir de la map en fonction des deux moyens de rotation
                 {
-                    draw_sprite(liste_buffer->buffer_map, liste_image->centrale, (SCREEN_W / 2 - 36) + (souris.colonne - 3) * 14 - (souris.ligne) * 14, (souris.colonne - 3) * 8 + (souris.ligne) * 8 - 8);//pq le -8? jsp j'ai tatonné
+                    draw_sprite(liste_buffer->buffer_map, liste_image->elec_fini, (SCREEN_W / 2 - 36) + (souris.colonne - 3) * 14 - (souris.ligne) * 14, (souris.colonne - 3) * 8 + (souris.ligne) * 8 - 22);//pq le -8? jsp j'ai tatonné
                     if(mouse_b & 1)
                     {
-                        if(!verification_chevauchement(map, souris.ligne, souris.colonne, *choix, *rotation))
+                        if(!verification_chevauchement(map, souris.ligne, souris.colonne, 3, *rotation))
                         {
-                            depense= calcul_depenses(*choix, 0);
+                            depense= calcul_depenses(3, 0);
                             if(validation_depense(depense, *argent_restant))
                             {
-                                map = placementElement(map, souris.ligne, souris.colonne, *choix, *rotation);
+                                map = placementElement(map, souris.ligne, souris.colonne, 3, *rotation);
 
                                 for (int i = -2; i < 2; i++)
                                 {
                                     for (int j = -2; j < 4; j++)
                                     {
 
-                                        map = remplissage_matrice_adjacence(map, souris.ligne + i, souris.colonne + j,*choix, map->grille[souris.ligne][souris.colonne]);
+                                        map = remplissage_matrice_adjacence(map, souris.ligne + i, souris.colonne + j,3, map->grille[souris.ligne][souris.colonne]);
                                     }
                                 }
+                                initialisation_centrale(map->grille[souris.ligne][souris.colonne]);
+                                map= electricite(map, capa_usine);
                                 *argent_restant-=depense;
                             }
                         }
@@ -211,22 +262,24 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
             {
                 if (souris.ligne >= 3 && souris.ligne < 35-2 && souris.colonne >= 1 && souris.colonne < 45-2 )//blindage pour pas sortir de la map en fonction des deux moyens de rotation
                 {
-                    draw_sprite_h_flip(liste_buffer->buffer_map, liste_image->centrale, (SCREEN_W/2-36)+(souris.colonne-3)*14-(souris.ligne)*14, (souris.colonne-3)*8+(souris.ligne)*8-8);
+                    draw_sprite_h_flip(liste_buffer->buffer_map, liste_image->elec_fini, (SCREEN_W/2-36)+(souris.colonne-3)*14-(souris.ligne)*14, (souris.colonne-3)*8+(souris.ligne)*8-22);//-14 par rapport a l'autre orientation pour palier la différence de hauteur
                     if(mouse_b & 1)
                     {
-                        if (!verification_chevauchement(map, souris.ligne, souris.colonne, *choix, *rotation))
+                        if (!verification_chevauchement(map, souris.ligne, souris.colonne, 3, *rotation))
                         {
-                            depense= calcul_depenses(*choix, 0);
+                            depense= calcul_depenses(3, 0);
                             if(validation_depense(depense, *argent_restant))
                             {
-                                map = placementElement(map, souris.ligne, souris.colonne, *choix, *rotation);
+                                map = placementElement(map, souris.ligne, souris.colonne, 3, *rotation);
                                 for (int i = -3; i < 3; i++)
                                 {
                                     for (int j = -1; j < 3; j++)
                                     {
-                                        map = remplissage_matrice_adjacence(map, souris.ligne + i, souris.colonne + j,*choix, map->grille[souris.ligne][souris.colonne]);
+                                        map = remplissage_matrice_adjacence(map, souris.ligne + i, souris.colonne + j,3, map->grille[souris.ligne][souris.colonne]);
                                     }
                                 }
+                                initialisation_centrale(map->grille[souris.ligne][souris.colonne]);
+                                map= electricite(map, capa_usine);
                                 *argent_restant-=depense;
                             }
                         }
@@ -244,42 +297,49 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
             }
             if(souris.ligne>=0+1 && souris.colonne>=0+1 && souris.ligne<35-1 && souris.colonne<45-1)
             {
-                draw_sprite(liste_buffer->buffer_map, liste_image->batiment, (SCREEN_W/2-36)+(souris.colonne-2)*14-(souris.ligne)*14, (souris.colonne-2)*8+(souris.ligne)*8);
+                draw_sprite(liste_buffer->buffer_map, liste_image->terrain_vague, (SCREEN_W/2-36)+(souris.colonne-2)*14-(souris.ligne)*14, (souris.colonne-2)*8+(souris.ligne)*8);
                 if(mouse_b & 1)
                 {
-                    if(!verification_chevauchement(map, souris.ligne, souris.colonne, *choix, *rotation))
+                    if(!verification_chevauchement(map, souris.ligne, souris.colonne, 4, *rotation))
                     {
-                        depense= calcul_depenses(*choix, 0);
+                        depense= calcul_depenses(4, 0);
+                        initialisation_habitation(map, map->grille[souris.ligne][souris.colonne]);
                         if(validation_depense(depense, *argent_restant))
                         {
-                            map = placementElement(map, souris.ligne, souris.colonne, *choix, *rotation);
+                            map = placementElement(map, souris.ligne, souris.colonne, 4, *rotation);
 
                             for(int i=-1; i<2; i++)
                             {
                                 for(int j=-1; j<2; j++)
                                 {
-                                    map= remplissage_matrice_adjacence(map, souris.ligne+i, souris.colonne+j, *choix, map->grille[souris.ligne][souris.colonne]);
+                                    map= remplissage_matrice_adjacence(map, souris.ligne+i, souris.colonne+j, 4, map->grille[souris.ligne][souris.colonne]);
                                 }
                             }
+                            map= electricite(map, capa_usine);
                             *argent_restant-=depense;
+                            map=distribution_eau(map);
                         }
+
+
                     }
                     *choix=0; // dès qu'on a fait l'action on peut revenir a un etat neutre de choix
                 }
             }
-            textout_ex ( liste_buffer->buffer_final, font, "Action 4", 511, 326,makecol (255, 255, 255), -1); //texte explicatif
             break;
-        case 5:
+        case 5://caserne de pompier
             textout_ex ( liste_buffer->buffer_final, font, "Action 5", 511, 326,makecol (255, 255, 255), -1); //texte explicatif
             break;
-        case 6:
-            textout_ex ( liste_buffer->buffer_final, font, "Action 6", 511, 326,makecol (255, 255, 255), -1); //texte explicatif
+        case 6://visualisation niveau 0
+            *niv_visu=0;
+            *choix=0;
             break;
-        case 7:
-            textout_ex ( liste_buffer->buffer_final, font, "Action 7", 511, 326,makecol (255, 255, 255), -1); //texte explicatif
+        case 7://visualisation eau -1
+            *niv_visu=1;
+            *choix=0;
             break;
-        case 8:
-            textout_ex ( liste_buffer->buffer_final, font, "Action 8", 511, 326,makecol (255, 255, 255), -1); //texte explicatif
+        case 8://visualisation elec -2
+            *niv_visu=2;
+            *choix=0;
             break;
         case 9:
             textout_ex ( liste_buffer->buffer_final, font, "Action 9", 511, 326,makecol (255, 255, 255), -1); //texte explicatif
@@ -290,3 +350,4 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
     }
     return map;
 }
+#pragma clang diagnostic pop

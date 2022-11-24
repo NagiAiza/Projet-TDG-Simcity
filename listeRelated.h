@@ -14,6 +14,12 @@ typedef struct liste
     struct liste* prev;
 }t_liste;
 
+typedef struct liste2{
+    t_tile* n;
+    int montant_distribue;
+    struct liste2* next;
+}t_liste2;
+
 t_liste *creer(void);
 t_liste *insererNoeud(t_liste *liste, t_tile *n); //inserer noeud dans la liste
 t_liste *enleverNoeud(t_liste *liste, t_tile *n);
@@ -27,8 +33,15 @@ void liberer(t_liste *l);
 
 
 t_liste* insertion_en_triant(t_liste* liste, t_tile* noeud);//pour file de priorité
+t_liste* insertion_en_triant2(t_liste* liste, t_tile* noeud);
 t_liste* enlever_noeud_debut(t_liste* liste, t_tile** noeud_a_conserver);
 t_liste* actualisation(t_liste* l, t_tile* noeud_a_retrier);
+t_liste* insererNoeudFin(t_liste* liste, t_tile* n);//enfiler
+
+//LISTE 2
+t_liste2 *creer2(void);
+t_liste2 *insererNoeud2(t_liste2 *liste, t_tile *n,int montant_distribue);//inserer noeud debut de la liste dans la liste
+t_liste2* vider_liste(t_liste2* liste);
 
 
 #endif //PROJET_S1_LISTERELATED_H

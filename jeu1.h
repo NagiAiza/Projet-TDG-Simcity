@@ -8,6 +8,7 @@
 #include "stdio.h"
 #include "stdlib.h"
 #include "allegro.h"
+#include "time.h"
 
 
 #define NBLIGNE 35
@@ -18,19 +19,26 @@ typedef struct pos{
     int colonne;
 }t_pos;
 
-
+//j
 typedef struct batiment{
     t_pos position;//elle est déjà dans tile, est ce que je l'utilise quand meme?
-    int type; //1 si route, 2 si chateau d'eau, 3 si elec, 4 a 10 les maisons
+    int type; //1 si route, 2 si chateau d'eau, 3 si elec, 4 a 9 les maisons !!!
     int orientation;//connaitre l'orientation du bat 1 ou 2
 
     // si c'est une habitation
     int stade;//niveau d'évolution
     int nb_habitant;
-    int compteur;//timer à la création de l'habitation
+    int eau_actuelle;
+    long compteur;//timer à la création de l'habitation
+    struct liste2* chateau_approvisionnement;//liste chateaux d'eau qui approvisionnent
+
 
     //si c'est un chateau d'eau
     int capacite;
+    int couleur;//pour l'affichage des % dans chaque hab
+
+    //si centrale_elec
+    int alimente;//1 si alimenté 0 sionon
 }t_batiment;
 
 typedef struct tile{//pour faire la map on fait un tableau à 2 dimensions de tile
@@ -45,12 +53,15 @@ typedef struct tile{//pour faire la map on fait un tableau à 2 dimensions de ti
     struct tile* parent;//pour garder le prédécesseur de chaque case et ainsi retracer le chemin à la fin
     struct liste* voisin;//on initialise les voisins de chaque case en début de programme
 
-    struct tile* case_mere;//donne la case principale du bat
+    struct tile* case_mere;//donne la case principale du batiment
 }t_tile;//rajouter un emplacement qui permette de differencier l'affichage du truc en globalité
 
 typedef struct graphe{
     t_tile*** grille;
     int** mat_adjacence;//vraie matrice d'adjacence avec toutes les cases qui sont remplies pour les batiments
+    int** mat_chemin_eau;//matrice pour repertorier les chemins en eau
+    int** mat_chemin_elec;
+    struct liste* liste_hab;
 }t_graphe;
 
 
@@ -67,6 +78,10 @@ void liberation_donnee(t_graphe* g);// pas forcément utile
 
 int placement_route(t_graphe* map, int ligne, int colonne);
 int verification_chevauchement(t_graphe* map, int ligne, int colonne, int choix, int rotation);
+
+void initialisation_habitation(t_graphe* map, t_tile* case_hab);
+void initialisation_chateau_eau(t_tile* case_chateau);
+void initialisation_centrale(t_tile* case_elec);
 
 ///algo A*
 int distance(t_pos a, t_pos b);

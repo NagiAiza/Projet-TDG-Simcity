@@ -44,220 +44,6 @@ int validation_depense(int depense, long argent_restant)
 }
 
 //--------------------------------------------------------------------
-///horloge
-/*void setTimeout(int milliseconds)
-{
-    if (milliseconds <= 0) {
-        fprintf(stderr, "Count milliseconds for timeout is less or equal to 0\n");
-        return;
-    }
-
-    //chaque seconde
-    int milliseconds_since = clock() * 1000 / CLOCKS_PER_SEC;
-
-    int end = milliseconds_since + milliseconds;
-    do {
-        milliseconds_since = clock() * 1000 / CLOCKS_PER_SEC;
-    } while (milliseconds_since <= end);
-}
-void horloge()
-{
-
-    int compteur= 0;
-    int seconde=0;
-    int minute=0;
-    int heure=0;
-
-    int xseconde=90;
-    int yseconde=25;
-
-    do {
-        do
-        {
-
-            // on affiche l'horloge
-            printf("%d:%d:%d", heure,minute,seconde);
-
-            //textprintf_ex(page, font, 476, 176, makecol(255, 100, 200),-1, "%d",seconde);
-//           if(seconde==0)
-//           {
-//              draw_sprite(page,horloge0,xseconde, yseconde);
-//           }
-//           if(seconde==1)
-//           {
-//              draw_sprite(page,horloge1,xseconde, yseconde);
-//           }
-
-            //le compteur s'incrémente chaque seconde
-            setTimeout(1000);
-            // on incrémente les secondes et le compteur
-            seconde++;
-            compteur++;
-            //on efface la ligne pour re ecrire au meme endroit
-            system("CLS");
-            if(seconde==60) //les minutes s'incrémentes toutes les 60 secondes
-            {
-                minute++;//on incremente les minutes
-            }
-            if(minute==60) //les heures s'incrémentes toutes les 60 minutes
-            {
-                heure++;//on incremente les heures
-            }
-            if(seconde==60) //on repart à 0
-            {
-                seconde=0;
-            }
-            if(minute==60) //on repart à 0
-            {
-                minute=0;
-            }
-            if(heure==60) //on repart à 0
-            {
-                heure=0;
-            }
-
-        }while (seconde < 60);//une minute
-
-    } while (compteur <= 7200);//tourne pendant deux heures
-
-    ///-----
-    // Lancer allegro et le mode graphique
-    allegro_init();
-    // Pour disposer du clavier
-    install_keyboard();
-    // pour disposer de la souris
-    install_mouse();
-
-    // Permet d'installer le clavier et de vérifier l'installation
-    if(install_keyboard() == -1)
-        allegro_message("ERREUR CLAVIER");
-
-    // Initialisation et choix du mode graphique
-    set_color_depth(desktop_color_depth());
-    if (set_gfx_mode(GFX_AUTODETECT_FULLSCREEN,1024,768,0,0)!=0)
-    {
-        allegro_message("probleme gfx mode");
-        allegro_exit();
-        exit(EXIT_FAILURE);
-    }
-
-
-    /// Déclaration des pointeurs sur BITMAP devant recevoir les images
-    // Buffer
-    BITMAP *page;
-    BITMAP *decor;
-    BITMAP *horloge0;
-    BITMAP *horloge1;
-    int done;
-    // buffer
-    page=create_bitmap(SCREEN_W,SCREEN_H);
-    clear_bitmap(page);
-
-    // charger images de fond
-    decor=load_bitmap("images/test_ecran.bmp",NULL);
-    horloge0=load_bitmap("images/horloge/0.bmp",NULL);
-    horloge1=load_bitmap("images/horloge/1.bmp",NULL);
-
-    // pour voir le pointeur de la souris
-    show_mouse(screen);
-
-    if (!decor)
-    {
-        allegro_message("pas pu trouver les images");
-        exit(EXIT_FAILURE);
-    }
-    while (done!=1)
-    {
-
-        //sortie de l'ecran si on appuie sur la touche s
-        while (key[KEY_S])
-        {
-            done=1;
-            destroy_bitmap(page);
-        }
-        // effacer buffer en appliquant décor  (pas de clear_bitmap)
-        blit(decor,page,0,0,0,0,SCREEN_W,SCREEN_H);
-
-        // afficher coordonnées de la souris (%4d = format numérique largeur fixe sur 4 caractères)
-        textprintf_ex(page,font,1,750,makecol(0,255,0),makecol(0,0,0),"%4d %4d",mouse_x,mouse_y);
-
-
-        // afficher tout ça à l'écran
-        blit(page,screen,0,0,0,0,SCREEN_W,SCREEN_H);
-    }
-    ///-----
-}
-void allegro()
-{
-    printf("test!!");
-    // Lancer allegro et le mode graphique
-    allegro_init();
-    // Pour disposer du clavier
-    install_keyboard();
-    // pour disposer de la souris
-    install_mouse();
-
-
-    int xseconde=90;
-    int yseconde=25;
-
-    // Permet d'installer le clavier et de vérifier l'installation
-    if(install_keyboard() == -1)
-        allegro_message("ERREUR CLAVIER");
-
-    // Initialisation et choix du mode graphique
-    set_color_depth(desktop_color_depth());
-    if (set_gfx_mode(GFX_AUTODETECT_FULLSCREEN,1024,768,0,0)!=0)
-    {
-        allegro_message("probleme gfx mode");
-        allegro_exit();
-        exit(EXIT_FAILURE);
-    }
-
-    /// Déclaration des pointeurs sur BITMAP devant recevoir les images
-    // Buffer
-    BITMAP *page;
-    BITMAP *decor;
-    BITMAP *horloge0;
-    BITMAP *horloge1;
-    int done;
-    // buffer
-    page=create_bitmap(SCREEN_W,SCREEN_H);
-    clear_bitmap(page);
-
-    // charger images de fond
-    decor=load_bitmap("images/test_ecran.bmp",NULL);
-    horloge0=load_bitmap("images/horloge/0.bmp",NULL);
-    horloge1=load_bitmap("images/horloge/1.bmp",NULL);
-
-    // pour voir le pointeur de la souris
-    show_mouse(screen);
-
-    if (!decor)
-    {
-        allegro_message("pas pu trouver les images");
-        exit(EXIT_FAILURE);
-    }
-    while (done!=1)
-    {
-
-        //sortie de l'ecran si on appuie sur la touche s
-        while (key[KEY_S])
-        {
-            done=1;
-            destroy_bitmap(page);
-        }
-        // effacer buffer en appliquant décor  (pas de clear_bitmap)
-        blit(decor,page,0,0,0,0,SCREEN_W,SCREEN_H);
-
-        // afficher coordonnées de la souris (%4d = format numérique largeur fixe sur 4 caractères)
-        textprintf_ex(page,font,1,750,makecol(0,255,0),makecol(0,0,0),"%4d %4d",mouse_x,mouse_y);
-
-
-        // afficher tout ça à l'écran
-        blit(page,screen,0,0,0,0,SCREEN_W,SCREEN_H);
-    }
-}*/
 
 
 //gestion de l'eau
@@ -321,30 +107,60 @@ t_graphe* initialisation_distance_chateau (t_graphe* map, t_tile* case_chateau)
  * et ensuite penser a modifier le fichier du niveau -1 pour l'affichage des chemins
  */
 
-t_graphe* distribution_eau(t_graphe* map)
+t_graphe* ecriture_fichier_eau(t_graphe* map, t_tile* case_arrive)
 {
-    for(int i=0 ; i<NBLIGNE; i++)//parcours de toute les cases du tableau pour trouver les chateaux d'eau
+    t_tile* temp=case_arrive;
+
+    while(temp!=NULL)
+    {
+        map->mat_chemin_eau[temp->position.ligne][temp->position.colonne]=1;
+        temp=temp->parent;
+    }
+    FILE* map_eau= fopen("map_eau.txt", "w");
+    if(map_eau==NULL)
+    {
+        printf("Erreur d'ouverture du fichier\n");
+        exit(EXIT_FAILURE);
+    }
+
+    for(int i=0; i<NBLIGNE; i++)
     {
         for(int j=0; j<NBCOLONNE; j++)
         {
-            if (map->grille[i][j]->element->type == 2)//dès qu'on a trouver on lance dijkstra pour ensuite trouver les chemins menant aux dif bat
-            {
-                //lancement du dijkstra
-
-                //majFichier-1
-            }
+            fprintf(map_eau, "%d ", map->mat_chemin_eau[i][j]);
         }
+        fprintf(map_eau, "\n");
+    }
+    fclose(map_eau);
+    return map;
+}
+
+void maj_capacite(t_tile* chateau_eau, t_tile* maison)
+{
+    int nb_habitant_restant=maison->element->nb_habitant-maison->element->eau_actuelle;
+    if(chateau_eau->element->capacite>=nb_habitant_restant)
+    {
+        chateau_eau->element->capacite-=nb_habitant_restant;
+        maison->element->eau_actuelle+=nb_habitant_restant;
+        maison->element->chateau_approvisionnement= insererNoeud2(maison->element->chateau_approvisionnement, chateau_eau, nb_habitant_restant);
+    }
+    else
+    {
+        maison->element->eau_actuelle+=chateau_eau->element->capacite;
+        maison->element->chateau_approvisionnement= insererNoeud2(maison->element->chateau_approvisionnement, chateau_eau, chateau_eau->element->capacite);
+        chateau_eau->element->capacite=0;
     }
 }
 
-void dijkstra(t_graphe* map, t_tile* sommet_de_depart)
+t_graphe* dijkstra(t_graphe* map, t_tile* sommet_de_depart)
 {
+    //printf("\nlancement dijkstra\n");
     int poids_temp;
     t_tile* case_analysee,* voisin_actuel;
     t_liste* liste_voisin;
     t_liste* liste_ouverte=creer();
     t_liste* liste_ferme=creer();//pas forcement utile cette ligne
-
+    t_liste2* temp;
     //initialisation de la matrice des poids
     for(int i=0 ; i<NBLIGNE; i++)
     {
@@ -352,8 +168,10 @@ void dijkstra(t_graphe* map, t_tile* sommet_de_depart)
         {
             map->grille[i][j]->g=-1;
             map->grille[i][j]->parent=NULL;
+
         }
     }
+
     map=initialisation_distance_chateau(map, map->grille[sommet_de_depart->position.ligne][sommet_de_depart->position.colonne]);
 
     //insertion dans la liste ouverte
@@ -363,46 +181,611 @@ void dijkstra(t_graphe* map, t_tile* sommet_de_depart)
         {
             if(map->grille[i][j]->g==0)
             {
-                insererNoeud(liste_ouverte, map->grille[i][j]);
+                liste_ouverte=insererNoeud(liste_ouverte, map->grille[i][j]);
+                liste_voisin=map->grille[i][j]->voisin;
+                while(liste_voisin!=NULL)
+                {
+                    voisin_actuel=liste_voisin->n;
+                    if(voisin_actuel->g==-1 && voisin_actuel->element->type==1)
+                    {
+                        voisin_actuel->g=1;
+                        //voisin_actuel->parent=map->grille[i][j];
+                        liste_ouverte= insererNoeud(liste_ouverte, voisin_actuel);
+                    }
+                    liste_voisin=liste_voisin->next;
+                }
             }
         }
     }
 
     //debut de l'analyse
-    while(!estVide(liste_ouverte) && sommet_de_depart->element->capacite!=NULL)//tant qu'il reste des noeuds à analyser et que le chateau d'eau peut encore distribuer de l'eau
+    while(!estVide(liste_ouverte) && sommet_de_depart->element->capacite>0)//tant qu'il reste des noeuds à analyser et que le chateau d'eau peut encore distribuer de l'eau
     {
         liste_ouverte = enlever_noeud_debut(liste_ouverte, &case_analysee);
         liste_ferme = insererNoeud(liste_ferme, case_analysee);
-
+        //printf("noeud actuel [%d][%d]\n", case_analysee->position.ligne, case_analysee->position.colonne);
         liste_voisin=case_analysee->voisin;
-        while(liste_voisin!=NULL || sommet_de_depart->element->capacite>0)
+        //afficherListe(liste_ferme);pb de boucle infini dans la liste ferme a voir si le temps
+        while(liste_voisin!=NULL)
         {
             voisin_actuel=liste_voisin->n;
+            //printf("case :[%d][%d]\n", voisin_actuel->position.ligne, voisin_actuel->position.colonne);
             poids_temp=case_analysee->g+ heuristic(case_analysee, voisin_actuel);
-            if(voisin_actuel->element->type>=4 && voisin_actuel->element->type<=10)//le voisin est une habitation
+
+
+            if(!existe(liste_ferme, voisin_actuel) && voisin_actuel->element->type==1)
             {
-                if(voisin_actuel->case_mere->element->compteur>0)//si il reste des habitants qui doivent être alimenté en eau
+                if(!existe(liste_ouverte, voisin_actuel))//on verifie que le sommet n'est pas dans la liste ouverte et fermé et que c'est une route
                 {
-                    //faire toute les maj sur l'habitation en fonction de l'eau distrib
-                    //retracer le chemin et le mettre sur la map -1
+                    //printf("insertion\n");
+                    voisin_actuel->g=poids_temp;
+                    voisin_actuel->parent=case_analysee;
+                    liste_ouverte= insertion_en_triant2(liste_ouverte, voisin_actuel);//dans ce cas on l'insère dans la liste
+                }
+                else
+                {
+                    if((poids_temp<voisin_actuel->g && voisin_actuel->g!=-1))//si la nouvelle valeur de distance est inférieure à l'ancienne on actualise la distance et si c'est une route
+                    {
+                        voisin_actuel->g=poids_temp;
+                        voisin_actuel->parent=case_analysee;
+                        if(existe(liste_ouverte, voisin_actuel))
+                        {
+                            //printf("actu\n");
+                            liste_ouverte = actualisation(liste_ouverte, voisin_actuel);//on actualise le sommet pour le remettre à la bonne place
+                        }
+                    }
                 }
 
             }
-            if((poids_temp<voisin_actuel->g || voisin_actuel->g!=-1) && voisin_actuel->element->type==1)//si la nouvelle valeur de distance est inférieure à l'ancienne on actualise la distance et si c'est une route
+
+            if(voisin_actuel->case_mere->element->type>=4 && voisin_actuel->case_mere->element->type<=9)//le voisin est une habitation pb ici
             {
-                voisin_actuel->g=poids_temp;
-                voisin_actuel->parent=case_analysee;
-                if(existe(liste_ouverte, voisin_actuel))
+                if(voisin_actuel->case_mere->element->eau_actuelle<voisin_actuel->case_mere->element->nb_habitant)//si il reste des habitants qui doivent être alimenté en eau
                 {
-                    liste_ouverte= actualisation(liste_ouverte, voisin_actuel);//on actualise le sommet pour le remettre à la bonne place
+                    //voisin_actuel->parent=case_analysee; on met cette ligne si on veut que la case de la maison soit prise dans le chemin
+                    //printf("maison trouve\n");
+                    //printf("case [%d][%d] -> parent [%d][%d]\n", voisin_actuel->position.ligne, voisin_actuel->position.colonne, voisin_actuel->parent->position.ligne, voisin_actuel->parent->position.colonne);
+                    //faire toute les maj sur l'habitation en fonction de l'eau distrib
+                    maj_capacite(sommet_de_depart, voisin_actuel->case_mere);
+                    //retracer le chemin et le mettre sur la map -1
+                    //printf("compteur eau maison [%d][%d] : %d\n", voisin_actuel->case_mere->position.ligne, voisin_actuel->case_mere->position.colonne, voisin_actuel->case_mere->element->eau_actuelle);
+                    /*temp =voisin_actuel->case_mere->element->chateau_approvisionnement;
+                    //printf("Approvisionnement : \n");
+                    while(temp!=NULL)
+                    {
+                        //printf("chateau [%d][%d] : %d\n", temp->n->position.ligne, temp->n->position.colonne, temp->montant_distribue);
+                        temp=temp->next;
+                    }*/
+                    map=ecriture_fichier_eau(map, case_analysee);//on part de la route adajacente à la maison
                 }
-            }
-            if(!existe(liste_ouverte, voisin_actuel) && !existe(liste_ferme, voisin_actuel) && voisin_actuel->element->type==1)//on verifie que le sommet n'est pas dans la liste ouverte et fermé et que c'est une route
-            {
-                liste_ouverte= insertion_en_triant(liste_ouverte, voisin_actuel);//dans ce cas on l'insère dans la liste
+
             }
             liste_voisin=liste_voisin->next;
         }
     }
+    return map;
 }
 //la forme est faite, il faut maintenant verifier les conditions et mettre à jour le niveau -1 à chaque fois que l'on tombe sur une maison
+
+t_graphe* reinitialisation_eau(t_graphe* map)
+{
+    int couleur=1;
+    for(int i=0 ; i<NBLIGNE; i++)//parcours de toute les cases du tableau pour trouver les chateaux d'eau
+    {
+        for(int j=0; j<NBCOLONNE; j++)
+        {
+            map->mat_chemin_eau[i][j]=0;
+            if(map->grille[i][j]->element->type == 2)
+            {
+                map->grille[i][j]->element->capacite=5000;//valeur max
+                map->grille[i][j]->element->couleur=couleur;
+                couleur++;
+            }
+            else if(map->grille[i][j]->element->type>=4 && map->grille[i][j]->element->type<=10)
+            {
+                map->grille[i][j]->element->eau_actuelle=0;
+                map->grille[i][j]->element->chateau_approvisionnement= vider_liste(map->grille[i][j]->element->chateau_approvisionnement);
+            }
+        }
+    }
+    FILE* map_eau=fopen("map_eau.txt", "w+");
+    for(int i=0; i<NBLIGNE; i++)
+    {
+        for(int j=0; j<NBCOLONNE; j++)
+        {
+            fprintf(map_eau, "%d ", map->mat_chemin_eau[i][j]);
+        }
+        fprintf(map_eau, "\n");
+    }
+    fclose(map_eau);
+    return map;
+}
+
+t_graphe* distribution_eau(t_graphe* map)
+{
+    map= reinitialisation_eau(map);
+    for(int i=0 ; i<NBLIGNE; i++)//parcours de toute les cases du tableau pour trouver les chateaux d'eau
+    {
+        for(int j=0; j<NBCOLONNE; j++)
+        {
+            if (map->grille[i][j]->element->type == 2)//dès qu'on a trouver on lance dijkstra pour ensuite trouver les chemins menant aux dif bat
+            {
+                printf("chateau d'eau\n");
+                map=dijkstra(map, (map->grille[i][j]));
+            }
+        }
+    }
+
+    return map;
+}
+///Usines electricite (num 3 sur la map)
+t_graphe* electricite(t_graphe* map, int* capa_usine)
+{
+    int compteur_usine=0;
+    int elec_distrib=0;
+    int verif_route;
+    for(int i=0 ; i<NBLIGNE; i++)//parcours de toute les cases du tableau pour trouver les usines elec
+    {
+        for(int j=0; j<NBCOLONNE; j++)
+        {
+            if (map->grille[i][j]->element->type == 3)//dès qu'on a trouvé on la compte && on verifie si elle est connecté a la route
+            {
+                verif_route= verification_connexite_route(map, map->grille[i][j]);
+                if(verif_route==1)
+                {
+                    compteur_usine++;
+                }
+            }
+        }
+    }
+    //On calcul la capacite totale de la ville
+    *capa_usine=(compteur_usine*5000);
+
+    for (int i = 0; i < NBLIGNE; i++)//parcours de toute les cases du tableau pour trouver les habitations !!! on peut peut etre optimiser en utilisant la liste d'habitation
+    {
+        for (int j = 0; j < NBCOLONNE; j++) {
+            if ((map->grille[i][j]->element->type >= 4) && (map->grille[i][j]->element->type <=9) )//dès qu'on a trouve une habitation
+            {
+                verif_route= verification_connexite_route(map, map->grille[i][j]);
+                if(verif_route==1)
+                {
+                    if(map->grille[i][j]->element->nb_habitant < *capa_usine)
+                    {
+                        //on note le batiment trouve comme etant alimente
+                        map->grille[i][j]->element->alimente=1;
+                        //on soustrait le nombre d'habitants de cette habitation a la capacite totale de la ville
+                        *capa_usine = (*capa_usine - map->grille[i][j]->element->nb_habitant);
+                        elec_distrib+=map->grille[i][j]->element->nb_habitant;
+                    }
+                }
+            }
+        }
+    }
+    for(int i=0; i<NBLIGNE; i++)
+    {
+        for(int j=0; j<NBCOLONNE; j++)
+        {
+            if(map->grille[i][j]->element->type==2)
+            {
+                verif_route= verification_connexite_route(map, map->grille[i][j]);
+                if(verif_route==1)
+                {
+                    if(elec_distrib>map->grille[i][j]->element->capacite)
+                    {
+                        map->grille[i][j]->element->capacite=0;
+                        elec_distrib-=map->grille[i][j]->element->capacite;
+                    }
+                    else if(elec_distrib>0)
+                    {
+                        map->grille[i][j]->element->capacite-=elec_distrib;
+                        elec_distrib=0;
+                    }
+                }
+            }
+        }
+    }
+    return map;
+}
+
+t_graphe* ecriture_fichier_elec(t_graphe* map, t_tile* case_arrive)
+{
+    t_tile* temp=case_arrive;
+
+    while(temp!=NULL)
+    {
+        map->mat_chemin_elec[temp->position.ligne][temp->position.colonne]=1;
+        temp=temp->parent;
+    }
+    FILE* map_elec= fopen("map_elec.txt", "w");
+    if(map_elec==NULL)
+    {
+        printf("Erreur d'ouverture du fichier\n");
+        exit(EXIT_FAILURE);
+    }
+
+    for(int i=0; i<NBLIGNE; i++)
+    {
+        for(int j=0; j<NBCOLONNE; j++)
+        {
+            fprintf(map_elec, "%d ", map->mat_chemin_elec[i][j]);
+        }
+        fprintf(map_elec, "\n");
+    }
+    fclose(map_elec);
+    return map;
+}
+
+
+
+t_graphe* BFS(t_graphe* map, t_tile* sommet_depart)
+{
+    t_tile*noeud, *temp;
+    for(int i=0; i<NBLIGNE; i++) //initialisation du bfs
+    {
+        for(int j=0; j<NBCOLONNE; j++) //initialisation du bfs
+        {
+            map->grille[i][j]->parent=NULL; //initialisation du bfs
+        }
+    }
+
+    t_liste* liste_ouverte=creer(); //liste des elem qu'on modifie
+    t_liste* liste_sommet_plus_toucher=creer(); //liste pour noircir
+    t_liste* liste_temporaire; //liste des sommets qu'on étudie
+
+
+    if (sommet_depart->element->orientation == 1)
+    {
+        for (int i = -2; i < 2; i++)
+        {
+            for (int j = -2; j < 4; j++)
+            {
+                liste_temporaire=map->grille[sommet_depart->position.ligne+i][sommet_depart->position.colonne+j]->voisin;
+                while(liste_temporaire!=NULL)
+                {
+                   if(liste_temporaire->n->element->type==1 && !existe(liste_ouverte, liste_temporaire->n)) //si route
+                   {
+                       liste_ouverte=insererNoeudFin(liste_ouverte,liste_temporaire->n);//on insère
+                       liste_temporaire->n->parent=map->grille[sommet_depart->position.ligne+i][sommet_depart->position.colonne+j];
+                   }
+                    liste_temporaire=liste_temporaire->next;
+                }
+            }
+        }
+    }
+    else if (sommet_depart->element->orientation == -1)
+    {
+        for (int i = -3; i < 3; i++)
+        {
+            for (int j = -1; j < 3; j++)
+            {
+                liste_temporaire=map->grille[i][j]->voisin;
+                while(liste_temporaire!=NULL)
+                {
+                    if(liste_temporaire->n->element->type==1) //si route
+                    {
+                        liste_ouverte=insererNoeudFin(liste_ouverte,liste_temporaire->n); //on insère
+                    }
+                    liste_temporaire=liste_temporaire->next;
+                }
+            }
+        }
+    }
+    while(!estVide(liste_ouverte))// parcours de la liste
+    {
+
+        enlever_noeud_debut(liste_ouverte, &noeud);
+        liste_sommet_plus_toucher= insererNoeud(liste_sommet_plus_toucher, noeud);//pour noircir
+        liste_temporaire=noeud->voisin;
+        printf("case de depart [%d][%d]:\n", noeud->position.ligne, noeud->position.colonne);
+
+        while(liste_temporaire!=NULL)
+        {
+            printf("case [%d][%d]\n", liste_temporaire->n->position.ligne, liste_temporaire->n->position.colonne);
+            if(liste_temporaire->n->element->type>=4 && liste_temporaire->n->element->type<=9)
+            {
+                printf("ecriture fichier\n");
+                map= ecriture_fichier_elec(map, noeud);
+
+            }
+            if(!existe(liste_ouverte,liste_temporaire->n)   && !existe(liste_sommet_plus_toucher,liste_temporaire->n)  && liste_temporaire->n->element->type==1)
+            {
+                printf("insertion liste\n");
+                liste_ouverte=insererNoeudFin(liste_ouverte,liste_temporaire->n);
+                liste_temporaire->n->parent=noeud;
+            }
+            printf("ici\n");
+
+            liste_temporaire=liste_temporaire->next;
+        }
+    }
+    return map;
+}
+
+t_graphe* distribution_elec(t_graphe* map)
+{
+    for(int i=0; i<NBLIGNE; i++)
+    {
+        for(int j=0; j<NBCOLONNE; j++)
+        {
+            map->mat_chemin_elec[i][j]=0;
+        }
+    }
+    for(int i=0 ; i<NBLIGNE; i++)//parcours de toute les cases du tableau pour trouver les chateaux d'eau
+    {
+        for(int j=0; j<NBCOLONNE; j++)
+        {
+            if (map->grille[i][j]->element->type == 3)//dès qu'on a trouver on lance dijkstra pour ensuite trouver les chemins menant aux dif bat
+            {
+                printf("usine electricite\n");
+                map=BFS(map, (map->grille[i][j]));
+            }
+        }
+    }
+
+    return map;
+}
+int verification_connexite_route(t_graphe* map, t_tile* case_actu)
+{
+    int verif_route=0;
+    t_liste* voisin_case;
+    if(case_actu->element->type==3 || case_actu->element->type==2)
+    {
+        if(case_actu->element->orientation==1)
+        {
+            for(int i=-2; i<2; i++)
+            {
+                for(int j=-2; j<4; j++)
+                {
+                    voisin_case=map->grille[case_actu->position.ligne+i][case_actu->position.colonne+j]->voisin;
+                    while(voisin_case!=NULL)
+                    {
+                        if(voisin_case->n->element->type==1)
+                        {
+                            verif_route=1;
+                        }
+                        voisin_case=voisin_case->next;
+                    }
+                }
+            }
+        }
+        else if(case_actu->element->orientation==-1)
+        {
+            for(int i = -3; i < 3; i++)
+            {
+                for(int j = -1; j < 3; j++)
+                {
+                    voisin_case=map->grille[case_actu->position.ligne+i][case_actu->position.colonne+j]->voisin;
+                    while(voisin_case!=NULL)
+                    {
+                        if(voisin_case->n->element->type==1)
+                        {
+                            verif_route=1;
+                        }
+                        voisin_case=voisin_case->next;
+                    }
+                }
+            }
+        }
+
+    }
+    else if(case_actu->element->type>=4 && case_actu->element->type<=10)
+    {
+        for(int i=-1; i<2; i++)
+        {
+            for(int j=-1; j<2; j++)
+            {
+                voisin_case=map->grille[case_actu->position.ligne+i][case_actu->position.colonne+j]->voisin;
+                while(voisin_case!=NULL)
+                {
+                    if(voisin_case->n->element->type==1)
+                    {
+                        verif_route=1;
+                    }
+                    voisin_case=voisin_case->next;
+                }
+            }
+        }
+    }
+    return verif_route;
+
+}
+
+int validation_evolution(t_tile* batiment, int* nb_habitant)//renvoie 1 pour améliorer, 0 pour rien faire, -1 pour regresser?
+{
+    switch (batiment->element->type) {
+        case 4:
+            printf("evolution\n");
+            if(batiment->element->alimente==1)//et que le compteur d'eau soit supérieur a 0 a implémenter!
+            {
+                printf("amelioration bat[%d][%d]\n", batiment->position.ligne, batiment->position.colonne);
+                batiment->element->type++;
+                batiment->element->nb_habitant=10;
+                *nb_habitant+=10;
+                return 1;
+            }
+            else
+            {
+                return 0;
+            }
+        case 5:
+            printf("evolution\n");
+
+            if(batiment->element->alimente==1)
+            {
+                if((float)batiment->element->eau_actuelle/(float)batiment->element->nb_habitant==1)//si l'habitation est alimenté a plus de 90% en eau elle s'améliore
+                {
+
+                    batiment->element->type++;
+                    batiment->element->nb_habitant=50;
+                    *nb_habitant+=40;
+                    return 1;
+                }
+                else if((float)batiment->element->eau_actuelle/(float)batiment->element->nb_habitant>0)//0% car si on est a 0 personne n'est alimenté et donc ça passe a l'état de ruine
+                {
+                    return 0;//il se passe rien
+                }
+                else
+                {
+                    batiment->element->type=9;//on passe a l'état de ruine
+                    batiment->element->nb_habitant=0;
+                    *nb_habitant-=10;
+                    return 1;
+
+                }
+            }
+            else
+            {
+                batiment->element->type=9;//on passe a l'état de ruine
+                batiment->element->nb_habitant=0;
+                *nb_habitant-=10;
+                return 1;
+
+            }
+        case 6:
+            printf("evolution\n");
+
+            if(batiment->element->alimente==1)
+            {
+                if((float)batiment->element->eau_actuelle/(float)batiment->element->nb_habitant==1)//si l'habitation est alimenté a plus de 90% en eau elle s'améliore
+                {
+                    batiment->element->type++;
+                    batiment->element->nb_habitant=100;
+                    *nb_habitant+=50;
+                    return 1;
+                }
+                else if((float)batiment->element->eau_actuelle/(float)batiment->element->nb_habitant>0.20)//20% car en dessous on est à 10 habitants alimentés en eau donc regression
+                {
+                    return 0;//il se passe rien
+                }
+                else
+                {
+                    batiment->element->type--;//on passe a l'état de cabane
+                    batiment->element->nb_habitant=10;
+                    *nb_habitant-=40;
+                    return 1;
+                }
+            }
+            else
+            {
+                batiment->element->type--;//on passe a l'état de cabane
+                batiment->element->nb_habitant=10;
+                *nb_habitant-=40;
+                return 1;
+            }
+        case 7:
+            printf("evolution\n");
+
+            if(batiment->element->alimente==1)
+            {
+                if((float)batiment->element->eau_actuelle/(float)batiment->element->nb_habitant==1)//si l'habitation est alimenté a plus de 90% en eau elle s'améliore
+                {
+                    batiment->element->type++;
+                    batiment->element->nb_habitant=1000;
+                    *nb_habitant+=900;
+                    return 1;
+
+                }
+                else if((float)batiment->element->eau_actuelle/(float)batiment->element->nb_habitant>0.50)//50% car en dessous on est à 50 habitants alimentés en eau donc regression
+                {
+                    return 0;//il se passe rien
+                }
+                else
+                {
+                    batiment->element->type--;//on passe a l'état de maison
+                    batiment->element->nb_habitant=50;
+                    *nb_habitant-=50;
+                    return 1;
+                }
+            }
+            else
+            {
+                batiment->element->type--;//on passe a l'état de maison
+                batiment->element->nb_habitant=50;
+                *nb_habitant-=50;
+                return 1;
+            }
+        case 8:
+            printf("evolution\n");
+
+            if(batiment->element->alimente==1)
+            {
+                if((float)batiment->element->eau_actuelle/(float)batiment->element->nb_habitant>0.10)//10% car en dessous on est à 100 habitants alimentés en eau donc regression
+                {
+                    return 0;//il se passe rien
+                }
+                else
+                {
+                    batiment->element->type--;//on passe a l'état d'immeuble
+                    batiment->element->nb_habitant=100;
+                    *nb_habitant-=900;
+                    return 1;
+                }
+            }
+            else
+            {
+                batiment->element->type--;//on passe a l'état d'immeuble
+                batiment->element->nb_habitant=100;
+                *nb_habitant-=900;
+                return 1;
+            }
+        case 9:
+            printf("evolution\n");
+
+            if(batiment->element->alimente==1)
+            {
+                batiment->element->type=5;
+                batiment->element->nb_habitant=10;
+                *nb_habitant+=10;
+                return 1;
+            }
+            else
+            {
+                return 0;
+            }
+        default:
+            return 0;
+    }
+}
+
+t_graphe* cycle_habitation(t_graphe* map, int* capa_usine, long* compteur_argent, int* nb_habitant)
+{
+    int changement;
+    //parcours du tableau des maisons au lieu du parcours de toute la map
+    t_liste* parcours_habitation=map->liste_hab;
+    while(parcours_habitation!=NULL)
+    {
+        if(clock()/CLOCKS_PER_SEC-parcours_habitation->n->element->compteur==5)//si on a fait un cycle
+        {
+            parcours_habitation->n->element->compteur=clock()/CLOCKS_PER_SEC;
+            *compteur_argent=*compteur_argent+parcours_habitation->n->element->nb_habitant;
+            changement=validation_evolution(parcours_habitation->n, nb_habitant);
+            if(changement==1)
+            {
+                map=distribution_eau(map);
+                map=electricite(map, capa_usine);
+            }
+        }
+        parcours_habitation=parcours_habitation->next;
+    }
+    majFichierPlacementElement(map);
+    return map;
+}
+
+int compte_eau(t_graphe* map)
+{
+    int compteur_eau=0;
+    for(int i = 0; i<NBLIGNE; i++)
+    {
+        for(int j=0; j<NBCOLONNE; j++)
+        {
+            if(map->grille[i][j]->element->type==2)
+            {
+                if(verification_connexite_route(map, map->grille[i][j]))
+                {
+                    compteur_eau+=map->grille[i][j]->element->capacite;
+                }
+            }
+        }
+    }
+    return compteur_eau;
+}

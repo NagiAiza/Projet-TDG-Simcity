@@ -9,6 +9,11 @@ t_liste *creer(void)
     return NULL;
 }
 
+t_liste2 *creer2(void)
+{
+    return NULL;
+}
+
 t_liste *insererNoeud(t_liste *liste, t_tile *n) //inserer noeud debut de la liste dans la liste
 {
     t_liste *nouv = (t_liste *)malloc(sizeof(t_liste));
@@ -22,6 +27,37 @@ t_liste *insererNoeud(t_liste *liste, t_tile *n) //inserer noeud debut de la lis
     }
     return nouv;
 }
+
+t_liste* insererNoeudFin(t_liste* liste, t_tile* n)//enfiler
+{
+    t_liste *nouv = (t_liste *)malloc(sizeof(t_liste));
+    nouv->n=n;
+    nouv->next=NULL;
+    nouv->prev=NULL;
+    t_liste* temp=liste;
+
+    if(liste==NULL)
+    {
+        return nouv;
+    }
+    while(temp->next!=NULL)
+    {
+        temp=temp->next;
+    }
+    temp->next=nouv;
+    return liste;
+}
+
+t_liste2 *insererNoeud2(t_liste2 *liste, t_tile * n, int montant_distribue) //inserer noeud debut de la liste dans la liste
+{
+    t_liste2 *nouv = (t_liste2 *)malloc(sizeof(t_liste2));
+    nouv->n = n;
+    nouv->montant_distribue=montant_distribue;
+    nouv->next = liste;
+    return nouv;
+}
+
+
 
 t_liste *enleverNoeud(t_liste *liste, t_tile *n)
 {
@@ -63,16 +99,15 @@ t_liste *enleverNoeud(t_liste *liste, t_tile *n)
 
 int existe(t_liste *l, t_tile *n)
 {
-    //printf("entree dans existe\n");
     t_liste *aux = l;
     while (aux != NULL)
     {
-
         if ((aux->n->position.colonne == n->position.colonne) && (aux->n->position.ligne == n->position.ligne))
         {
             return 1;
         }
         aux = aux->next;
+
     }
     return 0;
 }
@@ -95,7 +130,7 @@ int existe(t_liste *l, t_tile *n)
     return petit;//on retourne finalement le plus petit noeud de la liste
 }*/
 
-t_liste* insertion_en_triant(t_liste* liste, t_tile* noeud)//pour file de priorité
+t_liste* insertion_en_triant(t_liste* liste, t_tile* noeud)//pour file de priorité A*
 {
     t_liste* nouv=(t_liste*)malloc(sizeof(t_liste));
     nouv->n=noeud;
@@ -138,6 +173,50 @@ t_liste* insertion_en_triant(t_liste* liste, t_tile* noeud)//pour file de priori
     }
 }
 
+t_liste* insertion_en_triant2(t_liste* liste, t_tile* noeud)//pour file de priorité dijkstra
+{
+    t_liste* nouv=(t_liste*)malloc(sizeof(t_liste));
+    nouv->n=noeud;
+    if(estVide(liste))
+    {
+        nouv->next=liste;
+        nouv->prev=NULL;
+        return nouv;
+    }
+    else
+    {
+        t_liste* temp=liste;
+        if((nouv->n->g)<(temp->n->g))//insertion en début de liste
+        {
+            nouv->next=temp;
+            nouv->prev=NULL;
+            temp->prev=nouv;
+            return nouv;
+        }
+        else
+        {
+            while(temp->next!=NULL)//on recherche l'emplacement où mettre le maillon
+            {
+                temp=temp->next;//vérifier le bon fonctionnement
+                if((nouv->n->g)<(temp->n->g))//insertion en mileu de liste
+                {
+                    nouv->next=temp;
+                    nouv->prev=temp->prev;
+                    temp->prev->next=nouv;
+                    temp->prev=nouv;
+                    return liste;
+                }
+            }
+            //insertion en fin de liste
+            temp->next=nouv;
+            nouv->prev=temp;
+            nouv->next=NULL;
+            return liste;
+        }
+    }
+}
+
+//defiler
 t_liste* enlever_noeud_debut(t_liste* liste, t_tile** noeud_a_conserver)//enlever en debut + mettre l'adresse du noeud à conserveer
 {
     t_liste* temp=liste;
@@ -145,6 +224,18 @@ t_liste* enlever_noeud_debut(t_liste* liste, t_tile** noeud_a_conserver)//enleve
     liste=liste->next;
     free(temp);
     return liste;
+}
+
+t_liste2* vider_liste(t_liste2* liste)//enlever en debut + mettre l'adresse du noeud à conserveer
+{
+    t_liste2 *aux;
+    while (liste != NULL)
+    {
+        aux=liste;
+        liste = liste->next;
+        free(aux);
+    }
+    return NULL;
 }
 
 t_liste* actualisation(t_liste* l, t_tile* noeud_a_retrier)//si jamais la valeur f du noeud change
@@ -206,13 +297,21 @@ int estVide(t_liste *l)
 
 void afficherListe(t_liste *l)//servira pour débugger
 {
-    t_liste *aux = l;
-    while (aux != NULL)
+    printf("affichage liste : \n");
+    if(l==NULL)
     {
-        printf("case [%d][%d]\n", aux->n->position.ligne, aux->n->position.colonne);
-        aux = aux->next;
+        printf("liste vide\n");
     }
-    printf("\n\n");
+    {
+        t_liste *aux = l;
+        while (aux != NULL)
+        {
+            printf("case [%d][%d]\n", aux->n->position.ligne, aux->n->position.colonne);
+            aux = aux->next;
+        }
+        printf("\n\n");
+    }
+
 }
 
 void liberer(t_liste *l)

@@ -2,8 +2,8 @@
 // Created by alexi on 02/11/2022.
 //
 #include "jeu1.h"
-#include "listeRelated.h"
 #include "math.h"
+#include "listeRelated.h"
 
 
 t_tile* associerCaseSouris(t_graphe* map, t_pos souris)
@@ -45,21 +45,16 @@ t_graphe* initialiserGrille(t_graphe* g) //premiere initialisation a faire
     {
         for (j = 0; j < NBCOLONNE; j++)
         {
-            g->grille[i][j] = (t_tile*)malloc(1*sizeof(t_tile));//Verifier la ligne peut etre une erreur
+            g->grille[i][j] = (t_tile*)calloc(1, sizeof(t_tile));//Verifier la ligne peut etre une erreur
+            if(g->grille[i][j]==NULL)
+            {
+                printf("Erreur maloc\n");
+                exit(EXIT_FAILURE);
+            }
             g->grille[i][j]->position.colonne = j;
             g->grille[i][j]->position.ligne = i;
 
-            g->grille[i][j]->f = 0;
-            g->grille[i][j]->g = 0;
-            g->grille[i][j]->h = 0;
-
-            g->grille[i][j]->f = g->grille[i][j]->g + g->grille[i][j]->h;
-
-            g->grille[i][j]->voisin = NULL;
-
-            g->grille[i][j]->parent = NULL;
-
-            g->grille[i][j]->case_mere = NULL;
+            g->grille[i][j]->case_mere = g->grille[i][j];
 
             g->grille[i][j]->element=(t_batiment*)calloc(1, sizeof(t_batiment));
             g->grille[i][j]->element->position.ligne=i;
@@ -73,24 +68,50 @@ t_graphe* initialiserGrille(t_graphe* g) //premiere initialisation a faire
 
 t_graphe* makeGrid()//penser a crer la libération de données
 {
-    t_graphe* g=(t_graphe*) malloc(sizeof(t_graphe));
-    g->grille=(t_tile***)malloc(sizeof(t_tile**)*NBLIGNE);
-    for(int i=0; i<NBCOLONNE; i++)
+    t_graphe* g=(t_graphe*) calloc(1, sizeof(t_graphe));
+
+    g->grille=(t_tile***)calloc(NBLIGNE, sizeof(t_tile**));
+
+    for(int i=0; i<NBLIGNE; i++)
     {
-        g->grille[i] = (t_tile**) malloc(NBCOLONNE*sizeof(t_tile*));
+
+        g->grille[i] = (t_tile**) calloc (NBCOLONNE, sizeof(t_tile*));
     }
+    printf("hello\n");
+
     g= initialiserGrille(g);
 
     g->mat_adjacence=(int **) calloc(NBLIGNE,sizeof(int*));
+    g->mat_chemin_eau=(int **) calloc(NBLIGNE,sizeof(int*));
+    g->mat_chemin_elec=(int **) calloc(NBLIGNE,sizeof(int*));
     for(int i=0; i<NBLIGNE; i++)
     {
         g->mat_adjacence[i]=(int*)calloc(NBCOLONNE,sizeof(int));
+        g->mat_chemin_eau[i]=(int*) calloc(NBCOLONNE,sizeof(int));
+        g->mat_chemin_elec[i]=(int*) calloc(NBCOLONNE,sizeof(int));
+
     }
+    g->mat_adjacence[17][0]=1;
+    g->liste_hab=creer();
 
     return g;
 }
 
-
+void affichageGridMere(t_graphe* g)
+{
+    for(int i=0; i<NBLIGNE; i++)
+    {
+        for(int j=0; j<NBCOLONNE; j++)
+        {
+            if( g->grille[i][j]->case_mere==NULL)
+            {
+                printf("pas de case mere\n");
+                exit(EXIT_FAILURE);
+            }
+            printf("case [%d][%d] mere-> [%d][%d]\n", i, j, g->grille[i][j]->case_mere->position.ligne, g->grille[i][j]->case_mere->position.colonne);
+        }
+    }
+}
 void rajouterVoisin(t_tile* spot, t_tile ***map, int colonne, int ligne)//les arretes existes que entre les voisins
 {
     int i = spot->position.ligne;// on récupère les coordonnées
@@ -150,7 +171,7 @@ t_graphe* placementElement(t_graphe* g, int ligne, int colonne, int type, int ro
 t_graphe* remplissage_matrice_adjacence(t_graphe* g, int ligne, int colonne, int type, t_tile* case_mere)//à remplir en fonction de la rotation du bail
 {
     g->mat_adjacence[ligne][colonne]=type;
-    g->grille[ligne][colonne]->case_mere=case_mere
+    g->grille[ligne][colonne]->case_mere=case_mere;
     return g;
 }
 
@@ -159,6 +180,7 @@ void initialisationElementCarte()
 {
     FILE* elementCarte= fopen("element_map.txt", "w+");
     FILE* rotation_element_map=fopen("rotation_element_map.txt", "w+");
+    FILE* map_eau=fopen("map_eau.txt", "w+");
     for(int i=0; i<NBLIGNE; i++)
     {
         for(int j=0; j<NBCOLONNE; j++)
@@ -172,12 +194,15 @@ void initialisationElementCarte()
                 fprintf(elementCarte, "%d ", 1);//aucun element n'est sur la carte SAUF 1 route a l'emplacement [17][0]
             }
             fprintf(rotation_element_map, "%d ", 1);
+            fprintf(map_eau, "%d ", 0);
         }
         fprintf(elementCarte, "\n");
         fprintf(rotation_element_map, "\n");
+        fprintf(map_eau, "\n");
     }
     fclose(rotation_element_map);
     fclose(elementCarte);
+    fclose(map_eau);
 }
 
 
@@ -341,8 +366,6 @@ int estArrive(t_tile *actuel, t_tile *arrive)
 int distance(t_pos a, t_pos b)
 {
     int d = abs(a.colonne - b.colonne) + abs(a.ligne - b.ligne);//valeur absolu pour éviter d'avoir des problèmes avec une différence de coordoonées négative
-    //printf("Vi: %i ",abs(a.x - b.x) + abs(a.y - b.y));
-    //printf(" Vd: %d ",d);
     return d;
 }
 
@@ -419,3 +442,22 @@ t_graphe* A_star(t_graphe* g, t_tile* depart, t_tile* arrive/*position souris*/)
     return g;
 }
 
+void initialisation_habitation(t_graphe* map, t_tile* case_hab)
+{
+    case_hab->element->nb_habitant=0;
+    case_hab->element->eau_actuelle=0;
+    case_hab->element->alimente=0;
+    case_hab->element->compteur=clock()/CLOCKS_PER_SEC;
+    case_hab->element->chateau_approvisionnement=creer2();
+    map->liste_hab= insererNoeud(map->liste_hab, case_hab);
+}
+
+void initialisation_chateau_eau(t_tile* case_chateau)
+{
+    case_chateau->element->capacite=5000;
+}
+
+void initialisation_centrale(t_tile* case_elec)
+{
+    case_elec->element->capacite=5000;
+}
