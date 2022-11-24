@@ -28,6 +28,7 @@ IMAGE* initialisation_liste_image()//on initialise une seule fois les bitmaps en
     liste->chateau_eau = load_bitmap_check("chateau_eau.bmp");
     liste->centrale = load_bitmap_check("centrale.bmp");
     liste->canalisation = load_bitmap_check("canalisation.bmp");
+    liste->reseau= load_bitmap_check("reseau.bmp");
     liste->case_selec = load_bitmap_check("tuileBaseSelec.bmp");
 
     //VRAIS SPRITE
@@ -39,15 +40,15 @@ IMAGE* initialisation_liste_image()//on initialise une seule fois les bitmaps en
     liste->immeuble=load_bitmap_check("immeuble-fini.bmp");
     liste->gratte_ciel= load_bitmap_check("gratte-ciel-fini.bmp");
     liste->ruine=load_bitmap_check("ruines-finie.bmp");
-    liste->pompiers=load_bitmap_check("pompiers.bmp");
+    liste->caserne_pompiers=load_bitmap_check("pompiers.bmp");
 
-    liste->barre_outils=load_bitmap_check("barre_outils.bmp");
+    liste->barre_outils=load_bitmap_check("barre_outils.bmp");//same que menu à changer!
     liste->info_eau=load_bitmap_check("info_eau.bmp");
     liste->info_elec=load_bitmap_check("info_elec.bmp");
     liste->info_monnaie=load_bitmap_check("info_monnaie.bmp");
     liste->info_habitants=load_bitmap_check("info_habitants.bmp");
-    liste->info_deplacer=load_bitmap_check("info_deplacer.bmp");
-    liste->info_supprimer=load_bitmap_check("info_supprimer.bmp");
+    //liste->info_deplacer=load_bitmap_check("info_deplacer.bmp");
+    //liste->info_supprimer=load_bitmap_check("info_supprimer.bmp");
     return liste;
 }
 
@@ -76,6 +77,7 @@ void liberation_memoire_bitmaps(IMAGE* liste_image, BUFFER* liste_buffer)//on n'
     destroy_bitmap(liste_image->chateau_eau);
     destroy_bitmap(liste_image->centrale);
     destroy_bitmap(liste_image->canalisation);
+    destroy_bitmap(liste_image->reseau);
     destroy_bitmap(liste_image->case_selec);
 
     destroy_bitmap(liste_image->eau_fini);
@@ -86,7 +88,12 @@ void liberation_memoire_bitmaps(IMAGE* liste_image, BUFFER* liste_buffer)//on n'
     destroy_bitmap(liste_image->immeuble);
     destroy_bitmap(liste_image->gratte_ciel);
     destroy_bitmap(liste_image->ruine);
-    destroy_bitmap(liste_image->pompiers);
+    destroy_bitmap(liste_image->caserne_pompiers);
+
+    destroy_bitmap(liste_image->info_eau);
+    destroy_bitmap(liste_image->info_elec);
+    destroy_bitmap(liste_image->info_monnaie);
+    destroy_bitmap(liste_image->info_habitants);
 
     free(liste_image);
     destroy_bitmap(liste_buffer->buffer_map);
@@ -219,7 +226,7 @@ void affichage_element_eau(BUFFER* liste_buffer, IMAGE* liste, int type, int lig
             {
                 draw_sprite_h_flip(liste_buffer->buffer_map, temp, (SCREEN_W/2-36)+(colonne-3)*14-(ligne)*14, (colonne-3)*8+(ligne)*8-8);
             }
-            textprintf_ex(liste_buffer->buffer_map,font,(SCREEN_W/2-36)+(colonne-3)*14-(ligne)*14+35,(colonne-3)*8+(ligne)*8+26,makecol(0,255,0),-1,"%d/%d",chateau->element->capacite,5000);
+            textprintf_ex(liste_buffer->buffer_map,font,(SCREEN_W/2-36)+(colonne-3)*14-(ligne)*14+35,(colonne-3)*8+(ligne)*8+26,makecol(255,255,255),-1,"%d/%d",chateau->element->capacite,5000);
             break;
         default:
             break;
@@ -227,7 +234,7 @@ void affichage_element_eau(BUFFER* liste_buffer, IMAGE* liste, int type, int lig
 }
 
 
-void affichage_habitation(BUFFER* liste_buffer, IMAGE* liste_image, t_tile* habitation)//il manque la pourcentage non alimente
+void affichage_habitation(BUFFER* liste_buffer, IMAGE* liste_image, t_tile* habitation)//pour le niveau -1
 {
     BITMAP* temp= create_bitmap(liste_image->batiment->w, liste_image->batiment->h);
     int compteur=0;
@@ -306,7 +313,9 @@ void affichage_habitation(BUFFER* liste_buffer, IMAGE* liste_image, t_tile* habi
 
         draw_sprite(liste_buffer->buffer_map, temp, (SCREEN_W/2-36)+(habitation->position.colonne-2)*14-habitation->position.ligne*14, (habitation->position.colonne-2)*8+habitation->position.ligne*8);
     }
+    destroy_bitmap(temp);//a enlever si bug
 }
+
 
 void affichage_level_1(t_graphe* map, IMAGE* liste_image, BUFFER* liste_buffer)
 {
@@ -348,6 +357,91 @@ void affichage_level_1(t_graphe* map, IMAGE* liste_image, BUFFER* liste_buffer)
     fclose(elementMap);
 }
 
+void affichage_level_2(t_graphe* map, IMAGE* liste_image, BUFFER* liste_buffer)
+{
+    FILE* elementMap=fopen("element_map.txt", "r");//pour la nouvelle partie tout les elements sont à 0
+    FILE* rotation_element_map=fopen("rotation_element_map.txt", "r");// la rotation indique dans quel sens on doit mettre le batiment sur la carte et donc la place qu'il prend
+    FILE* map_elec=fopen("map_elec.txt", "r");//pour la nouvelle partie tout les elements sont à 0
+
+
+    BITMAP* temp= create_bitmap(liste_image->batiment->w, liste_image->batiment->h);
+    int reseau=0;
+    int rgb, r, b;
+    int type=0;
+    int rotation=0;
+    for(int i=0; i<NBLIGNE; i++)
+    {
+        for(int j=0; j<NBCOLONNE; j++)
+        {
+            fscanf(elementMap, "%d", &type);
+            fscanf(rotation_element_map, "%d", &rotation);
+            fscanf(map_elec, "%d", &reseau);
+            if(reseau==1)
+            {
+
+                draw_sprite(liste_buffer->buffer_map, liste_image->reseau, (SCREEN_W/2-36)+j*14-i*14, j*8+i*8);
+            }
+            else
+            {
+                switch (type) {
+                    case 1://route
+                        draw_sprite(liste_buffer->buffer_map, liste_image->route, (SCREEN_W/2-36)+j*14-i*14, j*8+i*8);
+                        break;
+                    case 3://chateau eau
+                        if(rotation==1)
+                        {
+                            draw_sprite(liste_buffer->buffer_map, liste_image->centrale, (SCREEN_W / 2 - 36) + (j - 3) * 14 - (i) * 14, (j - 3) * 8 + (i) * 8 - 8);//pq le -8? jsp j'ai tatonné
+                        }
+                        else if(rotation==-1)
+                        {
+                            draw_sprite_h_flip(liste_buffer->buffer_map, liste_image->centrale, (SCREEN_W/2-36)+(j-3)*14-(i)*14, (j-3)*8+(i)*8-8);
+                        }
+                        textprintf_ex(liste_buffer->buffer_map,font,(SCREEN_W/2-36)+(j-3)*14-(i)*14+35,(j-3)*8+(i)*8+26,makecol(255,255,255),-1,"%d/%d",map->grille[i][j]->element->capacite,5000);
+                        break;
+                    case 4:
+                    case 5:
+                    case 6:
+                    case 7:
+                    case 8:
+                    case 9:
+                        if(map->grille[i][j]->element->alimente==0)
+                        {
+                            draw_sprite(liste_buffer->buffer_map, liste_image->batiment, (SCREEN_W/2-36)+(j-2)*14-i*14, (j-2)*8+i*8);
+                        }
+                        else
+                        {
+                            for(int k=0; k<temp->h; k++)
+                            {
+                                for(int l=0; l<temp->w; l++)
+                                {
+                                    rgb= getpixel(liste_image->batiment, l, k);
+                                    r=getr(rgb);
+                                    b=getb(rgb);
+                                    if(r==255 && b==255)
+                                    {
+                                        putpixel(temp, l, k, rgb);
+                                    }
+                                    else
+                                    {
+                                        putpixel(temp, l, k, makecol(0,0, makecol(222,222,0)));
+                                    }
+                                }
+                            }
+                            draw_sprite(liste_buffer->buffer_map, temp, (SCREEN_W/2-36)+(j-2)*14-i*14, (j-2)*8+i*8);
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+    }
+    destroy_bitmap(temp);//a enlever si bug
+    fclose(map_elec);
+    fclose(rotation_element_map);
+    fclose(elementMap);
+}
+
 
 void affichageTotal(t_graphe* map, IMAGE* liste_image, BUFFER* liste_buffer, t_pos souris, long compteur_argent, int niveau_visu, int capa_usine, clock_t CLK_debut, int compteur_hab,  int capa_eau)//doit etre independant du jeu en lui meme mais affiche toute les données nécéssaire à l'utilisateur
 {
@@ -376,6 +470,10 @@ void affichageTotal(t_graphe* map, IMAGE* liste_image, BUFFER* liste_buffer, t_p
     else if (niveau_visu==1)
     {
         affichage_level_1(map, liste_image, liste_buffer);
+    }
+    else if(niveau_visu==2)
+    {
+        affichage_level_2(map, liste_image, liste_buffer);
     }
 
 }

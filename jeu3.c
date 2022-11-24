@@ -11,7 +11,7 @@ t_graphe* remplissage_matrice_caserne(t_graphe* g, int ligne, int colonne, int t
     return g;
 }
 
-void caserne_de_pompier(t_graphe* map, int a, int b, int choix)
+t_graphe* caserne_de_pompier(t_graphe* map, int a, int b, int choix)
 {
     for (int i = -10; i < 10; i++)
     {
@@ -42,23 +42,7 @@ void caserne_de_pompier(t_graphe* map, int a, int b, int choix)
 
 }
 
-int nbre_maison (t_graphe* map)
-{
-    int nbreMaison = 0;
-    for (int i=0 ; i<NBLIGNE ; i++)
-    {
-        for (int j=0 ; j<NBCOLONNE ; j++)
-        {
-            if (map->mat_adjacence[i][j] == 4 && map->mat_adjacence[i-1][j] == 4 && map->mat_adjacence[i+1][j] == 4 && map->mat_adjacence[i][j-1] == 4 && map->mat_adjacence[i][j+1] == 4)
-            {
-                nbreMaison++;
-            }
-        }
-    }
-    return nbreMaison;
-}
-
-void incendie (t_graphe* map)
+/*void incendie (t_graphe* map)
 {
     srand(time(NULL));
 
@@ -103,13 +87,6 @@ void incendie (t_graphe* map)
             }
         }
     }
-}
-
-void evolution (t_graphe* map)
-{
-    t_batiment* TabBatiment = realloc(TabBatiment, sizeof(t_batiment));
-
-
-}
+}*/
 
 

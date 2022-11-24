@@ -77,19 +77,18 @@ t_graphe* makeGrid()//penser a crer la libération de données
 
         g->grille[i] = (t_tile**) calloc (NBCOLONNE, sizeof(t_tile*));
     }
-    printf("hello\n");
-
     g= initialiserGrille(g);
 
     g->mat_adjacence=(int **) calloc(NBLIGNE,sizeof(int*));
     g->mat_chemin_eau=(int **) calloc(NBLIGNE,sizeof(int*));
     g->mat_chemin_elec=(int **) calloc(NBLIGNE,sizeof(int*));
+    g->mat_adj_caserne=(int **) calloc(NBLIGNE,sizeof(int*));
     for(int i=0; i<NBLIGNE; i++)
     {
         g->mat_adjacence[i]=(int*)calloc(NBCOLONNE,sizeof(int));
         g->mat_chemin_eau[i]=(int*) calloc(NBCOLONNE,sizeof(int));
         g->mat_chemin_elec[i]=(int*) calloc(NBCOLONNE,sizeof(int));
-
+        g->mat_adj_caserne[i]=(int *) calloc(NBLIGNE,sizeof(int));
     }
     g->mat_adjacence[17][0]=1;
     g->liste_hab=creer();
@@ -181,6 +180,8 @@ void initialisationElementCarte()
     FILE* elementCarte= fopen("element_map.txt", "w+");
     FILE* rotation_element_map=fopen("rotation_element_map.txt", "w+");
     FILE* map_eau=fopen("map_eau.txt", "w+");
+    FILE* map_elec=fopen("map_elec.txt", "w+");
+
     for(int i=0; i<NBLIGNE; i++)
     {
         for(int j=0; j<NBCOLONNE; j++)
@@ -195,14 +196,17 @@ void initialisationElementCarte()
             }
             fprintf(rotation_element_map, "%d ", 1);
             fprintf(map_eau, "%d ", 0);
+            fprintf(map_elec, "%d ", 0);
         }
         fprintf(elementCarte, "\n");
         fprintf(rotation_element_map, "\n");
         fprintf(map_eau, "\n");
+        fprintf(map_elec, "\n");
     }
     fclose(rotation_element_map);
     fclose(elementCarte);
     fclose(map_eau);
+    fclose(map_elec);
 }
 
 

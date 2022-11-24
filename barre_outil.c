@@ -327,7 +327,73 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
             }
             break;
         case 5://caserne de pompier
-            textout_ex ( liste_buffer->buffer_final, font, "Action 5", 511, 326,makecol (255, 255, 255), -1); //texte explicatif
+            if(key[KEY_1])//ou choisir un bouton plus judicieux
+            {
+                *choix=0;//on sort du choix des actions si l'utilisateur le veut
+            }
+            if(key[KEY_2])
+            {
+                *rotation=-*rotation;
+                rest(100);//pour eviter les rebonds
+            }
+            if(*rotation==1)
+            {
+                if (souris.ligne >= 2 && souris.ligne < 35 - 1 && souris.colonne >= 2 && souris.colonne < 45 - 3)//blindage pour pas sortir de la map en fonction des deux moyens de rotation
+                {
+                    draw_sprite(liste_buffer->buffer_map, liste_image->caserne_pompiers, (SCREEN_W / 2 - 36) + (souris.colonne - 3) * 14 - (souris.ligne) * 14, (souris.colonne - 3) * 8 + (souris.ligne) * 8 - 8);//pq le -8? jsp j'ai tatonné
+                    if(mouse_b & 1)
+                    {
+                        if(!verification_chevauchement(map, souris.ligne, souris.colonne, 10, *rotation))
+                        {
+                            depense= calcul_depenses(*choix, 0);
+                            if(validation_depense(depense, *argent_restant))
+                            {
+                                map = placementElement(map, souris.ligne, souris.colonne, 10, *rotation);
+
+                                for (int i = -2; i < 2; i++)
+                                {
+                                    for (int j = -2; j < 4; j++)
+                                    {
+                                        map = remplissage_matrice_adjacence(map, souris.ligne + i, souris.colonne + j,10, map->grille[souris.ligne][souris.colonne]);
+                                    }
+                                }
+                                caserne_de_pompier(map, souris.ligne , souris.colonne , *choix);
+
+                                *argent_restant-=depense;
+                            }
+                        }
+                        *choix=0; // dès qu'on a fait l'action on peut revenir a un etat neutre de choix
+                    }
+                }
+            }else if (*rotation==-1)
+            {
+                if (souris.ligne >= 3 && souris.ligne < 35-2 && souris.colonne >= 1 && souris.colonne < 45-2 )//blindage pour pas sortir de la map en fonction des deux moyens de rotation
+                {
+                    draw_sprite_h_flip(liste_buffer->buffer_map, liste_image->caserne_pompiers, (SCREEN_W/2-36)+(souris.colonne-3)*14-(souris.ligne)*14, (souris.colonne-3)*8+(souris.ligne)*8-8);
+                    if(mouse_b & 1)
+                    {
+                        if (!verification_chevauchement(map, souris.ligne, souris.colonne, 10, *rotation))
+                        {
+                            depense= calcul_depenses(*choix, 0);
+                            if(validation_depense(depense, *argent_restant))
+                            {
+                                map = placementElement(map, souris.ligne, souris.colonne, 10, *rotation);
+                                for (int i = -3; i < 3; i++)
+                                {
+                                    for (int j = -1; j < 3; j++)
+                                    {
+                                        map = remplissage_matrice_adjacence(map, souris.ligne + i, souris.colonne + j,10, map->grille[souris.ligne][souris.colonne]);
+                                    }
+                                }
+                                caserne_de_pompier(map, souris.ligne , souris.colonne , 10);
+
+                                *argent_restant-=depense;
+                            }
+                        }
+                        *choix=0;
+                    }
+                }
+            }
             break;
         case 6://visualisation niveau 0
             *niv_visu=0;

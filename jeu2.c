@@ -15,14 +15,14 @@ int calcul_depenses(int choix, int taille_chemin_route/*Algo Taille chemin*/)
             depense = 10*taille_chemin_route;
             break;
         case 2://achat d'un chateau d'eau
-            depense = 100000;
-            break;
-        case 3:
+        case 3://achat d'une centrale
             depense = 100000;
             break;
         case 4:
             depense = 1000;
             break;
+        case 5:
+            depense = 10000;
         default:
             depense = 0;
             break;
@@ -141,6 +141,7 @@ void maj_capacite(t_tile* chateau_eau, t_tile* maison)
     if(chateau_eau->element->capacite>=nb_habitant_restant)
     {
         chateau_eau->element->capacite-=nb_habitant_restant;
+        printf("capactite = %d\n",chateau_eau->element->capacite );
         maison->element->eau_actuelle+=nb_habitant_restant;
         maison->element->chateau_approvisionnement= insererNoeud2(maison->element->chateau_approvisionnement, chateau_eau, nb_habitant_restant);
     }
@@ -181,7 +182,7 @@ t_graphe* dijkstra(t_graphe* map, t_tile* sommet_de_depart)
         {
             if(map->grille[i][j]->g==0)
             {
-                liste_ouverte=insererNoeud(liste_ouverte, map->grille[i][j]);
+                //liste_ouverte=insererNoeud(liste_ouverte, map->grille[i][j]);
                 liste_voisin=map->grille[i][j]->voisin;
                 while(liste_voisin!=NULL)
                 {
@@ -253,7 +254,7 @@ t_graphe* dijkstra(t_graphe* map, t_tile* sommet_de_depart)
                     //printf("Approvisionnement : \n");
                     while(temp!=NULL)
                     {
-                        //printf("chateau [%d][%d] : %d\n", temp->n->position.ligne, temp->n->position.colonne, temp->montant_distribue);
+                        printf("chateau [%d][%d] : %d\n", temp->n->position.ligne, temp->n->position.colonne, temp->montant_distribue);
                         temp=temp->next;
                     }*/
                     map=ecriture_fichier_eau(map, case_analysee);//on part de la route adajacente Ã  la maison
@@ -315,7 +316,6 @@ t_graphe* distribution_eau(t_graphe* map)
             }
         }
     }
-
     return map;
 }
 ///Usines electricite (num 3 sur la map)
@@ -349,13 +349,17 @@ t_graphe* electricite(t_graphe* map, int* capa_usine)
                 verif_route= verification_connexite_route(map, map->grille[i][j]);
                 if(verif_route==1)
                 {
-                    if(map->grille[i][j]->element->nb_habitant < *capa_usine)
+                    if(map->grille[i][j]->element->nb_habitant <= *capa_usine && *capa_usine!=0)
                     {
                         //on note le batiment trouve comme etant alimente
                         map->grille[i][j]->element->alimente=1;
                         //on soustrait le nombre d'habitants de cette habitation a la capacite totale de la ville
                         *capa_usine = (*capa_usine - map->grille[i][j]->element->nb_habitant);
                         elec_distrib+=map->grille[i][j]->element->nb_habitant;
+                    }
+                    else
+                    {
+                        map->grille[i][j]->element->alimente=0;
                     }
                 }
             }
@@ -365,7 +369,7 @@ t_graphe* electricite(t_graphe* map, int* capa_usine)
     {
         for(int j=0; j<NBCOLONNE; j++)
         {
-            if(map->grille[i][j]->element->type==2)
+            if(map->grille[i][j]->element->type==3)
             {
                 verif_route= verification_connexite_route(map, map->grille[i][j]);
                 if(verif_route==1)
@@ -419,7 +423,8 @@ t_graphe* ecriture_fichier_elec(t_graphe* map, t_tile* case_arrive)
 
 t_graphe* BFS(t_graphe* map, t_tile* sommet_depart)
 {
-    t_tile*noeud, *temp;
+    printf("lancement BFS\n");
+    t_tile* noeud, *temp;
     for(int i=0; i<NBLIGNE; i++) //initialisation du bfs
     {
         for(int j=0; j<NBCOLONNE; j++) //initialisation du bfs
@@ -432,7 +437,7 @@ t_graphe* BFS(t_graphe* map, t_tile* sommet_depart)
     t_liste* liste_sommet_plus_toucher=creer(); //liste pour noircir
     t_liste* liste_temporaire; //liste des sommets qu'on Ã©tudie
 
-
+//initialisation du BFS en fonction de l'orientation du bat
     if (sommet_depart->element->orientation == 1)
     {
         for (int i = -2; i < 2; i++)
@@ -458,7 +463,7 @@ t_graphe* BFS(t_graphe* map, t_tile* sommet_depart)
         {
             for (int j = -1; j < 3; j++)
             {
-                liste_temporaire=map->grille[i][j]->voisin;
+                liste_temporaire=map->grille[sommet_depart->position.ligne+i][sommet_depart->position.colonne+j]->voisin;
                 while(liste_temporaire!=NULL)
                 {
                     if(liste_temporaire->n->element->type==1) //si route
@@ -473,28 +478,24 @@ t_graphe* BFS(t_graphe* map, t_tile* sommet_depart)
     while(!estVide(liste_ouverte))// parcours de la liste
     {
 
-        enlever_noeud_debut(liste_ouverte, &noeud);
+        liste_ouverte=enlever_noeud_debut(liste_ouverte, &noeud);
         liste_sommet_plus_toucher= insererNoeud(liste_sommet_plus_toucher, noeud);//pour noircir
         liste_temporaire=noeud->voisin;
-        printf("case de depart [%d][%d]:\n", noeud->position.ligne, noeud->position.colonne);
+        //printf("case de depart [%d][%d]:\n", noeud->position.ligne, noeud->position.colonne);
 
         while(liste_temporaire!=NULL)
         {
-            printf("case [%d][%d]\n", liste_temporaire->n->position.ligne, liste_temporaire->n->position.colonne);
-            if(liste_temporaire->n->element->type>=4 && liste_temporaire->n->element->type<=9)
+            if(liste_temporaire->n->case_mere->element->type>=4 && liste_temporaire->n->case_mere->element->type<=9)
             {
-                printf("ecriture fichier\n");
                 map= ecriture_fichier_elec(map, noeud);
 
             }
             if(!existe(liste_ouverte,liste_temporaire->n)   && !existe(liste_sommet_plus_toucher,liste_temporaire->n)  && liste_temporaire->n->element->type==1)
             {
-                printf("insertion liste\n");
                 liste_ouverte=insererNoeudFin(liste_ouverte,liste_temporaire->n);
+                //afficherListe(liste_ouverte);
                 liste_temporaire->n->parent=noeud;
             }
-            printf("ici\n");
-
             liste_temporaire=liste_temporaire->next;
         }
     }
@@ -594,10 +595,9 @@ int validation_evolution(t_tile* batiment, int* nb_habitant)//renvoie 1 pour amÃ
 {
     switch (batiment->element->type) {
         case 4:
-            printf("evolution\n");
+            //printf("evolution\n");
             if(batiment->element->alimente==1)//et que le compteur d'eau soit supÃ©rieur a 0 a implÃ©menter!
             {
-                printf("amelioration bat[%d][%d]\n", batiment->position.ligne, batiment->position.colonne);
                 batiment->element->type++;
                 batiment->element->nb_habitant=10;
                 *nb_habitant+=10;
@@ -608,7 +608,7 @@ int validation_evolution(t_tile* batiment, int* nb_habitant)//renvoie 1 pour amÃ
                 return 0;
             }
         case 5:
-            printf("evolution\n");
+            //printf("evolution\n");
 
             if(batiment->element->alimente==1)
             {
@@ -642,7 +642,7 @@ int validation_evolution(t_tile* batiment, int* nb_habitant)//renvoie 1 pour amÃ
 
             }
         case 6:
-            printf("evolution\n");
+            //printf("evolution\n");
 
             if(batiment->element->alimente==1)
             {
@@ -673,7 +673,7 @@ int validation_evolution(t_tile* batiment, int* nb_habitant)//renvoie 1 pour amÃ
                 return 1;
             }
         case 7:
-            printf("evolution\n");
+            //printf("evolution\n");
 
             if(batiment->element->alimente==1)
             {
@@ -705,7 +705,7 @@ int validation_evolution(t_tile* batiment, int* nb_habitant)//renvoie 1 pour amÃ
                 return 1;
             }
         case 8:
-            printf("evolution\n");
+            //printf("evolution\n");
 
             if(batiment->element->alimente==1)
             {
@@ -729,7 +729,7 @@ int validation_evolution(t_tile* batiment, int* nb_habitant)//renvoie 1 pour amÃ
                 return 1;
             }
         case 9:
-            printf("evolution\n");
+            //printf("evolution\n");
 
             if(batiment->element->alimente==1)
             {
@@ -762,7 +762,9 @@ t_graphe* cycle_habitation(t_graphe* map, int* capa_usine, long* compteur_argent
             if(changement==1)
             {
                 map=distribution_eau(map);
+
                 map=electricite(map, capa_usine);
+
             }
         }
         parcours_habitation=parcours_habitation->next;

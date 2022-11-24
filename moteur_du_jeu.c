@@ -68,23 +68,21 @@ void jeu()//sous programme qui fera tourner tout le jeu
         map=action(map, liste_buffer, liste_image, &choix, souris, &rotation, &niv_visu, &case_select, &algo_A, &compteur_argent, &capa_usine);
 
         map=cycle_habitation(map, &capa_usine, &compteur_argent, &nb_habitant);
+
         blit(liste_buffer->buffer_menu, liste_buffer->buffer_final, 0, 0, 0, 0, SCREEN_W, SCREEN_H);
         blit(liste_buffer->buffer_map, liste_buffer->buffer_final, decalageX, 0, 124, 0, SCREEN_W, SCREEN_H);
         blit(liste_buffer->buffer_final, screen, 0, 0, 0, 0, SCREEN_W, SCREEN_H);
 
 
     }
-   for(int i=0 ; i<NBLIGNE; i++)
+   /*for(int i=0 ; i<NBLIGNE; i++)
    {
        for(int j=0; j<NBCOLONNE; j++)
        {
-           if(map->grille[i][j]->element->type==4)
-           {
-               printf("maison [%d][%d] :\n", i, j);
-               printf("compteur eau : %d\n", map->grille[i][j]->element->eau_actuelle);
-           }
+           printf("%d ", map->mat_chemin_elec[i][j]);
        }
-   }
+       printf("\n");
+   }*/
     //libération de la mémoire
     show_mouse(NULL);
     liberation_memoire_bitmaps(liste_image, liste_buffer);

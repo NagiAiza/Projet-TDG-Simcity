@@ -27,14 +27,15 @@ typedef struct IMAGE{//liste de tout les buffer d'image qu'on va utiliser, on va
     BITMAP* immeuble;
     BITMAP* gratte_ciel;
     BITMAP* ruine;
-    BITMAP* pompiers;
+    BITMAP* caserne_pompiers;
     BITMAP* barre_outils;
     BITMAP* info_eau;
     BITMAP* info_elec;
     BITMAP* info_monnaie;
     BITMAP* info_habitants;
-    BITMAP* info_deplacer;
-    BITMAP* info_supprimer;
+    //BITMAP* info_deplacer; on remettra si besoin
+    //BITMAP* info_supprimer;
+    BITMAP* reseau;
 }IMAGE;
 
 typedef struct BUFFER{//liste des buffer qu'on utilisera qui correspondent à chaque element d'affichage
@@ -50,6 +51,7 @@ BUFFER* initialisation_liste_buffer();
 void liberation_memoire_bitmaps(IMAGE* liste_image, BUFFER* liste_buffer);
 void affichage_level_0(BUFFER* liste_buffer, IMAGE* liste_image);//on pourra peut etre rajouter des obstacles du style montagne etc..
 void affichage_level_1(t_graphe* map, IMAGE* liste_image, BUFFER* liste_buffer);
+void affichage_level_2(t_graphe* map, IMAGE* liste_image, BUFFER* liste_buffer);
 void affichageElement(BITMAP* bufferMap, IMAGE* liste, int type, int ligne, int colonne, int rotation);//pour avoir la rotation du batiment il va falloir un autre fichier
 void affichageCaseSelec(BUFFER* liste_buffer, IMAGE* liste_image, t_pos souris);
 void affichage_element_eau(BUFFER* liste_buffer, IMAGE* liste, int type, int ligne, int colonne, int rotation, t_tile* chateau);
