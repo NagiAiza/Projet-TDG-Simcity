@@ -182,3 +182,61 @@ int menu()
 
     return 0;
 }
+
+void ecran_victoire_saboteur()
+{
+    // Buffer
+    BITMAP *page;
+    BITMAP*decor;
+    BITMAP *dirigeable;
+
+    // Position de l'écran réel dans le repère du décor
+    int screenx,screeny;
+
+    // buffer
+    page=create_bitmap(SCREEN_W,SCREEN_H);
+    clear_bitmap(page);
+
+    // charger image de fond
+    decor=load_bitmap("nuage.bmp",NULL);
+    if (!decor)
+    {
+        allegro_message("pas pu trouver images/grandfond_decor.bmp");
+        exit(EXIT_FAILURE);
+    }
+
+    // initialisation du scrolling en haut à gauche du décor
+    screenx=0;
+    screeny=900;
+
+    // créer le dirigeable et la cible
+    dirigeable=load_bitmap("dirigeable.bmp",NULL);
+
+    printf("ici\n");
+
+    while (!key[KEY_SPACE])
+    {
+        //scroller le decor
+        screeny-=5;
+
+        // contrôle des bords : on retourne au debut de l'image lorsque les acteurs arrivent a la fin du decor
+        if ( (screeny<0) )
+            screeny=900;
+
+
+        // EFFACER BUFFER EN APPLIQUANT UNE PARTIE DU DECOR (TAILLE DE L'ECRAN)
+        blit(decor,page,screenx,screeny,0,0,SCREEN_W,SCREEN_H);
+
+        draw_sprite(page, dirigeable, 300, 200);
+
+
+        // afficher tout ça à l'écran
+        blit(page,screen,0,0,0,0,SCREEN_W,SCREEN_H);
+
+        // pause
+        rest(10);
+    }
+    destroy_bitmap(decor);
+    destroy_bitmap(page);
+    destroy_bitmap(dirigeable);
+}

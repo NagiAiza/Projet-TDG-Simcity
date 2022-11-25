@@ -8,4 +8,5 @@
 #include <allegro.h>
 void suite_menu();
 int menu();
+void ecran_victoire_saboteur();
 #endif //PROJET_S1_TDG_MENU_H

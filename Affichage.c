@@ -467,7 +467,7 @@ void affichageTotal(t_graphe* map, IMAGE* liste_image, BUFFER* liste_buffer, t_p
     textprintf_ex(liste_buffer->buffer_menu,font,237,658,makecol(0,0,0),-1,"%d",compteur_hab);
     textprintf_ex(liste_buffer->buffer_menu,font,47,73,makecol(0,0,0),-1,"%ld sec",clock()/CLOCKS_PER_SEC-CLK_debut);
 
-//
+
     blit(liste_image->nuage,liste_buffer->buffer_map,0,screeny,0,0,1500,SCREEN_H);
     draw_sprite(liste_buffer->buffer_map, liste_image->map, 0, 0);
 
@@ -488,23 +488,7 @@ void affichageTotal(t_graphe* map, IMAGE* liste_image, BUFFER* liste_buffer, t_p
     }
 
 }
-/*
-void affichage_scroll(IMAGE* liste_image, BUFFER* liste_buffer)
-{
-    int screenx=0;
-    int screeny=0;
-    //scroller le decor
-    screeny+=5;
 
-    // Bloquer le scrolling s'il est ammené trop loin
-    if ( screeny < 0 ) screeny=0;
-    {
-        if ( screeny > liste_image->nuage->h - SCREEN_H ) screeny=liste_image->nuage->h - SCREEN_H;
-        {
-            blit(liste_image->nuage,liste_buffer->buffer_map,screenx,screeny,0,0,SCREEN_W,SCREEN_H);
-            draw_sprite(liste_buffer->buffer_map, liste_image->canalisation, 0, 0);
-        }
-    }
-}*/
+
 
 
