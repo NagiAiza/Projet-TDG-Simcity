@@ -388,6 +388,7 @@ t_graphe* electricite(t_graphe* map, int* capa_usine)
             }
         }
     }
+    map= distribution_elec(map);
     return map;
 }
 
@@ -487,6 +488,7 @@ t_graphe* BFS(t_graphe* map, t_tile* sommet_depart)
         {
             if(liste_temporaire->n->case_mere->element->type>=4 && liste_temporaire->n->case_mere->element->type<=9)
             {
+                printf("helloo\n");
                 map= ecriture_fichier_elec(map, noeud);
 
             }

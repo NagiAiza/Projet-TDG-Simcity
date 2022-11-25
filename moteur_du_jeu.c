@@ -20,6 +20,11 @@ void jeu()//sous programme qui fera tourner tout le jeu
     souris.ligne=0;
     souris.colonne=0;
 
+    int scroll=-1;
+    int screenx=0;
+    int screeny=0;
+
+
     int choix, rotation=1, niv_visu=0;
     int algo_A=0;
     t_tile* case_select;
@@ -47,7 +52,7 @@ void jeu()//sous programme qui fera tourner tout le jeu
 
         capa_eau=compte_eau(map);
 
-        affichageTotal(map, liste_image, liste_buffer, souris, compteur_argent, niv_visu, capa_usine, CLK_debut, nb_habitant, capa_eau);
+        affichageTotal(map, liste_image, liste_buffer, souris, compteur_argent, niv_visu, capa_usine, CLK_debut, nb_habitant, capa_eau, screeny);
 
 
         if(mouse_x>124 && mouse_y<640)
@@ -64,10 +69,54 @@ void jeu()//sous programme qui fera tourner tout le jeu
                 rest(100);
             }
         }
+        switch (scroll) {
+            case 0:
+                screeny-=5;
+                if(screeny<0)
+                {
+                    screeny=0;
+                    scroll=-1;
+                    niv_visu=0;
+                }
+                break;
+            case 1:
+                if(niv_visu==0) //scroller vers le bas
+                {
+                    screeny+=5;
+                    if(screeny>550)
+                    {
+                        screeny=550;
+                        scroll=-1;
+                        niv_visu=1;
+                    }
 
+                }
+                if(niv_visu==2)//vers le haut
+                {
+                    screeny-=5;
+                    if(screeny<550)
+                    {
+                        screeny=550;
+                        scroll=-1;
+                        niv_visu=1;
+                    }
+                }
+                break;
+            case 2:
+                screeny+=5;
+                if(screeny>1100)
+                {
+                    screeny=1100;
+                    scroll=-1;
+                    niv_visu=2;
+                }
+                break;
+            default:
+                break;
+        }
         //dès qu'on a récup ce qu'il veut faire on conserve son action et en fonction de l'action on lance le sous pgrm pour l'effectuer
 
-        map=action(map, liste_buffer, liste_image, &choix, souris, &rotation, &niv_visu, &case_select, &algo_A, &compteur_argent, &capa_usine, &exit);
+        map=action(map, liste_buffer, liste_image, &choix, souris, &rotation, &niv_visu, &case_select, &algo_A, &compteur_argent, &capa_usine, &exit, &scroll);
 
         map=cycle_habitation(map, &capa_usine, &compteur_argent, &nb_habitant, capa_eau);
 

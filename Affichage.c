@@ -49,6 +49,7 @@ IMAGE* initialisation_liste_image()//on initialise une seule fois les bitmaps en
     liste->info_habitants=load_bitmap_check("info_habitants.bmp");
     //liste->info_deplacer=load_bitmap_check("info_deplacer.bmp");
     //liste->info_supprimer=load_bitmap_check("info_supprimer.bmp");
+    liste->nuage=load_bitmap_check("nuage.bmp");
     return liste;
 }
 
@@ -343,9 +344,9 @@ void affichage_level_1(t_graphe* map, IMAGE* liste_image, BUFFER* liste_buffer)
             fscanf(elementMap, "%d", &type);
             fscanf(rotation_element_map, "%d", &rotation);
             fscanf(map_eau, "%d", &canalisation);
+
             if(canalisation==1)
             {
-
                 draw_sprite(liste_buffer->buffer_map, liste_image->canalisation, (SCREEN_W/2-36)+j*14-i*14, j*8+i*8);
             }
             else
@@ -453,7 +454,7 @@ void affichage_level_2(t_graphe* map, IMAGE* liste_image, BUFFER* liste_buffer)
 }
 
 
-void affichageTotal(t_graphe* map, IMAGE* liste_image, BUFFER* liste_buffer, t_pos souris, long compteur_argent, int niveau_visu, int capa_usine, clock_t CLK_debut, int compteur_hab,  int capa_eau)//doit etre independant du jeu en lui meme mais affiche toute les données nécéssaire à l'utilisateur
+void affichageTotal(t_graphe* map, IMAGE* liste_image, BUFFER* liste_buffer, t_pos souris, long compteur_argent, int niveau_visu, int capa_usine, clock_t CLK_debut, int compteur_hab,  int capa_eau, int screeny)//doit etre independant du jeu en lui meme mais affiche toute les données nécéssaire à l'utilisateur
 {
     clear_bitmap(liste_buffer->buffer_menu);
     clear_bitmap(liste_buffer->buffer_map);
@@ -467,7 +468,7 @@ void affichageTotal(t_graphe* map, IMAGE* liste_image, BUFFER* liste_buffer, t_p
     textprintf_ex(liste_buffer->buffer_menu,font,47,73,makecol(0,0,0),-1,"%ld sec",clock()/CLOCKS_PER_SEC-CLK_debut);
 
 //
-
+    blit(liste_image->nuage,liste_buffer->buffer_map,0,screeny,0,0,1500,SCREEN_H);
     draw_sprite(liste_buffer->buffer_map, liste_image->map, 0, 0);
 
     textprintf_ex(liste_buffer->buffer_map,font,10,10,makecol(0,255,0),makecol(0,0,0),"%4d %4d",mouse_x,mouse_y);
@@ -487,4 +488,23 @@ void affichageTotal(t_graphe* map, IMAGE* liste_image, BUFFER* liste_buffer, t_p
     }
 
 }
+/*
+void affichage_scroll(IMAGE* liste_image, BUFFER* liste_buffer)
+{
+    int screenx=0;
+    int screeny=0;
+    //scroller le decor
+    screeny+=5;
+
+    // Bloquer le scrolling s'il est ammené trop loin
+    if ( screeny < 0 ) screeny=0;
+    {
+        if ( screeny > liste_image->nuage->h - SCREEN_H ) screeny=liste_image->nuage->h - SCREEN_H;
+        {
+            blit(liste_image->nuage,liste_buffer->buffer_map,screenx,screeny,0,0,SCREEN_W,SCREEN_H);
+            draw_sprite(liste_buffer->buffer_map, liste_image->canalisation, 0, 0);
+        }
+    }
+}*/
+
 

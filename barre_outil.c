@@ -86,7 +86,7 @@ int choixAction(BUFFER* liste_buffer, IMAGE*liste_image)
     return 0;
 }
 
-t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* choix, t_pos souris, int* rotation, int* niv_visu, t_tile** case_select, int* algo_A, long* argent_restant, int* capa_usine, int* exit)
+t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* choix, t_pos souris, int* rotation, int* niv_visu, t_tile** case_select, int* algo_A, long* argent_restant, int* capa_usine, int* exit, int* scroll)
 {
     int depense;
     t_tile* parcour_chemin=NULL;//tuile auxilière pour reparcourir les chemins calculé
@@ -395,16 +395,19 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
             }
             break;
         case 6://visualisation niveau 0
-            *niv_visu=0;
+            //*niv_visu=0;
             *choix=0;
+            *scroll=0;
             break;
         case 7://visualisation eau -1
-            *niv_visu=1;
+            //*niv_visu=1;
             *choix=0;
+            *scroll=1;
             break;
         case 8://visualisation elec -2
-            *niv_visu=2;
+            //*niv_visu=2;
             *choix=0;
+            *scroll=2;
             break;
         case 9://sortie du jeu
             *exit=1;
