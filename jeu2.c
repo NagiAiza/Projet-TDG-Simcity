@@ -817,6 +817,7 @@ t_graphe* cycle_habitation(t_graphe* map, int* capa_usine, long* compteur_argent
             if(parcours_habitation->n->element->type>4 && parcours_habitation->n->element->type<9)
             {
                 parcours_habitation->n->element->incendie=incendie();
+                parcours_habitation->n->element->argent=1;
             }
         }
         parcours_habitation=parcours_habitation->next;
