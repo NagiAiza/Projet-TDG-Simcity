@@ -183,12 +183,18 @@ int menu()
     return 0;
 }
 
-void ecran_victoire_saboteur()
+void ecran_victoire_saboteur(SAMPLE* music, int* volume)
 {
     // Buffer
     BITMAP *page;
     BITMAP*decor;
     BITMAP *dirigeable;
+
+
+    play_sample(music, 255, 0, 1000, PLAYMODE_LOOP);
+
+
+
 
     // Position de l'écran réel dans le repère du décor
     int screenx,screeny;
