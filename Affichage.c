@@ -41,6 +41,8 @@ IMAGE* initialisation_liste_image()//on initialise une seule fois les bitmaps en
     liste->gratte_ciel= load_bitmap_check("gratte-ciel-fini.bmp");
     liste->ruine=load_bitmap_check("ruines-finie.bmp");
     liste->caserne_pompiers=load_bitmap_check("pompiers.bmp");
+    liste->piece=load_bitmap_check("piece.bmp");
+    liste->flamme = load_bitmap_check("flamme.bmp");
 
     liste->barre_outils=load_bitmap_check("barre_outils.bmp");//same que menu à changer!
     liste->info_eau=load_bitmap_check("info_eau.bmp");
@@ -90,6 +92,8 @@ void liberation_memoire_bitmaps(IMAGE* liste_image, BUFFER* liste_buffer)//on n'
     destroy_bitmap(liste_image->gratte_ciel);
     destroy_bitmap(liste_image->ruine);
     destroy_bitmap(liste_image->caserne_pompiers);
+    destroy_bitmap(liste_image->piece);
+    destroy_bitmap(liste_image->flamme);
 
     destroy_bitmap(liste_image->info_eau);
     destroy_bitmap(liste_image->info_elec);
@@ -178,7 +182,7 @@ void affichageElement(BITMAP* bufferMap, IMAGE* liste, int type, int ligne, int 
 }
 
 
-void affichage_level_0(BUFFER* liste_buffer, IMAGE* liste_image)//on pourra peut etre rajouter des obstacles du style montagne etc...
+void affichage_level_0(BUFFER* liste_buffer, IMAGE* liste_image, t_graphe* map)//on pourra peut etre rajouter des obstacles du style montagne etc...
 {
     //peut etre 2 fichiers texte, un pour l'affichage, l'autre pour les données de la map
     //parce que avec ça on va avoir un problème pour l'affichage des batiments > 1x1
@@ -195,6 +199,13 @@ void affichage_level_0(BUFFER* liste_buffer, IMAGE* liste_image)//on pourra peut
             fscanf(elementMap, "%d", &type);
             fscanf(rotation_element_map, "%d", &rotation);
             affichageElement(liste_buffer->buffer_map, liste_image, type, i, j, rotation);
+            if(map->grille[i][j]->element->type>=4 && map->grille[i][j]->element->type<=9)
+            {
+                if(map->grille[i][j]->element->argent==1)
+                {
+                    draw_sprite(liste_buffer->buffer_map, liste_image->piece, (SCREEN_W/2-36)+(map->grille[i][j]->position.colonne-3)*14-map->grille[i][j]->position.ligne*14, (map->grille[i][j]->position.colonne-2)*8+map->grille[i][j]->position.ligne*8-11);
+                }
+            }
         }
     }
     fclose(rotation_element_map);
@@ -476,7 +487,7 @@ void affichageTotal(t_graphe* map, IMAGE* liste_image, BUFFER* liste_buffer, t_p
     textprintf_ex(liste_buffer->buffer_map,font,10,30,makecol(0,255,0),makecol(0,0,0),"niveau %d",niveau_visu);
     if(niveau_visu==0)
     {
-        affichage_level_0(liste_buffer, liste_image);
+        affichage_level_0(liste_buffer, liste_image, map);
     }
     else if (niveau_visu==1)
     {

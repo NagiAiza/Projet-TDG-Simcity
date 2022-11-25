@@ -31,6 +31,8 @@ typedef struct batiment{
     int eau_actuelle;
     long compteur;//timer à la création de l'habitation
     struct liste2* chateau_approvisionnement;//liste chateaux d'eau qui approvisionnent
+    int incendie;
+    int argent;
 
 
     //si c'est un chateau d'eau
