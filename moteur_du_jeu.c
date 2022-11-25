@@ -118,7 +118,7 @@ void jeu()//sous programme qui fera tourner tout le jeu
 
         map=action(map, liste_buffer, liste_image, &choix, souris, &rotation, &niv_visu, &case_select, &algo_A, &compteur_argent, &capa_usine, &exit, &scroll);
 
-        map=cycle_habitation(map, &capa_usine, &compteur_argent, &nb_habitant, capa_eau);
+        map=cycle_habitation(map, &capa_usine, &compteur_argent, &nb_habitant, capa_eau, liste_buffer, liste_image);
 
         //incendie(map);
 
