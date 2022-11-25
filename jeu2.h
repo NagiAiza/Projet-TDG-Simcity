@@ -27,6 +27,8 @@ t_graphe* ecriture_fichier_elec(t_graphe* map, t_tile* case_arrive);
 t_graphe* BFS(t_graphe* map, t_tile* sommet_depart);
 t_graphe* distribution_elec(t_graphe* map);
 
+t_graphe* remise_0_argent(t_graphe* map, t_pos souris);
+
 
 int compte_eau(t_graphe* map);
 

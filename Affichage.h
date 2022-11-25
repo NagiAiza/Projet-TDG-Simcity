@@ -34,6 +34,8 @@ typedef struct IMAGE{//liste de tout les buffer d'image qu'on va utiliser, on va
     BITMAP* info_monnaie;
     BITMAP* info_habitants;
     BITMAP* nuage;
+    BITMAP* piece;
+    BITMAP* flamme;
     //BITMAP* info_deplacer; on remettra si besoin
     //BITMAP* info_supprimer;
     BITMAP* reseau;
@@ -50,7 +52,7 @@ BITMAP * load_bitmap_check(char *nomImage);
 IMAGE* initialisation_liste_image();
 BUFFER* initialisation_liste_buffer();
 void liberation_memoire_bitmaps(IMAGE* liste_image, BUFFER* liste_buffer);
-void affichage_level_0(BUFFER* liste_buffer, IMAGE* liste_image);//on pourra peut etre rajouter des obstacles du style montagne etc..
+void affichage_level_0(BUFFER* liste_buffer, IMAGE* liste_image, t_graphe* map);//on pourra peut etre rajouter des obstacles du style montagne etc..
 void affichage_level_1(t_graphe* map, IMAGE* liste_image, BUFFER* liste_buffer);
 void affichage_level_2(t_graphe* map, IMAGE* liste_image, BUFFER* liste_buffer);
 void affichageElement(BITMAP* bufferMap, IMAGE* liste, int type, int ligne, int colonne, int rotation);//pour avoir la rotation du batiment il va falloir un autre fichier

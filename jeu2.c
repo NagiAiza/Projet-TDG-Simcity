@@ -3,6 +3,7 @@
 //
 
 #include "listeRelated.h"
+#include "Affichage.h"
 #include "jeu2.h"
 #include "jeu1.h"
 #include "stdio.h"
@@ -493,8 +494,8 @@ t_graphe* BFS(t_graphe* map, t_tile* sommet_depart)
         {
             if(liste_temporaire->n->case_mere->element->type>=4 && liste_temporaire->n->case_mere->element->type<=9)
             {
-                printf("helloo\n");
                 map= ecriture_fichier_elec(map, noeud);
+
             }
             if(!existe(liste_ouverte,liste_temporaire->n)   && !existe(liste_sommet_plus_toucher,liste_temporaire->n)  && liste_temporaire->n->element->type==1)
             {
@@ -642,7 +643,6 @@ int validation_evolution(t_tile* batiment, int* nb_habitant, int compteur_eau)//
             {
                 batiment->element->type=9;//on passe a l'état de ruine
                 batiment->element->nb_habitant=0;
-                batiment->element->incendie=0;
                 *nb_habitant-=10;
                 return 1;
 
@@ -842,4 +842,21 @@ int compte_eau(t_graphe* map)
         }
     }
     return compteur_eau;
+}
+
+t_graphe* remise_0_argent(t_graphe* map, t_pos souris)
+{
+    if(mouse_b & 1)
+    {
+        if(souris.ligne!=255 || souris.colonne!=255)
+        {
+            if(map->mat_adjacence[souris.ligne][souris.colonne]>=4 && map->mat_adjacence[souris.ligne][souris.colonne]<=9)
+            {
+                map->grille[souris.ligne][souris.colonne]->case_mere->element->argent=0;
+            }
+        }
+
+
+    }
+    return map;
 }
