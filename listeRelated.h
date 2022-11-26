@@ -25,6 +25,7 @@ t_liste *insererNoeud(t_liste *liste, t_tile *n); //inserer noeud dans la liste
 t_liste *enleverNoeud(t_liste *liste, t_tile *n);
 int existe(t_liste *l, t_tile *n);
 //t_tile* rechercherPlusPetit(t_liste *l);
+int taille(t_liste *l);
 int tailleChemin(t_tile* n);
 int estVide(t_liste *l);
 void afficherListe(t_liste *l);//servira pour débugger

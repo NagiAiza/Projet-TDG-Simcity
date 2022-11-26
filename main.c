@@ -22,6 +22,7 @@ void initialisation_allegro() {    ///Initialisation pour Allegro
 int main() {
     //variable qui reçoit le mode souhaite //
     int Mode_de_Jeu=1;
+    int nvlle_partie=0;
 
     ///importation de la musique de fond
     SAMPLE* music=load_sample("musique.wav");
@@ -35,10 +36,10 @@ int main() {
 
 
     //Sous-programme menu
-    //Mode_de_Jeu = menu(); //si 1 communiste si 2 capitaliste si 0 nada
+    //Mode_de_Jeu = menu(); //si 1 communiste si 2 capitaliste si 0 nada, 1 en paramètre si  nouvelle partie
     //ecran_victoire_saboteur(music, &volume);
     //Sous-programme jeu
-    jeu(Mode_de_Jeu);
+    jeu(Mode_de_Jeu, nvlle_partie);
     allegro_exit();
     return 0;
 }END_OF_MAIN();
