@@ -46,6 +46,7 @@ t_graphe* caserne_de_pompier(t_graphe* map, int a, int b, int choix)//verifier l
 
 int incendie ()
 {
+    //random pour incendie
     int aleatoire;
     aleatoire = rand() % 15;
     printf ("nbre aleatoire --> %d\n", aleatoire);
