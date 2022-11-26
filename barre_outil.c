@@ -9,7 +9,7 @@
 #include "listeRelated.h"
 
 
-void choixAction(int* choix)
+void choixAction(int* choix)//en fonction de l'endroit cliqué, on lui attribut une valeur
 {
 
     if(((mouse_x>=5)&&(mouse_x<=121)&&(mouse_y>=124)&&(mouse_y<=158))&&(mouse_b&1)) //Si on clique sur la case route
@@ -34,11 +34,11 @@ void choixAction(int* choix)
     }
     if(((mouse_x>=7)&&(mouse_x<=59)&&(mouse_y>=326)&&(mouse_y<=350))&&(mouse_b&1))//fleches
     {
-
+        //pas codé
     }
     if(((mouse_x>=65)&&(mouse_x<=115)&&(mouse_y>=328)&&(mouse_y<=354))&&(mouse_b&1))//pelle
     {
-
+        //pas codé
     }
     if(((mouse_x>=9)&&(mouse_x<=81)&&(mouse_y>=408)&&(mouse_y<=434))&&(mouse_b&1))//0
     {
@@ -68,20 +68,19 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
             {
                 if(souris.ligne<35 && souris.colonne<45)
                 {
-                    if(*algo_A == 0)
+                    if(*algo_A == 0)//si on n'a pas déjà appuyé pour choisir l'emplacement de départ de la route
                     {
-                        draw_sprite(liste_buffer->buffer_map, liste_image->route,(SCREEN_W / 2 - 36) + souris.colonne * 14 - souris.ligne * 14,souris.colonne * 8 + souris.ligne * 8);
+                        draw_sprite(liste_buffer->buffer_map, liste_image->route,(SCREEN_W / 2 - 36) + souris.colonne * 14 - souris.ligne * 14,souris.colonne * 8 + souris.ligne * 8);//on affiche l'icone de la route
                         if (mouse_b & 1)
                         {
-                            if (!verification_chevauchement(map, souris.ligne, souris.colonne, 1, *rotation) && placement_route(map, souris.ligne, souris.colonne) == 1)
+                            if (!verification_chevauchement(map, souris.ligne, souris.colonne, 1, *rotation) && placement_route(map, souris.ligne, souris.colonne) == 1)//on vérifie qu'on peut placer la route
                             {
-                                *algo_A = 1;
-                                *case_select = map->grille[souris.ligne][souris.colonne];
-                                printf("Case selec\n");
+                                *algo_A = 1;//on peut alors lancer A* continuellement
+                                *case_select = map->grille[souris.ligne][souris.colonne];//on conserve la case de départ
                             }
                         }
                     }
-                    else if (*algo_A == 1)//calcul de chemin à chaque fois qu'on change de case c'est peut etre mieux
+                    else if (*algo_A == 1)
                     {
                         map = A_star(map, *case_select,map->grille[souris.ligne][souris.colonne]);//on retrace ensuite le chemin en utilisant les parents
                         parcour_chemin = map->grille[souris.ligne][souris.colonne];
@@ -104,7 +103,7 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
                                         map = remplissage_matrice_adjacence(map, parcour_chemin->position.ligne,parcour_chemin->position.colonne, 1, map->grille[parcour_chemin->position.ligne][parcour_chemin->position.colonne]);//ici
                                         parcour_chemin = parcour_chemin->parent;
                                     }
-                                    *argent_restant-=depense;
+                                    *argent_restant-=depense;//on met a jour les informations
                                     map= distribution_eau(map);
                                     map= electricite(map, capa_usine);
                                 }
@@ -117,12 +116,12 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
                 if(key[KEY_1] || ((mouse_x>=25)&&(mouse_x<=55)&&(mouse_y>=520)&&(mouse_y<=545))&&(mouse_b&1))//ou choisir un bouton plus judicieux
                 {
                     *choix=0;//on sort du choix des actions si l'utilisateur le veut
-                    *algo_A=0;
+                    *algo_A=0;//on annule A* si besoin
                 }
             }
             break;
         case 2://Chateau d'eau
-            if(niv_visu==0)
+            if(niv_visu==0)//on blinde pour ne pouvoir poser un batiment seulement au niveau -1
             {
                 if(key[KEY_1] || ((mouse_x>=25)&&(mouse_x<=55)&&(mouse_y>=520)&&(mouse_y<=545))&&(mouse_b&1))//ou choisir un bouton plus judicieux
                 {
@@ -133,7 +132,7 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
                     *rotation=-*rotation;
                     rest(100);//pour eviter les rebonds
                 }
-                if(*rotation==1)
+                if(*rotation==1)//selon la rotation, on aura un remplissage des différentes matrices différentes
                 {
                     if (souris.ligne >= 2 && souris.ligne < 35 - 1 && souris.colonne >= 2 && souris.colonne < 45 - 3)//blindage pour pas sortir de la map en fonction des deux moyens de rotation
                     {
@@ -160,7 +159,7 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
                                     *argent_restant-=depense;
                                 }
                             }
-                            *choix=0;
+                            *choix=0;//dès qu'il a posé un batiment on remet l'état du choix a neutre
                         }
                     }
                 }else if (*rotation==-1)
@@ -225,7 +224,6 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
                                     {
                                         for (int j = -2; j < 4; j++)
                                         {
-
                                             map = remplissage_matrice_adjacence(map, souris.ligne + i, souris.colonne + j,3, map->grille[souris.ligne][souris.colonne]);
                                         }
                                     }
@@ -269,8 +267,7 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
             }
             break;
         case 4:
-            //habitation 3x3 à changer
-            //bouton pour rotationné le sens de construction? + blindage pour ne pas superposer avec une autre construction
+            //bouton pour rotationné le sens de construction?
             if(niv_visu==0)
             {
                 if(key[KEY_1] || ((mouse_x>=25)&&(mouse_x<=55)&&(mouse_y>=520)&&(mouse_y<=545))&&(mouse_b&1))//ou choisir un bouton plus judicieux
@@ -406,5 +403,3 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
     }
     return map;
 }
-#pragma clang diagnostic pop
-//

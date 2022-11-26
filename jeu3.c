@@ -11,7 +11,7 @@ int incendie ()
 {
     //random pour incendie
     int aleatoire;
-    aleatoire = rand() % 15;
+    aleatoire = rand() % 15;//aléatoire entre 0 et 14
     //printf ("nbre aleatoire --> %d\n", aleatoire);
     if(aleatoire==1)
     {
@@ -25,7 +25,7 @@ int incendie ()
     }
 }
 
-t_graphe* dijkstra_incendie(t_graphe* map, t_tile* sommet_de_depart, t_tile* case_en_feu, int* fin_recherche, BUFFER* liste_buffer, IMAGE* liste_image)
+t_graphe* dijkstra_incendie(t_graphe* map, t_tile* sommet_de_depart, t_tile* case_en_feu, int* fin_recherche, BUFFER* liste_buffer, IMAGE* liste_image)//meme dijkstra que pour l'eau mais adapté à l'incendie
 {
     //printf("\nlancement dijkstra incendie\n");
     int poids_temp;
@@ -61,7 +61,7 @@ t_graphe* dijkstra_incendie(t_graphe* map, t_tile* sommet_de_depart, t_tile* cas
                     if(voisin_actuel->g==-1 && voisin_actuel->element->type==1)
                     {
                         voisin_actuel->g=1;//on insère les cases de route
-                        //voisin_actuel->parent=map->grille[i][j];
+                        //voisin_actuel->parent=map->grille[i][j]; si on veut compter la case de pompier dans le chemin
 
                         liste_ouverte= insererNoeud(liste_ouverte, voisin_actuel);
 
@@ -115,7 +115,7 @@ t_graphe* dijkstra_incendie(t_graphe* map, t_tile* sommet_de_depart, t_tile* cas
             {
                 //verifier taille chemin
 
-                if(tailleChemin(case_analysee)<=18)
+                if(tailleChemin(case_analysee)<=18)//si le chemin est inférieur à 18 sinon on n'est pas protégé
                 {
                     //c'est cool on est protegé
 
@@ -181,6 +181,7 @@ void sauvegarde(long compteur_argent, long temps, t_graphe* map, int nb_habitant
     int compteur;
     FILE* sauvegarde=fopen("sauvegarde.txt", "w+");
 
+    //sauvegarde des infomations primaires
     fprintf(sauvegarde, "%d ", mode_de_jeu);
     fprintf(sauvegarde, "\n");
     fprintf(sauvegarde, "%ld ", compteur_argent);
@@ -219,7 +220,7 @@ void sauvegarde(long compteur_argent, long temps, t_graphe* map, int nb_habitant
                     compteur++;
                     temp=temp->next;
                 }
-                fprintf(sauvegarde, "%d ", compteur);
+                fprintf(sauvegarde, "%d ", compteur);//pour connaitre le nombre de chiffres à lire lors de la lecture
 
                 temp=map->grille[i][j]->element->chateau_approvisionnement;
                 while(temp!=NULL)

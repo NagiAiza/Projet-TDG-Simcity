@@ -20,10 +20,10 @@ int calcul_depenses(int choix, int taille_chemin_route)//le deuxième paramètre
         case 3://achat d'une centrale
             depense = 100000;
             break;
-        case 4:
+        case 4://achat d'une maison
             depense = 1000;
             break;
-        case 5:
+        case 5://achat d'une caserne
             depense = 10000;
             break;
         default:
@@ -35,7 +35,7 @@ int calcul_depenses(int choix, int taille_chemin_route)//le deuxième paramètre
 
 int validation_depense(int depense, long argent_restant)
 {
-    if(argent_restant-depense>=0)
+    if(argent_restant-depense>=0)//on vérifie qu'on ne peut pas être en négatif
     {
         return 1;
     }
@@ -59,7 +59,7 @@ t_graphe* initialisation_distance_chateau (t_graphe* map, t_tile* case_chateau)
         {
             for (int j = -2; j < 4; j++)
             {
-                map->grille[case_chateau->position.ligne+i][case_chateau->position.colonne+j]->g = 0;
+                map->grille[case_chateau->position.ligne+i][case_chateau->position.colonne+j]->g = 0;//on initilise les cases du chateau à une distance de 0
             }
         }
     }
@@ -76,7 +76,7 @@ t_graphe* initialisation_distance_chateau (t_graphe* map, t_tile* case_chateau)
     return map;
 }
 
-/*t_graphe* initialisation_contour_chateau (t_graphe* map)
+/*t_graphe* initialisation_contour_chateau (t_graphe* map) fonction pas utile maus permettait de mettre les cases autour du chateau à une distance de 1
 {
     t_liste* liste_voisin;
     for (int i=0 ; i<NBLIGNE ; i++)
@@ -114,7 +114,7 @@ t_graphe* ecriture_fichier_eau(t_graphe* map, t_tile* case_arrive)
 {
     t_tile* temp=case_arrive;
 
-    while(temp!=NULL)
+    while(temp!=NULL)//maj de la matrice
     {
         map->mat_chemin_eau[temp->position.ligne][temp->position.colonne]=1;
         temp=temp->parent;
@@ -125,7 +125,7 @@ t_graphe* ecriture_fichier_eau(t_graphe* map, t_tile* case_arrive)
         printf("Erreur d'ouverture du fichier\n");
         exit(EXIT_FAILURE);
     }
-
+    // a partir de la matrice, remplissage du fichier
     for(int i=0; i<NBLIGNE; i++)
     {
         for(int j=0; j<NBCOLONNE; j++)
@@ -141,13 +141,13 @@ t_graphe* ecriture_fichier_eau(t_graphe* map, t_tile* case_arrive)
 void maj_capacite(t_tile* chateau_eau, t_tile* maison)
 {
     int nb_habitant_restant=maison->element->nb_habitant-maison->element->eau_actuelle;
-    if(chateau_eau->element->capacite>=nb_habitant_restant)
+    if(chateau_eau->element->capacite>=nb_habitant_restant)//si la capacité du chateau est supérieur au nombre d'habitant de l'habitation
     {
-        chateau_eau->element->capacite-=nb_habitant_restant;
+        chateau_eau->element->capacite-=nb_habitant_restant;//on peut remplir l'habitation du nombre d'habitant restant
         maison->element->eau_actuelle+=nb_habitant_restant;
         maison->element->chateau_approvisionnement= insererNoeud2(maison->element->chateau_approvisionnement, chateau_eau, nb_habitant_restant);
     }
-    else
+    else//sinon alimentation partielle
     {
         maison->element->eau_actuelle+=chateau_eau->element->capacite;
         maison->element->chateau_approvisionnement= insererNoeud2(maison->element->chateau_approvisionnement, chateau_eau, chateau_eau->element->capacite);
@@ -163,6 +163,7 @@ t_graphe* dijkstra(t_graphe* map, t_tile* sommet_de_depart)
     t_liste* liste_voisin;
     t_liste* liste_ouverte=creer();
     t_liste* liste_ferme=creer();//pas forcement utile cette ligne
+
     //initialisation de la matrice des poids
     for(int i=0 ; i<NBLIGNE; i++)
     {
@@ -176,7 +177,7 @@ t_graphe* dijkstra(t_graphe* map, t_tile* sommet_de_depart)
 
     map=initialisation_distance_chateau(map, map->grille[sommet_de_depart->position.ligne][sommet_de_depart->position.colonne]);
 
-    //insertion dans la liste ouverte
+    //insertion dans la liste ouverte des elements de route qui constitueront le départ de dijkstra
     for(int i=0 ; i<NBLIGNE; i++)
     {
         for(int j=0; j<NBCOLONNE; j++)
@@ -311,7 +312,7 @@ t_graphe* reinitialisation_eau(t_graphe* map)
 
 t_graphe* distribution_eau(t_graphe* map)
 {
-    map= reinitialisation_eau(map);
+    map= reinitialisation_eau(map);//on réinitialise bien toute les infos de l'eau
     for(int i=0 ; i<NBLIGNE; i++)//parcours de toute les cases du tableau pour trouver les chateaux d'eau
     {
         for(int j=0; j<NBCOLONNE; j++)
@@ -324,7 +325,9 @@ t_graphe* distribution_eau(t_graphe* map)
     }
     return map;
 }
+
 ///Usines electricite (num 3 sur la map)
+
 t_graphe* electricite(t_graphe* map, int* capa_usine)
 {
     int compteur_usine=0;
@@ -401,6 +404,7 @@ t_graphe* electricite(t_graphe* map, int* capa_usine)
 
 t_graphe* ecriture_fichier_elec(t_graphe* map, t_tile* case_arrive)
 {
+    //meme principe que pour l'eau
     t_tile* temp=case_arrive;
 
     while(temp!=NULL)
@@ -431,6 +435,7 @@ t_graphe* ecriture_fichier_elec(t_graphe* map, t_tile* case_arrive)
 
 t_graphe* BFS(t_graphe* map, t_tile* sommet_depart)
 {
+    //contrairement a l'eau nous faisons simplement un BFS
     t_tile* noeud;
     for(int i=0; i<NBLIGNE; i++) //initialisation du bfs
     {
@@ -492,12 +497,12 @@ t_graphe* BFS(t_graphe* map, t_tile* sommet_depart)
 
         while(liste_temporaire!=NULL)
         {
-            if(liste_temporaire->n->case_mere->element->type>=4 && liste_temporaire->n->case_mere->element->type<=9 && liste_temporaire->n->case_mere->element->alimente==1)
+            if(liste_temporaire->n->case_mere->element->type>=4 && liste_temporaire->n->case_mere->element->type<=9 && liste_temporaire->n->case_mere->element->alimente==1)//si on trouve une maison
             {
                 map= ecriture_fichier_elec(map, noeud);
 
             }
-            if(!existe(liste_ouverte,liste_temporaire->n)   && !existe(liste_sommet_plus_toucher,liste_temporaire->n)  && liste_temporaire->n->element->type==1)
+            if(!existe(liste_ouverte,liste_temporaire->n)   && !existe(liste_sommet_plus_toucher,liste_temporaire->n)  && liste_temporaire->n->element->type==1)//si c'est une nouvelle route
             {
                 liste_ouverte=insererNoeudFin(liste_ouverte,liste_temporaire->n);
                 //afficherListe(liste_ouverte);
@@ -511,6 +516,7 @@ t_graphe* BFS(t_graphe* map, t_tile* sommet_depart)
 
 t_graphe* distribution_elec(t_graphe* map)
 {
+    //gestion de l'affichage de la distribution d'electricité
     for(int i=0; i<NBLIGNE; i++)
     {
         for(int j=0; j<NBCOLONNE; j++)
@@ -528,7 +534,6 @@ t_graphe* distribution_elec(t_graphe* map)
             }
         }
     }
-
     return map;
 }
 int verification_connexite_route(t_graphe* map, t_tile* case_actu)
@@ -537,7 +542,7 @@ int verification_connexite_route(t_graphe* map, t_tile* case_actu)
     t_liste* voisin_case;
     if(case_actu->element->type==3 || case_actu->element->type==2 || case_actu->element->type==10)//si c'est un chateau d'eau/une centrale/une caserne
     {
-        if(case_actu->element->orientation==1)
+        if(case_actu->element->orientation==1)//toujours en fonction de l'orientation
         {
             for(int i=-2; i<2; i++)
             {
@@ -575,7 +580,7 @@ int verification_connexite_route(t_graphe* map, t_tile* case_actu)
         }
 
     }
-    else if(case_actu->element->type>=4 && case_actu->element->type<=10)
+    else if(case_actu->element->type>=4 && case_actu->element->type<=10)//si c'est une maison
     {
         for(int i=-1; i<2; i++)
         {
@@ -602,7 +607,7 @@ int validation_evolution_communiste(t_tile* batiment, int* nb_habitant, int comp
     switch (batiment->element->type) {
         case 4:
             //printf("evolution\n");
-            if(batiment->element->alimente==1 && batiment->element->eau_actuelle==1)//on met 1 d'eau sur la batiment pour dire que'il y a possibilité d'amélioration
+            if(batiment->element->alimente==1 && batiment->element->eau_actuelle==1)//on met 1 d'eau sur la batiment pour dire que'il y a possibilité d'amélioration et ainsi éviter les pb
             {
                 batiment->element->type++;
                 batiment->element->nb_habitant=10;
@@ -771,8 +776,9 @@ int validation_evolution_communiste(t_tile* batiment, int* nb_habitant, int comp
             }
         case 9:
             //printf("evolution\n");
-
-            /*if(batiment->element->alimente==1)
+            //si on est en ruine, il n'y a pas de retour en arrière
+            //si on veut un retour en arrière on enleve le commentaire en dessous
+            /*if(batiment->element->alimente==1 && batiment->element->eau_actuelle==1)
             {
                 batiment->element->type=5;
                 batiment->element->nb_habitant=10;
@@ -790,7 +796,7 @@ int validation_evolution_communiste(t_tile* batiment, int* nb_habitant, int comp
     return 0;
 }
 
-int validation_evolution_capitaliste(t_graphe* map, t_tile* batiment, int* nb_habitant)//evolue forcément peut importe les conditions
+int validation_evolution_capitaliste(t_graphe* map, t_tile* batiment, int* nb_habitant)//evolue forcément peut importe les conditions sauf si le batiment prend feu
 {
     switch (batiment->element->type) {
         case 4:
@@ -878,11 +884,11 @@ t_graphe* cycle_habitation(t_graphe* map, int* capa_usine, long* compteur_argent
     t_liste* parcours_habitation=map->liste_hab;
     while(parcours_habitation!=NULL)
     {
-        if(clock()/CLOCKS_PER_SEC + temps_ancienne_partie -parcours_habitation->n->element->compteur==5)//si on a fait un cycle
+        if(clock()/CLOCKS_PER_SEC + temps_ancienne_partie -parcours_habitation->n->element->compteur==15)//si on a fait un cycle
         {
             if(parcours_habitation->n->element->type>4 && parcours_habitation->n->element->type<9)
             {
-                parcours_habitation->n->element->incendie=incendie();
+                parcours_habitation->n->element->incendie=incendie();//on génère l'incendie aléatoirement sur une habitation
                 parcours_habitation->n->element->argent=1;
             }
             if(parcours_habitation->n->element->incendie==1)
@@ -892,9 +898,9 @@ t_graphe* cycle_habitation(t_graphe* map, int* capa_usine, long* compteur_argent
                 map= gestion_incendie(map, parcours_habitation->n, liste_buffer, liste_image);
             }
             //sous progrm pour générer l'incendie après la gestion de l'incendie comme ça on laisse un cycle entier à l'utilisateur pour éteindre l'incendie si besoin
-            parcours_habitation->n->element->compteur=clock()/CLOCKS_PER_SEC + temps_ancienne_partie;
+            parcours_habitation->n->element->compteur=clock()/CLOCKS_PER_SEC + temps_ancienne_partie;//on remet à jour le compteur
             *compteur_argent=*compteur_argent+parcours_habitation->n->element->nb_habitant;
-            if(mode==1)
+            if(mode==1)//selon le mode de jeu choisi, conditions  d'amélioration qui changent
             {
                 changement=validation_evolution_communiste(parcours_habitation->n, nb_habitant, compteur_eau);
             }
@@ -904,6 +910,7 @@ t_graphe* cycle_habitation(t_graphe* map, int* capa_usine, long* compteur_argent
             }
             if(changement==1)
             {
+                //si il y a eu un changement, on recalcule la distribution d'eau
                 map=distribution_eau(map);
                 map=electricite(map, capa_usine);
             }
@@ -915,7 +922,7 @@ t_graphe* cycle_habitation(t_graphe* map, int* capa_usine, long* compteur_argent
     return map;
 }
 
-int compte_eau(t_graphe* map)
+int compte_eau(t_graphe* map)//compte l'eau total sur la map
 {
     int compteur_eau=0;
     for(int i = 0; i<NBLIGNE; i++)
@@ -934,7 +941,7 @@ int compte_eau(t_graphe* map)
     return compteur_eau;
 }
 
-t_graphe* remise_0_argent(t_graphe* map, t_pos souris)
+t_graphe* remise_0_argent(t_graphe* map, t_pos souris)//pour faire disparaitre la piece à chaque imposition :)
 {
     if(mouse_b & 1)
     {

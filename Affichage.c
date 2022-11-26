@@ -120,9 +120,9 @@ t_pos calcul_pos_souris(BITMAP* sousMap, int decalageScreenX/*pour savoir où pl
 }
 
 //affichage de la case selectionné, pas utile en soit mais ça permettra de bien placer les sprites avec la formule
-void affichageCaseSelec(BUFFER* liste_buffer, IMAGE* liste_image, t_pos souris)//R correspond à la colonne, B à la ligne
+void affichageCaseSelec(BUFFER* liste_buffer, IMAGE* liste_image, t_pos souris)//R correspond à la colonne, B à la ligne on n'utilisera pas ce sous programme
 {
-    draw_sprite(liste_buffer->buffer_map, liste_image->case_selec, (SCREEN_W/2-36)+souris.colonne*14-souris.ligne*14, souris.colonne*8+souris.ligne*8);
+    draw_sprite(liste_buffer->buffer_map, liste_image->case_selec, (SCREEN_W/2-36)+souris.colonne*14-souris.ligne*14, souris.colonne*8+souris.ligne*8);//calcul déterminé en fonction de la taille des cases
 }
 
 void affichageElement(BITMAP* bufferMap, IMAGE* liste, int type, int ligne, int colonne, int rotation)//pour avoir la rotation du batiment il va falloir un autre fichier qui a l'emplacement de notre batiment mettra un 1 ou -1 en fonction du sens de rotation
@@ -240,7 +240,7 @@ void affichage_element_eau(BUFFER* liste_buffer, IMAGE* liste, int type, int lig
                     }
                     else
                     {
-                        putpixel(temp, j, i, makecol(0, 0, chateau->element->couleur*30));
+                        putpixel(temp, j, i, makecol(0, 0, chateau->element->couleur*30));//changement de couleur en fonction du numéro de la centrale
                     }
                 }
             }
@@ -271,13 +271,13 @@ void affichage_habitation(BUFFER* liste_buffer, IMAGE* liste_image, t_tile* habi
     pourcentage[0]=0;
     float pourcentage_non_alimente=0;
     int non_alimente=0;
-    if(habitation->element->eau_actuelle<habitation->element->nb_habitant)
+    if(habitation->element->eau_actuelle<habitation->element->nb_habitant)//vérification de si c'est totalement alimenté ou pas
     {
         pourcentage_non_alimente=1-(float)habitation->element->eau_actuelle/(float)habitation->element->nb_habitant;
         non_alimente=1;
     }
     t_liste2* liste_chateau=habitation->element->chateau_approvisionnement;
-    while(liste_chateau!=NULL)
+    while(liste_chateau!=NULL)//gestion de l'affichage en fonction des différents chateau alimantant
     {
         compteur++;
         pourcentage[compteur]=(float)liste_chateau->montant_distribue/(float)habitation->element->nb_habitant+pourcentage[compteur-1];
@@ -321,7 +321,7 @@ void affichage_habitation(BUFFER* liste_buffer, IMAGE* liste_image, t_tile* habi
 
                             if(i<compteur-1)
                             {
-                                putpixel(temp, k, j, makecol(0,0, makecol(0,0,liste_chateau->n->element->couleur*30)));
+                                putpixel(temp, k, j, makecol(0,0, makecol(0,0,liste_chateau->n->element->couleur*30)));//on change la couleur en fonction du chateau entrain d'alimenter l'habitation
                             }
                             else
                             {
@@ -362,17 +362,17 @@ void affichage_level_1(t_graphe* map, IMAGE* liste_image, BUFFER* liste_buffer)
 
             if(canalisation==1)
             {
-                draw_sprite(liste_buffer->buffer_map, liste_image->canalisation, (SCREEN_W/2-36)+j*14-i*14, j*8+i*8);
+                draw_sprite(liste_buffer->buffer_map, liste_image->canalisation, (SCREEN_W/2-36)+j*14-i*14, j*8+i*8);//affichage du chemin de la canalisation
             }
             else
             {
                 if(type==1 || type ==2)
                 {
-                    affichage_element_eau(liste_buffer, liste_image, type, i, j, rotation, map->grille[i][j]);
+                    affichage_element_eau(liste_buffer, liste_image, type, i, j, rotation, map->grille[i][j]);//affichage de la route et du chateau d'eau uniquement
                 }
                 else if(type>=4 && type <=9)
                 {
-                    affichage_habitation(liste_buffer, liste_image, map->grille[i][j]);
+                    affichage_habitation(liste_buffer, liste_image, map->grille[i][j]);//pour gérer l'affichage de l'habitation
                 }
             }
         }
@@ -432,9 +432,9 @@ void affichage_level_2(t_graphe* map, IMAGE* liste_image, BUFFER* liste_buffer)
                     case 9:
                         if(map->grille[i][j]->element->alimente==0)
                         {
-                            draw_sprite(liste_buffer->buffer_map, liste_image->batiment, (SCREEN_W/2-36)+(j-2)*14-i*14, (j-2)*8+i*8);
+                            draw_sprite(liste_buffer->buffer_map, liste_image->batiment, (SCREEN_W/2-36)+(j-2)*14-i*14, (j-2)*8+i*8);// si l'habitation n'est pas alimenté
                         }
-                        else
+                        else//sinon on lui donne une couleur jaune
                         {
                             for(int k=0; k<temp->h; k++)
                             {
@@ -474,7 +474,7 @@ void affichageTotal(t_graphe* map, IMAGE* liste_image, BUFFER* liste_buffer, t_p
     clear_bitmap(liste_buffer->buffer_menu);
     clear_bitmap(liste_buffer->buffer_map);
 
-
+    //affichage des infos utile
     blit(liste_image->barre_outils, liste_buffer->buffer_menu, 0, 0, 0, 0, SCREEN_W, SCREEN_H);
     textprintf_ex(liste_buffer->buffer_menu,font,19,605,makecol(0,0,0),-1,"%ld$",compteur_argent);
     textprintf_ex(liste_buffer->buffer_menu,font,560,658,makecol(0,0,0),-1,"%d",capa_usine);
@@ -489,6 +489,8 @@ void affichageTotal(t_graphe* map, IMAGE* liste_image, BUFFER* liste_buffer, t_p
     textprintf_ex(liste_buffer->buffer_map,font,10,10,makecol(0,255,0),makecol(0,0,0),"%4d %4d",mouse_x,mouse_y);
     textprintf_ex(liste_buffer->buffer_map,font,10,20,makecol(0,255,0),makecol(0,0,0),"case[%d][%d]",souris.ligne,souris.colonne);
     textprintf_ex(liste_buffer->buffer_map,font,10,30,makecol(0,255,0),makecol(0,0,0),"niveau %d",niveau_visu);
+
+    //affichage des différents niveau en fonction de ce que l'utilisateur veut voir ou pas
     if(niveau_visu==0)
     {
         affichage_level_0(liste_buffer, liste_image, map);
@@ -534,7 +536,7 @@ void affichage_info_menu(BUFFER* liste_buffer, IMAGE* liste_image)
     }
 }
 
-void scroll_map(int* scroll, int* niv_visu, int* screeny)
+void scroll_map(int* scroll, int* niv_visu, int* screeny)// scroll en fonction de ce que l'utilisateur veut voir
 {
     switch (*scroll) {
         case 0:

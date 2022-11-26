@@ -9,6 +9,7 @@ int menu(int* nvlle_partie)
 {
     //declaration BITMAP devant recevoir l'image
     // SuperCool
+    printf("Debut du menu\n");
     BITMAP* debut_projet;
     // barre de chargement
     BITMAP* chargement[17];
@@ -86,7 +87,7 @@ int menu(int* nvlle_partie)
             blit(prop1, buffer, 0, 0, SCREEN_W - prop1->w, SCREEN_H - prop1->h, prop1->w, prop1->h);
             rest(100);
             if (mouse_b & 1) {
-                //printf("COMMENCER\n");
+                printf("COMMENCER\n");
                 //rest(500);
                 *nvlle_partie = 1;
                 while (!key[KEY_ESC]) {
@@ -98,7 +99,7 @@ int menu(int* nvlle_partie)
                         rest(100);
                         if (mouse_b & 1) {
 
-                            //printf("communiste\n");
+                            printf("Choix du mode communiste\n");
                             rest(500);
                             return 1;
                         }
@@ -106,7 +107,7 @@ int menu(int* nvlle_partie)
                         blit(prop5, buffer, 0, 0, SCREEN_W - prop5->w, SCREEN_H - prop5->h, prop5->w, prop5->h);
                         rest(100);
                         if (mouse_b & 1) {
-                            //printf("capitaliste\n");
+                            printf("Choix du mode capitaliste\n");
                             rest(500);
                             return 2;
                         }
@@ -120,7 +121,7 @@ int menu(int* nvlle_partie)
             blit(prop2, buffer, 0, 0, SCREEN_W - prop2->w, SCREEN_H - prop2->h, prop2->w, prop2->h);
             rest(100);
             if (mouse_b & 1) {
-                //printf("CONTINUER\n");
+                printf("CONTINUER\n");
                 rest(500);
                 ///METTRE LE SOUS PROGRAMME DE SAUVEGARDE POUR RECUP LA PARTIE EN COURS
                 *nvlle_partie = 0;
@@ -130,7 +131,7 @@ int menu(int* nvlle_partie)
             blit(prop3, buffer, 0, 0, SCREEN_W - prop3->w, SCREEN_H - prop3->h, prop3->w, prop3->h);
             rest(100);
             if (mouse_b & 1) {
-                //printf("QUITTER\n");
+                printf("QUITTER\n");
                 rest(500);
                 exit(EXIT_SUCCESS);
             }
@@ -156,22 +157,24 @@ int menu(int* nvlle_partie)
     destroy_bitmap(prop4);
     destroy_bitmap(prop5);
     destroy_bitmap(buffer);
-
+    printf("Fin du menu\n\n");
     return 0;
 }
+
 void musique(SAMPLE*music)
 {
-    play_sample(music, 255, 0, 1000, PLAYMODE_LOOP);
+    printf("Lancement de la musique\n");
+    play_sample(music, 255, 0, 1000, PLAYMODE_LOOP);//pour jouer la musique en boucle
 }
+
+
 void intro_du_jeu()
 {
     // Buffer
+    printf("Debut de l'intro\n");
     BITMAP *page;
     BITMAP*decor;
     BITMAP *dirigeable;
-
-
-
 
 
     // Position de l'écran réel dans le repère du décor
@@ -216,4 +219,5 @@ void intro_du_jeu()
     destroy_bitmap(decor);
     destroy_bitmap(page);
     destroy_bitmap(dirigeable);
+    printf("Fin de l'intro\n\n");
 }

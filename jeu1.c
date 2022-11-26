@@ -6,7 +6,7 @@
 #include "listeRelated.h"
 
 
-t_tile* associerCaseSouris(t_graphe* map, t_pos souris)
+t_tile* associerCaseSouris(t_graphe* map, t_pos souris)//pas utilse dans le projet mais ça renvoyait la case exacte du tableau
 {
     if(souris.ligne<35 && souris.colonne<45)
     {
@@ -75,11 +75,11 @@ t_graphe* makeGrid()//penser a crer la libération de données
 
     for(int i=0; i<NBLIGNE; i++)
     {
-
         g->grille[i] = (t_tile**) calloc (NBCOLONNE, sizeof(t_tile*));
     }
-    g= initialiserGrille(g);
+    g= initialiserGrille(g);//pour initialiser toute les cases individuellement
 
+    //initialisation des diverses matrices
     g->mat_adjacence=(int **) calloc(NBLIGNE,sizeof(int*));
     g->mat_chemin_eau=(int **) calloc(NBLIGNE,sizeof(int*));
     g->mat_chemin_elec=(int **) calloc(NBLIGNE,sizeof(int*));
@@ -89,13 +89,13 @@ t_graphe* makeGrid()//penser a crer la libération de données
         g->mat_chemin_eau[i]=(int*) calloc(NBCOLONNE,sizeof(int));
         g->mat_chemin_elec[i]=(int*) calloc(NBCOLONNE,sizeof(int));
     }
-    g->mat_adjacence[17][0]=1;
+    g->mat_adjacence[17][0]=1;//pour avoir la première route posée
+    //création de la liste des habitants
     g->liste_hab=creer();
-
     return g;
 }
 
-void affichageGridMere(t_graphe* g)
+void affichageGridMere(t_graphe* g)//a servi a debugger, affiche toute les cases et leurs case mère
 {
     for(int i=0; i<NBLIGNE; i++)
     {
@@ -136,13 +136,13 @@ void initialiserVoisin(t_tile*** map, int ligne, int colonne)//pour donner une l
     }
 }
 
-void majFichierPlacementElement(t_graphe* g)// ou mettre rotation directement dans la structure?
+void majFichierPlacementElement(t_graphe* g)// ou mettre rotation directement dans la structure? on a fait les 2
 {
 
     FILE* elementCarte= fopen("element_map.txt", "w");
     FILE* rotation_element_carte= fopen("rotation_element_map.txt", "w");
 
-    for(int i=0; i<NBLIGNE; i++)
+    for(int i=0; i<NBLIGNE; i++)//maj à partir de la matrice du graphe
     {
         for(int j=0; j<NBCOLONNE; j++)
         {
@@ -160,21 +160,21 @@ void majFichierPlacementElement(t_graphe* g)// ou mettre rotation directement da
 t_graphe* placementElement(t_graphe* g, int ligne, int colonne, int type, int rotation)
 {
     //faire en fonction des différentes taille de machin
-    g->grille[ligne][colonne]->element->type=type;
+    g->grille[ligne][colonne]->element->type=type;//on place l'élement mère de l'élement
     g->grille[ligne][colonne]->element->orientation=rotation;
-    majFichierPlacementElement(g);
+    majFichierPlacementElement(g);//^puis on met à jour le fichier des elements
     return g;
 }
 
 t_graphe* remplissage_matrice_adjacence(t_graphe* g, int ligne, int colonne, int type, t_tile* case_mere)//à remplir en fonction de la rotation du bail
 {
     g->mat_adjacence[ligne][colonne]=type;
-    g->grille[ligne][colonne]->case_mere=case_mere;
+    g->grille[ligne][colonne]->case_mere=case_mere;//on n'oublie pas de désigner la case mere
     return g;
 }
 
 
-void initialisationElementCarte()
+void initialisationElementCarte()//
 {
     FILE* elementCarte= fopen("element_map.txt", "w+");
     FILE* rotation_element_map=fopen("rotation_element_map.txt", "w+");
@@ -217,7 +217,7 @@ void initialisationElementCarte()
  program ends normally). »
  */
 
-void liberation_donnee(t_graphe* g)//ne marche pas mais n'est pas forcément utile
+void liberation_donnee(t_graphe* g)//n'est pas forcément utile (voir ci dessus)
 {
     for(int i=0; i<NBLIGNE; i++)
     {
@@ -226,11 +226,15 @@ void liberation_donnee(t_graphe* g)//ne marche pas mais n'est pas forcément uti
             free(g->grille[i][j]->element);
             free(g->grille[i][j]);
         }
-        //free(g->grille[i]);
+        free(g->grille[i]);
         free(g->mat_adjacence[i]);
+        free(g->mat_chemin_elec[i]);
+        free(g->mat_chemin_eau[i]);
     }
-    //free(g->grille);
+    free(g->grille);
     free(g->mat_adjacence);
+    free(g->mat_chemin_elec);
+    free(g->mat_chemin_eau);
     free(g);
 
 }
@@ -245,7 +249,7 @@ int placement_route(t_graphe* map, int ligne, int colonne)
     }
     else
     {
-        liste_voisin=map->grille[ligne][colonne]->voisin;
+        liste_voisin=map->grille[ligne][colonne]->voisin;//ou que un de ses voisin est une route
         while(liste_voisin!=NULL)
         {
             if(liste_voisin->n->element->type==1)
@@ -254,7 +258,7 @@ int placement_route(t_graphe* map, int ligne, int colonne)
             }
             liste_voisin=liste_voisin->next;
         }
-        printf("on ne peut pas placer la route\n");
+        printf("on ne peut pas placer la route\n");//si l'utilisateur veut créer une route non connexe à la route de base
         return 0;
     }
 
@@ -276,7 +280,7 @@ int placement_route(t_graphe* map, int ligne, int colonne)
 int verification_chevauchement(t_graphe* map, int ligne, int colonne, int choix, int rotation)//rajouter un changement de couleur du sprite, genre en rouge pour dire que y a un chevauchement?
 {
     int verif=0;
-    switch (choix) {
+    switch (choix) {//on fonction de l'orientation de chaque batiment (surtout les 4x6)
         case 1 ://route 1x1
             if(map->mat_adjacence[ligne][colonne]>1){
                 verif=1;
@@ -381,10 +385,10 @@ int verification_chevauchement(t_graphe* map, int ligne, int colonne, int choix,
             break;
     }
 
-    if(verif==1)
+    /*if(verif==1)
     {
         printf("impossible il ya chevauchement\n");
-    }
+    }*/
     return verif;
 }
 
@@ -482,22 +486,23 @@ t_graphe* A_star(t_graphe* g, t_tile* depart, t_tile* arrive/*position souris*/)
     return g;
 }
 
+///Fonctions pour initiliser les batiments à leur pose
 void initialisation_habitation(t_graphe* map, t_tile* case_hab)
 {
     case_hab->element->nb_habitant=0;
     case_hab->element->eau_actuelle=0;
     case_hab->element->alimente=0;
-    case_hab->element->compteur=clock()/CLOCKS_PER_SEC;
+    case_hab->element->compteur=clock()/CLOCKS_PER_SEC;//on détermine le moment de pose
     case_hab->element->chateau_approvisionnement=creer2();
-    map->liste_hab= insererNoeud(map->liste_hab, case_hab);
+    map->liste_hab= insererNoeud(map->liste_hab, case_hab);//on insere l'habitation dans la liste des habitations du graphe
 }
 
 void initialisation_chateau_eau(t_tile* case_chateau)
 {
-    case_chateau->element->capacite=5000;
+    case_chateau->element->capacite=5000;//on initialise à 5000 de capacité
 }
 
 void initialisation_centrale(t_tile* case_elec)
 {
-    case_elec->element->capacite=5000;
+    case_elec->element->capacite=5000;//on initialise à 5000 de capacité
 }
