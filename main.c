@@ -26,18 +26,18 @@ int main() {
 
     ///importation de la musique de fond
     SAMPLE* music=load_sample("musique.wav");
-    int volume=10; //40=max
     if(music==NULL){
         printf("Erreur le dossier << musique >> (format .wav) n'a pas ete trouvee");
-        volume = 0;
     }
 
     initialisation_allegro();
 
 
     //Sous-programme menu
+    //Mode_de_Jeu = menu(); //si 1 communiste si 2 capitaliste si 0 nada
+    musique(music);
     Mode_de_Jeu = menu(&nvlle_partie); //si 1 communiste si 2 capitaliste si 0 nada, 1 en paramètre si  nouvelle partie
-    intro_du_jeu(music, &volume);
+    intro_du_jeu();
     //Sous-programme jeu
     jeu(&Mode_de_Jeu, nvlle_partie);
     allegro_exit();
