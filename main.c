@@ -21,7 +21,7 @@ void initialisation_allegro() {    ///Initialisation pour Allegro
 
 int main() {
     //variable qui reçoit le mode souhaite
-    int Mode_de_Jeu;
+    int Mode_de_Jeu=1;
 
     ///importation de la musique de fond
     SAMPLE* music=load_sample("musique.wav");
@@ -36,14 +36,10 @@ int main() {
 
     //Sous-programme menu
     //Mode_de_Jeu = menu(); //si 1 communiste si 2 capitaliste si 0 nada
-    ecran_victoire_saboteur(music, volume);
+    ecran_victoire_saboteur(music, &volume);
     //Sous-programme jeu
     jeu(Mode_de_Jeu);
     allegro_exit();
     return 0;
 }END_OF_MAIN();
-
-//il reste (partie placement des batiments):
-//2.2/si chevauchement changer la couleur du sprite en rouge ou teinte de rouge
-//3/ gérer la création de la structure de données nouvellement posé
 

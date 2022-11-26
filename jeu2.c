@@ -326,14 +326,13 @@ t_graphe* electricite(t_graphe* map, int* capa_usine)
     int compteur_usine=0;
     int elec_distrib=0;
     int verif_route;
+    struct liste* liste_hab=map->liste_hab;
     for(int i=0 ; i<NBLIGNE; i++)//parcours de toute les cases du tableau pour trouver les usines elec
     {
         for(int j=0; j<NBCOLONNE; j++)
         {
             if (map->grille[i][j]->element->type == 3)//dès qu'on a trouvé on la compte && on verifie si elle est connecté a la route
             {
-
-                map->grille[i][j]->element->compteur=5000;
                 verif_route= verification_connexite_route(map, map->grille[i][j]);
                 if(verif_route==1)
                 {
@@ -345,30 +344,28 @@ t_graphe* electricite(t_graphe* map, int* capa_usine)
     //On calcul la capacite totale de la ville
     *capa_usine=(compteur_usine*5000);
 
-    for (int i = 0; i < NBLIGNE; i++)//parcours de toute les cases du tableau pour trouver les habitations !!! on peut peut etre optimiser en utilisant la liste d'habitation
+    while(liste_hab!=NULL)
     {
-        for (int j = 0; j < NBCOLONNE; j++) {
-            if ((map->grille[i][j]->element->type >= 4) && (map->grille[i][j]->element->type <=9) )//dès qu'on a trouve une habitation
+
+        verif_route= verification_connexite_route(map, liste_hab->n);
+        if(verif_route==1)
+        {
+            if(liste_hab->n->element->nb_habitant <= *capa_usine && *capa_usine!=0)
             {
-                verif_route= verification_connexite_route(map, map->grille[i][j]);
-                if(verif_route==1)
-                {
-                    if(map->grille[i][j]->element->nb_habitant <= *capa_usine && *capa_usine!=0)
-                    {
-                        //on note le batiment trouve comme etant alimente
-                        map->grille[i][j]->element->alimente=1;
-                        //on soustrait le nombre d'habitants de cette habitation a la capacite totale de la ville
-                        *capa_usine = (*capa_usine - map->grille[i][j]->element->nb_habitant);
-                        elec_distrib+=map->grille[i][j]->element->nb_habitant;
-                    }
-                    else
-                    {
-                        map->grille[i][j]->element->alimente=0;
-                    }
-                }
+                //on note le batiment trouve comme etant alimente
+                liste_hab->n->element->alimente=1;
+                //on soustrait le nombre d'habitants de cette habitation a la capacite totale de la ville
+                *capa_usine = (*capa_usine - liste_hab->n->element->nb_habitant);
+                elec_distrib+=liste_hab->n->element->nb_habitant;
+            }
+            else
+            {
+                liste_hab->n->element->alimente=0;
             }
         }
+        liste_hab=liste_hab->next;
     }
+
     printf("elec distrib = %d\n", elec_distrib);
     for(int i=0; i<NBLIGNE; i++)
     {
@@ -376,6 +373,7 @@ t_graphe* electricite(t_graphe* map, int* capa_usine)
         {
             if(map->grille[i][j]->element->type==3)
             {
+                map->grille[i][j]->element->capacite=5000;
                 verif_route= verification_connexite_route(map, map->grille[i][j]);
                 if(verif_route==1)
                 {
@@ -390,7 +388,9 @@ t_graphe* electricite(t_graphe* map, int* capa_usine)
                         elec_distrib=0;
                     }
                 }
+                printf("capacite %d\n",map->grille[i][j]->element->capacite);
             }
+
         }
     }
     map= distribution_elec(map);
@@ -864,11 +864,9 @@ int validation_evolution_capitaliste(t_graphe* map, t_tile* batiment, int* nb_ha
                 return 1;
             }
         case 9:
-            return 0;
         default:
             return 0;
     }
-    return 0;
 }
 
 t_graphe* cycle_habitation(t_graphe* map, int* capa_usine, long* compteur_argent, int* nb_habitant, int compteur_eau, BUFFER* liste_buffer, IMAGE* liste_image, int* attente, int mode)
