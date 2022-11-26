@@ -476,7 +476,7 @@ void affichageTotal(t_graphe* map, IMAGE* liste_image, BUFFER* liste_buffer, t_p
 
     //affichage des infos utile
     blit(liste_image->barre_outils, liste_buffer->buffer_menu, 0, 0, 0, 0, SCREEN_W, SCREEN_H);
-    textprintf_ex(liste_buffer->buffer_menu,font,19,605,makecol(0,0,0),-1,"%ld$",compteur_argent);
+    textprintf_ex(liste_buffer->buffer_menu,font,19,605,makecol(0,0,0),-1,"%ld",compteur_argent);
     textprintf_ex(liste_buffer->buffer_menu,font,560,658,makecol(0,0,0),-1,"%d",capa_usine);
     textprintf_ex(liste_buffer->buffer_menu,font,873,657,makecol(0,0,0),-1,"%d",capa_eau);
     textprintf_ex(liste_buffer->buffer_menu,font,237,658,makecol(0,0,0),-1,"%d",compteur_hab);
