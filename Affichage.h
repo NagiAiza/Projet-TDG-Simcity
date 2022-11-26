@@ -12,7 +12,6 @@
 typedef struct IMAGE{//liste de tout les buffer d'image qu'on va utiliser, on va les charger une seule fois et elles dureront jusqu'à la fin du pgrm
     BITMAP* sous_map;
     BITMAP* map;
-    BITMAP* menu;
     BITMAP* route;
     BITMAP* canalisation;
     BITMAP* batiment;
@@ -36,6 +35,7 @@ typedef struct IMAGE{//liste de tout les buffer d'image qu'on va utiliser, on va
     BITMAP* nuage;
     BITMAP* piece;
     BITMAP* flamme;
+    BITMAP* feu;
     //BITMAP* info_deplacer; on remettra si besoin
     //BITMAP* info_supprimer;
     BITMAP* reseau;

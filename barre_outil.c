@@ -86,203 +86,212 @@ int choixAction(BUFFER* liste_buffer, IMAGE*liste_image)
     return 0;
 }
 
-t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* choix, t_pos souris, int* rotation, int* niv_visu, t_tile** case_select, int* algo_A, long* argent_restant, int* capa_usine, int* exit, int* scroll)
+t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* choix, t_pos souris, int* rotation, int niv_visu, t_tile** case_select, int* algo_A, long* argent_restant, int* capa_usine, int* exit, int* scroll)
 {
     int depense;
     t_tile* parcour_chemin=NULL;//tuile auxilière pour reparcourir les chemins calculé
     switch (*choix) {
         case 1://route
-            if(souris.ligne<35 && souris.colonne<45)
+            if(niv_visu==0)
             {
-                if(*algo_A == 0)
+                if(souris.ligne<35 && souris.colonne<45)
                 {
-                    draw_sprite(liste_buffer->buffer_map, liste_image->route,(SCREEN_W / 2 - 36) + souris.colonne * 14 - souris.ligne * 14,souris.colonne * 8 + souris.ligne * 8);
-                    if (mouse_b & 1)
+                    if(*algo_A == 0)
                     {
-                        if (!verification_chevauchement(map, souris.ligne, souris.colonne, 1, *rotation) && placement_route(map, souris.ligne, souris.colonne) == 1)
+                        draw_sprite(liste_buffer->buffer_map, liste_image->route,(SCREEN_W / 2 - 36) + souris.colonne * 14 - souris.ligne * 14,souris.colonne * 8 + souris.ligne * 8);
+                        if (mouse_b & 1)
                         {
-                            *algo_A = 1;
-                            *case_select = map->grille[souris.ligne][souris.colonne];
-                            printf("Case selec\n");
-                        }
-                    }
-                }
-                else if (*algo_A == 1)//calcul de chemin à chaque fois qu'on change de case c'est peut etre mieux
-                {
-                    map = A_star(map, *case_select,map->grille[souris.ligne][souris.colonne]);//on retrace ensuite le chemin en utilisant les parents
-                    parcour_chemin = map->grille[souris.ligne][souris.colonne];
-                    while (parcour_chemin != NULL)
-                    {
-                        draw_sprite(liste_buffer->buffer_map, liste_image->route,(SCREEN_W / 2 - 36) + parcour_chemin->position.colonne * 14 - parcour_chemin->position.ligne * 14,parcour_chemin->position.colonne * 8 + parcour_chemin->position.ligne * 8);
-                        parcour_chemin = parcour_chemin->parent;
-                    }
-                    if (mouse_b & 2)//on valide le chemin final avec le clic droit
-                    {
-                        if (!verification_chevauchement(map, souris.ligne, souris.colonne, 1, *rotation))
-                        {
-                            parcour_chemin = map->grille[souris.ligne][souris.colonne];
-                            depense= calcul_depenses(1, tailleChemin(parcour_chemin));
-
-                            if(validation_depense(depense, *argent_restant))
+                            if (!verification_chevauchement(map, souris.ligne, souris.colonne, 1, *rotation) && placement_route(map, souris.ligne, souris.colonne) == 1)
                             {
-                                while (parcour_chemin != NULL) {
-                                    map = placementElement(map, parcour_chemin->position.ligne,parcour_chemin->position.colonne, 1, *rotation);
-                                    map = remplissage_matrice_adjacence(map, parcour_chemin->position.ligne,parcour_chemin->position.colonne, 1, map->grille[parcour_chemin->position.ligne][parcour_chemin->position.colonne]);//ici
-                                    parcour_chemin = parcour_chemin->parent;
-                                }
-                                *argent_restant-=depense;
-                                map= distribution_eau(map);
-                                map= electricite(map, capa_usine);
+                                *algo_A = 1;
+                                *case_select = map->grille[souris.ligne][souris.colonne];
+                                printf("Case selec\n");
                             }
-                            *algo_A = 0;//et on sort de l'affichage A*
+                        }
+                    }
+                    else if (*algo_A == 1)//calcul de chemin à chaque fois qu'on change de case c'est peut etre mieux
+                    {
+                        map = A_star(map, *case_select,map->grille[souris.ligne][souris.colonne]);//on retrace ensuite le chemin en utilisant les parents
+                        parcour_chemin = map->grille[souris.ligne][souris.colonne];
+                        while (parcour_chemin != NULL)
+                        {
+                            draw_sprite(liste_buffer->buffer_map, liste_image->route,(SCREEN_W / 2 - 36) + parcour_chemin->position.colonne * 14 - parcour_chemin->position.ligne * 14,parcour_chemin->position.colonne * 8 + parcour_chemin->position.ligne * 8);
+                            parcour_chemin = parcour_chemin->parent;
+                        }
+                        if (mouse_b & 2)//on valide le chemin final avec le clic droit
+                        {
+                            if (!verification_chevauchement(map, souris.ligne, souris.colonne, 1, *rotation))
+                            {
+                                parcour_chemin = map->grille[souris.ligne][souris.colonne];
+                                depense= calcul_depenses(1, tailleChemin(parcour_chemin));
+
+                                if(validation_depense(depense, *argent_restant))
+                                {
+                                    while (parcour_chemin != NULL) {
+                                        map = placementElement(map, parcour_chemin->position.ligne,parcour_chemin->position.colonne, 1, *rotation);
+                                        map = remplissage_matrice_adjacence(map, parcour_chemin->position.ligne,parcour_chemin->position.colonne, 1, map->grille[parcour_chemin->position.ligne][parcour_chemin->position.colonne]);//ici
+                                        parcour_chemin = parcour_chemin->parent;
+                                    }
+                                    *argent_restant-=depense;
+                                    map= distribution_eau(map);
+                                    map= electricite(map, capa_usine);
+                                }
+                                *algo_A = 0;//et on sort de l'affichage A*
+                            }
                         }
                     }
                 }
-            }
 
-            if(key[KEY_1])//ou choisir un bouton plus judicieux
-            {
-                *choix=0;//on sort du choix des actions si l'utilisateur le veut
-                *algo_A=0;
+                if(key[KEY_1])//ou choisir un bouton plus judicieux
+                {
+                    *choix=0;//on sort du choix des actions si l'utilisateur le veut
+                    *algo_A=0;
+                }
             }
             break;
         case 2://Chateau d'eau
-            if(key[KEY_1])//ou choisir un bouton plus judicieux
+            if(niv_visu==0)
             {
-                *choix=0;//on sort du choix des actions si l'utilisateur le veut
-            }
-            if(key[KEY_2])
-            {
-                *rotation=-*rotation;
-                rest(100);//pour eviter les rebonds
-            }
-            if(*rotation==1)
-            {
-                if (souris.ligne >= 2 && souris.ligne < 35 - 1 && souris.colonne >= 2 && souris.colonne < 45 - 3)//blindage pour pas sortir de la map en fonction des deux moyens de rotation
+                if(key[KEY_1])//ou choisir un bouton plus judicieux
                 {
-                    draw_sprite(liste_buffer->buffer_map, liste_image->eau_fini, (SCREEN_W / 2 - 36) + (souris.colonne - 3) * 14 - (souris.ligne) * 14 , (souris.colonne - 3) * 8 + (souris.ligne) * 8 - 11);//pq le -8? jsp j'ai tatonné
-                    if(mouse_b & 1)
-                    {
-                        if(!verification_chevauchement(map, souris.ligne, souris.colonne, 2, *rotation))
-                        {
-                            depense= calcul_depenses(2, 0);
-                            if(validation_depense(depense, *argent_restant))
-                            {
-                                map = placementElement(map, souris.ligne, souris.colonne, 2, *rotation);
-
-                                for (int i = -2; i < 2; i++)
-                                {
-                                    for (int j = -2; j < 4; j++)
-                                    {
-                                        map = remplissage_matrice_adjacence(map, souris.ligne + i, souris.colonne + j,2, map->grille[souris.ligne][souris.colonne]);
-                                    }
-                                }
-                                initialisation_chateau_eau(map->grille[souris.ligne][souris.colonne]);
-                                //printf("eau : %d", map->grille[souris.ligne][souris.colonne]->element->capacite);
-                                map=distribution_eau(map);
-                                *argent_restant-=depense;
-                            }
-                        }
-                        *choix=0;
-                    }
+                    *choix=0;//on sort du choix des actions si l'utilisateur le veut
                 }
-            }else if (*rotation==-1)
-            {
-                if (souris.ligne >= 3 && souris.ligne < 35-2 && souris.colonne >= 1 && souris.colonne < 45-2 )//blindage pour pas sortir de la map en fonction des deux moyens de rotation
+                if(key[KEY_2])
                 {
-                    draw_sprite_h_flip(liste_buffer->buffer_map, liste_image->eau_fini, (SCREEN_W/2-36)+(souris.colonne-3)*14-(souris.ligne)*14, (souris.colonne-3)*8+(souris.ligne)*8-11);//-3 par rapport a l'autre orientation pour palier la différence de hauteur
-                    if(mouse_b & 1)
+                    *rotation=-*rotation;
+                    rest(100);//pour eviter les rebonds
+                }
+                if(*rotation==1)
+                {
+                    if (souris.ligne >= 2 && souris.ligne < 35 - 1 && souris.colonne >= 2 && souris.colonne < 45 - 3)//blindage pour pas sortir de la map en fonction des deux moyens de rotation
                     {
-                        if (!verification_chevauchement(map, souris.ligne, souris.colonne, 2, *rotation))
+                        draw_sprite(liste_buffer->buffer_map, liste_image->eau_fini, (SCREEN_W / 2 - 36) + (souris.colonne - 3) * 14 - (souris.ligne) * 14 , (souris.colonne - 3) * 8 + (souris.ligne) * 8 - 11);//pq le -8? jsp j'ai tatonné
+                        if(mouse_b & 1)
                         {
-                            depense= calcul_depenses(2, 0);
-                            if(validation_depense(depense, *argent_restant))
+                            if(!verification_chevauchement(map, souris.ligne, souris.colonne, 2, *rotation))
                             {
-                                map = placementElement(map, souris.ligne, souris.colonne, 2, *rotation);
-                                for (int i = -3; i < 3; i++)
+                                depense= calcul_depenses(2, 0);
+                                if(validation_depense(depense, *argent_restant))
                                 {
-                                    for (int j = -1; j < 3; j++)
+                                    map = placementElement(map, souris.ligne, souris.colonne, 2, *rotation);
+
+                                    for (int i = -2; i < 2; i++)
                                     {
-                                        map = remplissage_matrice_adjacence(map, souris.ligne + i, souris.colonne + j,2, map->grille[souris.ligne][souris.colonne]);
+                                        for (int j = -2; j < 4; j++)
+                                        {
+                                            map = remplissage_matrice_adjacence(map, souris.ligne + i, souris.colonne + j,2, map->grille[souris.ligne][souris.colonne]);
+                                        }
                                     }
+                                    initialisation_chateau_eau(map->grille[souris.ligne][souris.colonne]);
+                                    //printf("eau : %d", map->grille[souris.ligne][souris.colonne]->element->capacite);
+                                    map=distribution_eau(map);
+                                    *argent_restant-=depense;
                                 }
-                                initialisation_chateau_eau(map->grille[souris.ligne][souris.colonne]);
-                                //printf("eau : %d", map->grille[souris.ligne][souris.colonne]->element->capacite);
-                                map=distribution_eau(map);
-                                *argent_restant-=depense;
                             }
+                            *choix=0;
                         }
-                        *choix=0;
+                    }
+                }else if (*rotation==-1)
+                {
+                    if (souris.ligne >= 3 && souris.ligne < 35-2 && souris.colonne >= 1 && souris.colonne < 45-2 )//blindage pour pas sortir de la map en fonction des deux moyens de rotation
+                    {
+                        draw_sprite_h_flip(liste_buffer->buffer_map, liste_image->eau_fini, (SCREEN_W/2-36)+(souris.colonne-3)*14-(souris.ligne)*14, (souris.colonne-3)*8+(souris.ligne)*8-11);//-3 par rapport a l'autre orientation pour palier la différence de hauteur
+                        if(mouse_b & 1)
+                        {
+                            if (!verification_chevauchement(map, souris.ligne, souris.colonne, 2, *rotation))
+                            {
+                                depense= calcul_depenses(2, 0);
+                                if(validation_depense(depense, *argent_restant))
+                                {
+                                    map = placementElement(map, souris.ligne, souris.colonne, 2, *rotation);
+                                    for (int i = -3; i < 3; i++)
+                                    {
+                                        for (int j = -1; j < 3; j++)
+                                        {
+                                            map = remplissage_matrice_adjacence(map, souris.ligne + i, souris.colonne + j,2, map->grille[souris.ligne][souris.colonne]);
+                                        }
+                                    }
+                                    initialisation_chateau_eau(map->grille[souris.ligne][souris.colonne]);
+                                    //printf("eau : %d", map->grille[souris.ligne][souris.colonne]->element->capacite);
+                                    map=distribution_eau(map);
+                                    *argent_restant-=depense;
+                                }
+                            }
+                            *choix=0;
+                        }
                     }
                 }
             }
             break;
         case 3://Electricité
-            if(key[KEY_1])//ou choisir un bouton plus judicieux
+            if(niv_visu==0)
             {
-                *choix=0;//on sort du choix des actions si l'utilisateur le veut
-            }
-            if(key[KEY_2])
-            {
-                *rotation=-*rotation;
-                rest(100);//pour eviter les rebonds
-            }
-            if(*rotation==1)
-            {
-                if (souris.ligne >= 2 && souris.ligne < 35 - 1 && souris.colonne >= 2 && souris.colonne < 45 - 3)//blindage pour pas sortir de la map en fonction des deux moyens de rotation
+                if(key[KEY_1])//ou choisir un bouton plus judicieux
                 {
-                    draw_sprite(liste_buffer->buffer_map, liste_image->elec_fini, (SCREEN_W / 2 - 36) + (souris.colonne - 3) * 14 - (souris.ligne) * 14, (souris.colonne - 3) * 8 + (souris.ligne) * 8 - 22);//pq le -8? jsp j'ai tatonné
-                    if(mouse_b & 1)
-                    {
-                        if(!verification_chevauchement(map, souris.ligne, souris.colonne, 3, *rotation))
-                        {
-                            depense= calcul_depenses(3, 0);
-                            if(validation_depense(depense, *argent_restant))
-                            {
-                                map = placementElement(map, souris.ligne, souris.colonne, 3, *rotation);
-
-                                for (int i = -2; i < 2; i++)
-                                {
-                                    for (int j = -2; j < 4; j++)
-                                    {
-
-                                        map = remplissage_matrice_adjacence(map, souris.ligne + i, souris.colonne + j,3, map->grille[souris.ligne][souris.colonne]);
-                                    }
-                                }
-                                initialisation_centrale(map->grille[souris.ligne][souris.colonne]);
-                                map= electricite(map, capa_usine);
-                                *argent_restant-=depense;
-                            }
-                        }
-                        *choix=0;
-                    }
+                    *choix=0;//on sort du choix des actions si l'utilisateur le veut
                 }
-            }else if (*rotation==-1)
-            {
-                if (souris.ligne >= 3 && souris.ligne < 35-2 && souris.colonne >= 1 && souris.colonne < 45-2 )//blindage pour pas sortir de la map en fonction des deux moyens de rotation
+                if(key[KEY_2])
                 {
-                    draw_sprite_h_flip(liste_buffer->buffer_map, liste_image->elec_fini, (SCREEN_W/2-36)+(souris.colonne-3)*14-(souris.ligne)*14, (souris.colonne-3)*8+(souris.ligne)*8-22);//-14 par rapport a l'autre orientation pour palier la différence de hauteur
-                    if(mouse_b & 1)
+                    *rotation=-*rotation;
+                    rest(100);//pour eviter les rebonds
+                }
+                if(*rotation==1)
+                {
+                    if (souris.ligne >= 2 && souris.ligne < 35 - 1 && souris.colonne >= 2 && souris.colonne < 45 - 3)//blindage pour pas sortir de la map en fonction des deux moyens de rotation
                     {
-                        if (!verification_chevauchement(map, souris.ligne, souris.colonne, 3, *rotation))
+                        draw_sprite(liste_buffer->buffer_map, liste_image->elec_fini, (SCREEN_W / 2 - 36) + (souris.colonne - 3) * 14 - (souris.ligne) * 14, (souris.colonne - 3) * 8 + (souris.ligne) * 8 - 22);//pq le -8? jsp j'ai tatonné
+                        if(mouse_b & 1)
                         {
-                            depense= calcul_depenses(3, 0);
-                            if(validation_depense(depense, *argent_restant))
+                            if(!verification_chevauchement(map, souris.ligne, souris.colonne, 3, *rotation))
                             {
-                                map = placementElement(map, souris.ligne, souris.colonne, 3, *rotation);
-                                for (int i = -3; i < 3; i++)
+                                depense= calcul_depenses(3, 0);
+                                if(validation_depense(depense, *argent_restant))
                                 {
-                                    for (int j = -1; j < 3; j++)
+                                    map = placementElement(map, souris.ligne, souris.colonne, 3, *rotation);
+
+                                    for (int i = -2; i < 2; i++)
                                     {
-                                        map = remplissage_matrice_adjacence(map, souris.ligne + i, souris.colonne + j,3, map->grille[souris.ligne][souris.colonne]);
+                                        for (int j = -2; j < 4; j++)
+                                        {
+
+                                            map = remplissage_matrice_adjacence(map, souris.ligne + i, souris.colonne + j,3, map->grille[souris.ligne][souris.colonne]);
+                                        }
                                     }
+                                    initialisation_centrale(map->grille[souris.ligne][souris.colonne]);
+                                    map= electricite(map, capa_usine);
+                                    *argent_restant-=depense;
                                 }
-                                initialisation_centrale(map->grille[souris.ligne][souris.colonne]);
-                                map= electricite(map, capa_usine);
-                                *argent_restant-=depense;
                             }
+                            *choix=0;
                         }
-                        *choix=0;
+                    }
+                }else if (*rotation==-1)
+                {
+                    if (souris.ligne >= 3 && souris.ligne < 35-2 && souris.colonne >= 1 && souris.colonne < 45-2 )//blindage pour pas sortir de la map en fonction des deux moyens de rotation
+                    {
+                        draw_sprite_h_flip(liste_buffer->buffer_map, liste_image->elec_fini, (SCREEN_W/2-36)+(souris.colonne-3)*14-(souris.ligne)*14, (souris.colonne-3)*8+(souris.ligne)*8-22);//-14 par rapport a l'autre orientation pour palier la différence de hauteur
+                        if(mouse_b & 1)
+                        {
+                            if (!verification_chevauchement(map, souris.ligne, souris.colonne, 3, *rotation))
+                            {
+                                depense= calcul_depenses(3, 0);
+                                if(validation_depense(depense, *argent_restant))
+                                {
+                                    map = placementElement(map, souris.ligne, souris.colonne, 3, *rotation);
+                                    for (int i = -3; i < 3; i++)
+                                    {
+                                        for (int j = -1; j < 3; j++)
+                                        {
+                                            map = remplissage_matrice_adjacence(map, souris.ligne + i, souris.colonne + j,3, map->grille[souris.ligne][souris.colonne]);
+                                        }
+                                    }
+                                    initialisation_centrale(map->grille[souris.ligne][souris.colonne]);
+                                    map= electricite(map, capa_usine);
+                                    *argent_restant-=depense;
+                                }
+                            }
+                            *choix=0;
+                        }
                     }
                 }
             }
@@ -290,106 +299,112 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
         case 4:
             //habitation 3x3 à changer
             //bouton pour rotationné le sens de construction? + blindage pour ne pas superposer avec une autre construction
-            if(key[KEY_1])//ou choisir un bouton plus judicieux
+            if(niv_visu==0)
             {
-                *choix=0;//on sort du choix des actions si l'utilisateur le veut
-            }
-            if(souris.ligne>=0+1 && souris.colonne>=0+1 && souris.ligne<35-1 && souris.colonne<45-1)
-            {
-                draw_sprite(liste_buffer->buffer_map, liste_image->terrain_vague, (SCREEN_W/2-36)+(souris.colonne-2)*14-(souris.ligne)*14, (souris.colonne-2)*8+(souris.ligne)*8);
-                if(mouse_b & 1)
+                if(key[KEY_1])//ou choisir un bouton plus judicieux
                 {
-                    if(!verification_chevauchement(map, souris.ligne, souris.colonne, 4, *rotation))
+                    *choix=0;//on sort du choix des actions si l'utilisateur le veut
+                }
+                if(souris.ligne>=0+1 && souris.colonne>=0+1 && souris.ligne<35-1 && souris.colonne<45-1)
+                {
+                    draw_sprite(liste_buffer->buffer_map, liste_image->terrain_vague, (SCREEN_W/2-36)+(souris.colonne-2)*14-(souris.ligne)*14, (souris.colonne-2)*8+(souris.ligne)*8);
+                    if(mouse_b & 1)
                     {
-                        depense= calcul_depenses(4, 0);
-                        initialisation_habitation(map, map->grille[souris.ligne][souris.colonne]);
-                        if(validation_depense(depense, *argent_restant))
+                        if(!verification_chevauchement(map, souris.ligne, souris.colonne, 4, *rotation))
                         {
-                            map = placementElement(map, souris.ligne, souris.colonne, 4, *rotation);
-
-                            for(int i=-1; i<2; i++)
+                            depense= calcul_depenses(4, 0);
+                            initialisation_habitation(map, map->grille[souris.ligne][souris.colonne]);
+                            if(validation_depense(depense, *argent_restant))
                             {
-                                for(int j=-1; j<2; j++)
+                                map = placementElement(map, souris.ligne, souris.colonne, 4, *rotation);
+
+                                for(int i=-1; i<2; i++)
                                 {
-                                    map= remplissage_matrice_adjacence(map, souris.ligne+i, souris.colonne+j, 4, map->grille[souris.ligne][souris.colonne]);
+                                    for(int j=-1; j<2; j++)
+                                    {
+                                        map= remplissage_matrice_adjacence(map, souris.ligne+i, souris.colonne+j, 4, map->grille[souris.ligne][souris.colonne]);
+                                    }
                                 }
+                                map= electricite(map, capa_usine);
+                                *argent_restant-=depense;
+                                map=distribution_eau(map);
                             }
-                            map= electricite(map, capa_usine);
-                            *argent_restant-=depense;
-                            map=distribution_eau(map);
+
+
                         }
-
-
+                        //*choix=0; // dès qu'on a fait l'action on peut revenir a un etat neutre de choix
                     }
-                    *choix=0; // dès qu'on a fait l'action on peut revenir a un etat neutre de choix
                 }
             }
             break;
         case 5://caserne de pompier
-            if(key[KEY_1])//ou choisir un bouton plus judicieux
+            if(niv_visu==0)
             {
-                *choix=0;//on sort du choix des actions si l'utilisateur le veut
-            }
-            if(key[KEY_2])
-            {
-                *rotation=-*rotation;
-                rest(100);//pour eviter les rebonds
-            }
-            if(*rotation==1)
-            {
-                if (souris.ligne >= 2 && souris.ligne < 35 - 1 && souris.colonne >= 2 && souris.colonne < 45 - 3)//blindage pour pas sortir de la map en fonction des deux moyens de rotation
+                if(key[KEY_1])//ou choisir un bouton plus judicieux
                 {
-                    draw_sprite(liste_buffer->buffer_map, liste_image->caserne_pompiers, (SCREEN_W / 2 - 36) + (souris.colonne - 3) * 14 - (souris.ligne) * 14, (souris.colonne - 3) * 8 + (souris.ligne) * 8 - 52);//pq le -8? jsp j'ai tatonné
-                    if(mouse_b & 1)
-                    {
-                        if(!verification_chevauchement(map, souris.ligne, souris.colonne, 10, *rotation))
-                        {
-                            depense= calcul_depenses(*choix, 0);
-                            if(validation_depense(depense, *argent_restant))
-                            {
-                                map = placementElement(map, souris.ligne, souris.colonne, 10, *rotation);
-
-                                for (int i = -2; i < 2; i++)
-                                {
-                                    for (int j = -2; j < 4; j++)
-                                    {
-                                        map = remplissage_matrice_adjacence(map, souris.ligne + i, souris.colonne + j,10, map->grille[souris.ligne][souris.colonne]);
-                                    }
-                                }
-                                caserne_de_pompier(map, souris.ligne , souris.colonne , *choix);
-
-                                *argent_restant-=depense;
-                            }
-                        }
-                        *choix=0; // dès qu'on a fait l'action on peut revenir a un etat neutre de choix
-                    }
+                    *choix=0;//on sort du choix des actions si l'utilisateur le veut
                 }
-            }else if (*rotation==-1)
-            {
-                if (souris.ligne >= 3 && souris.ligne < 35-2 && souris.colonne >= 1 && souris.colonne < 45-2 )//blindage pour pas sortir de la map en fonction des deux moyens de rotation
+                if(key[KEY_2])
                 {
-                    draw_sprite_h_flip(liste_buffer->buffer_map, liste_image->caserne_pompiers, (SCREEN_W/2-36)+(souris.colonne-3)*14-(souris.ligne)*14, (souris.colonne-3)*8+(souris.ligne)*8-52);
-                    if(mouse_b & 1)
+                    *rotation=-*rotation;
+                    rest(100);//pour eviter les rebonds
+                }
+                if(*rotation==1)
+                {
+                    if (souris.ligne >= 2 && souris.ligne < 35 - 1 && souris.colonne >= 2 && souris.colonne < 45 - 3)//blindage pour pas sortir de la map en fonction des deux moyens de rotation
                     {
-                        if (!verification_chevauchement(map, souris.ligne, souris.colonne, 10, *rotation))
+                        draw_sprite(liste_buffer->buffer_map, liste_image->caserne_pompiers, (SCREEN_W / 2 - 36) + (souris.colonne - 3) * 14 - (souris.ligne) * 14, (souris.colonne - 3) * 8 + (souris.ligne) * 8 - 52);//pq le -8? jsp j'ai tatonné
+                        if(mouse_b & 1)
                         {
-                            depense= calcul_depenses(*choix, 0);
-                            if(validation_depense(depense, *argent_restant))
+                            if(!verification_chevauchement(map, souris.ligne, souris.colonne, 10, *rotation))
                             {
-                                map = placementElement(map, souris.ligne, souris.colonne, 10, *rotation);
-                                for (int i = -3; i < 3; i++)
+                                depense= calcul_depenses(*choix, 0);
+                                if(validation_depense(depense, *argent_restant))
                                 {
-                                    for (int j = -1; j < 3; j++)
-                                    {
-                                        map = remplissage_matrice_adjacence(map, souris.ligne + i, souris.colonne + j,10, map->grille[souris.ligne][souris.colonne]);
-                                    }
-                                }
-                                caserne_de_pompier(map, souris.ligne , souris.colonne , *choix);
+                                    map = placementElement(map, souris.ligne, souris.colonne, 10, *rotation);
 
-                                *argent_restant-=depense;
+                                    for (int i = -2; i < 2; i++)
+                                    {
+                                        for (int j = -2; j < 4; j++)
+                                        {
+                                            map = remplissage_matrice_adjacence(map, souris.ligne + i, souris.colonne + j,10, map->grille[souris.ligne][souris.colonne]);
+                                        }
+                                    }
+                                    //caserne_de_pompier(map, souris.ligne , souris.colonne , *choix);
+
+                                    *argent_restant-=depense;
+                                }
                             }
+                            *choix=0; // dès qu'on a fait l'action on peut revenir a un etat neutre de choix
                         }
-                        *choix=0;
+                    }
+                }else if (*rotation==-1)
+                {
+                    if (souris.ligne >= 3 && souris.ligne < 35-2 && souris.colonne >= 1 && souris.colonne < 45-2 )//blindage pour pas sortir de la map en fonction des deux moyens de rotation
+                    {
+                        draw_sprite_h_flip(liste_buffer->buffer_map, liste_image->caserne_pompiers, (SCREEN_W/2-36)+(souris.colonne-3)*14-(souris.ligne)*14, (souris.colonne-3)*8+(souris.ligne)*8-52);
+                        if(mouse_b & 1)
+                        {
+                            if (!verification_chevauchement(map, souris.ligne, souris.colonne, 10, *rotation))
+                            {
+                                depense= calcul_depenses(*choix, 0);
+                                if(validation_depense(depense, *argent_restant))
+                                {
+                                    map = placementElement(map, souris.ligne, souris.colonne, 10, *rotation);
+                                    for (int i = -3; i < 3; i++)
+                                    {
+                                        for (int j = -1; j < 3; j++)
+                                        {
+                                            map = remplissage_matrice_adjacence(map, souris.ligne + i, souris.colonne + j,10, map->grille[souris.ligne][souris.colonne]);
+                                        }
+                                    }
+                                    //caserne_de_pompier(map, souris.ligne , souris.colonne , *choix);
+
+                                    *argent_restant-=depense;
+                                }
+                            }
+                            *choix=0;
+                        }
                     }
                 }
             }

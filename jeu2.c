@@ -72,7 +72,6 @@ t_graphe* initialisation_distance_chateau (t_graphe* map, t_tile* case_chateau)
             }
         }
     }
-    map=distribution_elec(map);
     return map;
 }
 
@@ -185,7 +184,7 @@ t_graphe* dijkstra(t_graphe* map, t_tile* sommet_de_depart)
         {
             if(map->grille[i][j]->g==0)
             {
-                //liste_ouverte=insererNoeud(liste_ouverte, map->grille[i][j]);
+                liste_ouverte=insererNoeud(liste_ouverte, map->grille[i][j]);
                 liste_voisin=map->grille[i][j]->voisin;
                 while(liste_voisin!=NULL)
                 {
@@ -430,7 +429,6 @@ t_graphe* ecriture_fichier_elec(t_graphe* map, t_tile* case_arrive)
 
 t_graphe* BFS(t_graphe* map, t_tile* sommet_depart)
 {
-    printf("lancement BFS\n");
     t_tile* noeud, *temp;
     for(int i=0; i<NBLIGNE; i++) //initialisation du bfs
     {
@@ -535,7 +533,7 @@ int verification_connexite_route(t_graphe* map, t_tile* case_actu)
 {
     int verif_route=0;
     t_liste* voisin_case;
-    if(case_actu->element->type==3 || case_actu->element->type==2)
+    if(case_actu->element->type==3 || case_actu->element->type==2 || case_actu->element->type==10)//si c'est un chateau d'eau/une centrale/une caserne
     {
         if(case_actu->element->orientation==1)
         {
@@ -597,7 +595,7 @@ int verification_connexite_route(t_graphe* map, t_tile* case_actu)
 
 }
 
-int validation_evolution(t_tile* batiment, int* nb_habitant, int compteur_eau)//renvoie 1 pour améliorer, 0 pour rien faire, -1 pour regresser?
+int validation_evolution_communiste(t_tile* batiment, int* nb_habitant, int compteur_eau)//renvoie 1 quand il y a un changement sur la map, 0 quand y a rien
 {
     switch (batiment->element->type) {
         case 4:
@@ -616,7 +614,7 @@ int validation_evolution(t_tile* batiment, int* nb_habitant, int compteur_eau)//
         case 5:
             //printf("evolution\n");
 
-            if(batiment->element->alimente==1)
+            if(batiment->element->alimente==1 && batiment->element->incendie!=1)
             {
                 if(((float)batiment->element->eau_actuelle/(float)batiment->element->nb_habitant==1) && batiment->element->incendie!=1 )//si l'habitation est alimenté a plus de 90% en eau elle s'améliore
                 {
@@ -766,7 +764,6 @@ int validation_evolution(t_tile* batiment, int* nb_habitant, int compteur_eau)//
                 batiment->element->type=9;//on passe a l'état de ruine
                 batiment->element->nb_habitant=0;
                 batiment->element->incendie=0;
-
                 *nb_habitant-=1000;
                 return 1;
             }
@@ -788,9 +785,93 @@ int validation_evolution(t_tile* batiment, int* nb_habitant, int compteur_eau)//
         default:
             return 0;
     }
+    return 0;
 }
 
-t_graphe* cycle_habitation(t_graphe* map, int* capa_usine, long* compteur_argent, int* nb_habitant, int compteur_eau, BUFFER* liste_buffer, IMAGE* liste_image)
+int validation_evolution_capitaliste(t_graphe* map, t_tile* batiment, int* nb_habitant)//evolue forcément peut importe les conditions
+{
+    switch (batiment->element->type) {
+        case 4:
+            if(verification_connexite_route(map, batiment))
+            {
+                batiment->element->type++;
+                batiment->element->nb_habitant=10;
+                *nb_habitant+=10;
+                return 1;
+            }
+            else
+            {
+                return 0;
+            }
+        case 5:
+            if(batiment->element->incendie!=1)
+            {
+                batiment->element->type++;
+                batiment->element->nb_habitant=50;
+                *nb_habitant+=40;
+                return 1;
+            }
+            else
+            {
+                batiment->element->type=9;//on passe a l'état de ruine
+                batiment->element->nb_habitant=0;
+                *nb_habitant-=10;
+                return 1;
+            }
+        case 6:
+            if(batiment->element->incendie!=1)
+            {
+                batiment->element->type++;
+                batiment->element->nb_habitant=100;
+                *nb_habitant+=50;
+                return 1;
+            }
+            else
+            {
+                batiment->element->type=9;//on passe a l'état de ruine
+                batiment->element->nb_habitant=0;
+                batiment->element->incendie=0;
+                *nb_habitant-=50;
+                return 1;
+            }
+        case 7:
+            if(batiment->element->incendie!=1)
+            {
+                batiment->element->type++;
+                batiment->element->nb_habitant=1000;
+                *nb_habitant+=900;
+                return 1;
+            }
+            else
+            {
+                batiment->element->type=9;//on passe a l'état de ruine
+                batiment->element->nb_habitant=0;
+                batiment->element->incendie=0;
+                *nb_habitant-=100;
+                return 1;
+            }
+        case 8:
+            if(batiment->element->incendie!=1)
+            {
+                return 0;
+            }
+            else
+            {
+                batiment->element->type=9;//on passe a l'état de ruine
+                batiment->element->nb_habitant=0;
+                batiment->element->incendie=0;
+                *nb_habitant-=1000;
+                return 1;
+            }
+        case 9:
+            return 0;
+        default:
+            return 0;
+    }
+    return 0;
+}
+
+t_graphe* cycle_habitation(t_graphe* map, int* capa_usine, long* compteur_argent, int* nb_habitant, int compteur_eau, BUFFER* liste_buffer, IMAGE* liste_image, int* attente, int mode)
 {
     int changement;
     //parcours du tableau des maisons au lieu du parcours de toute la map
@@ -799,25 +880,31 @@ t_graphe* cycle_habitation(t_graphe* map, int* capa_usine, long* compteur_argent
     {
         if(clock()/CLOCKS_PER_SEC-parcours_habitation->n->element->compteur==5)//si on a fait un cycle
         {
-            if(parcours_habitation->n->element->incendie)
+            if(parcours_habitation->n->element->type>4 && parcours_habitation->n->element->type<9)
             {
+                parcours_habitation->n->element->incendie=incendie();
+                parcours_habitation->n->element->argent=1;
+            }
+            if(parcours_habitation->n->element->incendie==1)
+            {
+                *attente=1;
                 map= gestion_incendie(map, parcours_habitation->n, liste_buffer, liste_image);
             }
             //sous progrm pour générer l'incendie après la gestion de l'incendie comme ça on laisse un cycle entier à l'utilisateur pour éteindre l'incendie si besoin
             parcours_habitation->n->element->compteur=clock()/CLOCKS_PER_SEC;
             *compteur_argent=*compteur_argent+parcours_habitation->n->element->nb_habitant;
-            changement=validation_evolution(parcours_habitation->n, nb_habitant, compteur_eau);
+            if(mode==1)
+            {
+                changement=validation_evolution_communiste(parcours_habitation->n, nb_habitant, compteur_eau);
+            }
+            else
+            {
+                changement=validation_evolution_capitaliste(map, parcours_habitation->n, nb_habitant);
+            }
             if(changement==1)
             {
                 map=distribution_eau(map);
                 map=electricite(map, capa_usine);
-
-            }
-
-            if(parcours_habitation->n->element->type>4 && parcours_habitation->n->element->type<9)
-            {
-                parcours_habitation->n->element->incendie=incendie();
-                parcours_habitation->n->element->argent=1;
             }
         }
         parcours_habitation=parcours_habitation->next;

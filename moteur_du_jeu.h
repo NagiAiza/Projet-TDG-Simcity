@@ -10,7 +10,7 @@
 #include "Affichage.h"
 #include "barre_outil.h"
 
-void jeu();
+void jeu(int mode);
 
 
 #endif //PROJET_S1_MOTEUR_DU_JEU_H

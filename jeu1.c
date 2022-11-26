@@ -59,6 +59,7 @@ t_graphe* initialiserGrille(t_graphe* g) //premiere initialisation a faire
             g->grille[i][j]->element=(t_batiment*)calloc(1, sizeof(t_batiment));
             g->grille[i][j]->element->position.ligne=i;
             g->grille[i][j]->element->position.colonne=j;
+            g->grille[i][j]->element->incendie=0;
         }
     }
     g->grille[17][0]->element->type=1;//emplacement de départ de la route
@@ -238,6 +239,7 @@ void liberation_donnee(t_graphe* g)//ne marche pas mais n'est pas forcément uti
 
 int placement_route(t_graphe* map, int ligne, int colonne)
 {
+    t_liste* liste_voisin;
     //dans cette verion on ne peut placer la route que sur une case étant déjà une route
     if(map->grille[ligne][colonne]->element->type==1)//si l'element est une route
     {
@@ -245,6 +247,15 @@ int placement_route(t_graphe* map, int ligne, int colonne)
     }
     else
     {
+        liste_voisin=map->grille[ligne][colonne]->voisin;
+        while(liste_voisin!=NULL)
+        {
+            if(liste_voisin->n->element->type==1)
+            {
+                return 1;
+            }
+            liste_voisin=liste_voisin->next;
+        }
         printf("on ne peut pas placer la route\n");
         return 0;
     }

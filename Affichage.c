@@ -20,7 +20,6 @@ BITMAP * load_bitmap_check(char *nomImage){
 IMAGE* initialisation_liste_image()//on initialise une seule fois les bitmaps en début de prgm
 {
     IMAGE* liste=(IMAGE*)malloc(sizeof(IMAGE));
-    liste->menu= load_bitmap_check("barre_outils.bmp");//barre_outils.bmp
     liste->map= load_bitmap_check("map.bmp");
     liste->sous_map= load_bitmap_check("damierFond.bmp");
     liste->route = load_bitmap_check("route.bmp");
@@ -43,6 +42,7 @@ IMAGE* initialisation_liste_image()//on initialise une seule fois les bitmaps en
     liste->caserne_pompiers=load_bitmap_check("pompiers.bmp");
     liste->piece=load_bitmap_check("piece.bmp");
     liste->flamme = load_bitmap_check("flamme.bmp");
+    liste->feu= load_bitmap_check("feu.bmp");
 
     liste->barre_outils=load_bitmap_check("barre_outils.bmp");//same que menu à changer!
     liste->info_eau=load_bitmap_check("info_eau.bmp");
@@ -73,7 +73,6 @@ BUFFER* initialisation_liste_buffer()//meme chose avec les buffer
 void liberation_memoire_bitmaps(IMAGE* liste_image, BUFFER* liste_buffer)//on n'oublie pas de libérer la mémoire
 {
     destroy_bitmap(liste_image->map);
-    destroy_bitmap(liste_image->menu);
     destroy_bitmap(liste_image->route);
     destroy_bitmap(liste_image->batiment);
     destroy_bitmap(liste_image->sous_map);
@@ -94,6 +93,7 @@ void liberation_memoire_bitmaps(IMAGE* liste_image, BUFFER* liste_buffer)//on n'
     destroy_bitmap(liste_image->caserne_pompiers);
     destroy_bitmap(liste_image->piece);
     destroy_bitmap(liste_image->flamme);
+    destroy_bitmap(liste_image->feu);
 
     destroy_bitmap(liste_image->info_eau);
     destroy_bitmap(liste_image->info_elec);
@@ -366,7 +366,7 @@ void affichage_level_1(t_graphe* map, IMAGE* liste_image, BUFFER* liste_buffer)
                 {
                     affichage_element_eau(liste_buffer, liste_image, type, i, j, rotation, map->grille[i][j]);
                 }
-                else if(type>=4 && type <=10)
+                else if(type>=4 && type <=9)
                 {
                     affichage_habitation(liste_buffer, liste_image, map->grille[i][j]);
                 }
@@ -471,7 +471,7 @@ void affichageTotal(t_graphe* map, IMAGE* liste_image, BUFFER* liste_buffer, t_p
     clear_bitmap(liste_buffer->buffer_map);
 
 
-    blit(liste_image->menu, liste_buffer->buffer_menu, 0, 0, 0, 0, SCREEN_W, SCREEN_H);
+    blit(liste_image->barre_outils, liste_buffer->buffer_menu, 0, 0, 0, 0, SCREEN_W, SCREEN_H);
     textprintf_ex(liste_buffer->buffer_menu,font,19,605,makecol(0,0,0),-1,"%ld$",compteur_argent);
     textprintf_ex(liste_buffer->buffer_menu,font,560,658,makecol(0,0,0),-1,"%d",capa_usine);
     textprintf_ex(liste_buffer->buffer_menu,font,873,657,makecol(0,0,0),-1,"%d",capa_eau);

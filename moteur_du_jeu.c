@@ -4,9 +4,9 @@
 
 #include "moteur_du_jeu.h"
 #include "jeu2.h"
-#include "jeu3.h"
+#include "time.h"
 
-void jeu()//sous programme qui fera tourner tout le jeu
+void jeu(int mode)//sous programme qui fera tourner tout le jeu
 {
     srand(time(NULL));
     //initialisation des variables
@@ -16,6 +16,7 @@ void jeu()//sous programme qui fera tourner tout le jeu
     int nb_habitant=0;
     int capa_eau=0;
     int exit=0;
+    int attente=0;
     t_pos souris;
     souris.ligne=0;
     souris.colonne=0;
@@ -116,18 +117,21 @@ void jeu()//sous programme qui fera tourner tout le jeu
         }
         //dès qu'on a récup ce qu'il veut faire on conserve son action et en fonction de l'action on lance le sous pgrm pour l'effectuer
 
-        map=action(map, liste_buffer, liste_image, &choix, souris, &rotation, &niv_visu, &case_select, &algo_A, &compteur_argent, &capa_usine, &exit, &scroll);
+        map=action(map, liste_buffer, liste_image, &choix, souris, &rotation, niv_visu, &case_select, &algo_A, &compteur_argent, &capa_usine, &exit, &scroll);
 
-        map=cycle_habitation(map, &capa_usine, &compteur_argent, &nb_habitant, capa_eau, liste_buffer, liste_image);
+        map=cycle_habitation(map, &capa_usine, &compteur_argent, &nb_habitant, capa_eau, liste_buffer, liste_image, &attente, mode);
 
-        map=cycle_habitation(map, &capa_usine, &compteur_argent, &nb_habitant, capa_eau, liste_buffer, liste_image);
         map=remise_0_argent(map, souris);
-        //incendie(map);
 
         blit(liste_buffer->buffer_menu, liste_buffer->buffer_final, 0, 0, 0, 0, SCREEN_W, SCREEN_H);
         blit(liste_buffer->buffer_map, liste_buffer->buffer_final, decalageX, 0, 124, 0, SCREEN_W, SCREEN_H);
         blit(liste_buffer->buffer_final, screen, 0, 0, 0, 0, SCREEN_W, SCREEN_H);
 
+        if(attente)
+        {
+            rest(500);
+            attente=0;
+        }
 
     }
    /*for(int i=0 ; i<NBLIGNE; i++)

@@ -7,7 +7,7 @@
 #include "jeu2.h"
 
 
-t_graphe* remplissage_matrice_caserne(t_graphe* g, int ligne, int colonne, int type)
+/*t_graphe* remplissage_matrice_caserne(t_graphe* g, int ligne, int colonne, int type)
 {
     g->mat_adj_caserne[ligne][colonne]=type;
     return g;
@@ -39,15 +39,15 @@ t_graphe* caserne_de_pompier(t_graphe* map, int a, int b, int choix)//verifier l
     }
 
     printf ("\n\n\n");*/
-
+/*
     //FAIRE AFFICHAGE MAP CASERNE GENRE UN ETAGE AVEC LA ZONE QUE PREND LA CASERNE OU QUAND ON SELECT LA CASERNE VOIR CASE INFECTE
     return map;
-}
+}*/
 
 int incendie ()
 {
     int aleatoire;
-    aleatoire = rand() % 4 + 1;
+    aleatoire = rand() % 15;
     printf ("nbre aleatoire --> %d\n", aleatoire);
     if(aleatoire==1)
     {
@@ -61,12 +61,12 @@ int incendie ()
     }
 }
 
-t_graphe* dijkstra_incendie(t_graphe* map, t_tile* sommet_de_depart, t_tile* case_en_feu, int* fin_recherche)
+t_graphe* dijkstra_incendie(t_graphe* map, t_tile* sommet_de_depart, t_tile* case_en_feu, int* fin_recherche, BUFFER* liste_buffer, IMAGE* liste_image)
 {
-    //printf("\nlancement dijkstra\n");
+    printf("\nlancement dijkstra incendie\n");
     int poids_temp;
     int fin=0;
-    t_tile* case_analysee,* voisin_actuel;
+    t_tile* case_analysee,* voisin_actuel, *parcourt;
     t_liste* liste_voisin;
     t_liste* liste_ouverte=creer();
     t_liste* liste_ferme=creer();//pas forcement utile cette ligne
@@ -78,7 +78,6 @@ t_graphe* dijkstra_incendie(t_graphe* map, t_tile* sommet_de_depart, t_tile* cas
         {
             map->grille[i][j]->g=-1;
             map->grille[i][j]->parent=NULL;
-
         }
     }
 
@@ -91,6 +90,7 @@ t_graphe* dijkstra_incendie(t_graphe* map, t_tile* sommet_de_depart, t_tile* cas
         {
             if(map->grille[i][j]->g==0)
             {
+                //liste_ouverte=insererNoeud(liste_ouverte, map->grille[i][j]);
                 liste_voisin=map->grille[i][j]->voisin;
                 while(liste_voisin!=NULL)
                 {
@@ -99,7 +99,9 @@ t_graphe* dijkstra_incendie(t_graphe* map, t_tile* sommet_de_depart, t_tile* cas
                     {
                         voisin_actuel->g=1;//on insère les cases de route
                         //voisin_actuel->parent=map->grille[i][j];
+
                         liste_ouverte= insererNoeud(liste_ouverte, voisin_actuel);
+
                     }
                     liste_voisin=liste_voisin->next;
                 }
@@ -112,9 +114,8 @@ t_graphe* dijkstra_incendie(t_graphe* map, t_tile* sommet_de_depart, t_tile* cas
     {
         liste_ouverte = enlever_noeud_debut(liste_ouverte, &case_analysee);
         liste_ferme = insererNoeud(liste_ferme, case_analysee);
-        //printf("noeud actuel [%d][%d]\n", case_analysee->position.ligne, case_analysee->position.colonne);
+
         liste_voisin=case_analysee->voisin;
-        //afficherListe(liste_ferme);pb de boucle infini dans la liste ferme a voir si le temps
         while(liste_voisin!=NULL)
         {
             voisin_actuel=liste_voisin->n;
@@ -150,11 +151,18 @@ t_graphe* dijkstra_incendie(t_graphe* map, t_tile* sommet_de_depart, t_tile* cas
             if(voisin_actuel->case_mere==case_en_feu)//le voisin est une habitation pb ici
             {
                 //verifier taille chemin
+
                 if(tailleChemin(case_analysee)<=18)
                 {
                     //c'est cool on est protegé
-                    printf("protege\n");
+
                     voisin_actuel->case_mere->element->incendie=0;
+                    parcourt=case_analysee;
+                    while(parcourt->parent!=NULL)
+                    {
+                        draw_sprite(liste_buffer->buffer_map, liste_image->feu, (SCREEN_W/2-36)+parcourt->position.colonne*14-parcourt->position.ligne*14, parcourt->position.colonne*8+parcourt->position.ligne*8);
+                        parcourt=parcourt->parent;
+                    }
                     *fin_recherche=1;
                 }
                 else
@@ -180,7 +188,15 @@ t_graphe* gestion_incendie(t_graphe* map, t_tile* case_en_feu, BUFFER* liste_buf
             if (map->grille[i][j]->element->type==10)
             {
                 //On lance le A* pour l'incendie
-                map=dijkstra_incendie(map, map->grille[i][j], case_en_feu, &fin_recherche);
+                if(verification_connexite_route(map, map->grille[i][j]))
+                {
+                    printf("connexe\n");
+                    map=dijkstra_incendie(map, map->grille[i][j], case_en_feu, &fin_recherche, liste_buffer, liste_image);
+                }
+                else
+                {
+                    printf("pas connexe\n");
+                }
             }
             if(fin_recherche)
             {
