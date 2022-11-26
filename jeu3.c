@@ -121,6 +121,7 @@ t_graphe* dijkstra_incendie(t_graphe* map, t_tile* sommet_de_depart, t_tile* cas
 
                     voisin_actuel->case_mere->element->incendie=0;
                     parcourt=case_analysee;
+                    printf("maison [%d][%d] protegee par caserne\n", voisin_actuel->case_mere->position.ligne, voisin_actuel->case_mere->position.colonne);
                     while(parcourt->parent!=NULL)
                     {
                         draw_sprite(liste_buffer->buffer_map, liste_image->feu, (SCREEN_W/2-36)+parcourt->position.colonne*14-parcourt->position.ligne*14, parcourt->position.colonne*8+parcourt->position.ligne*8);
@@ -130,7 +131,7 @@ t_graphe* dijkstra_incendie(t_graphe* map, t_tile* sommet_de_depart, t_tile* cas
                 }
                 else
                 {
-                    printf("non protege par cette casene\n");
+                    printf("maison [%d][%d] non protegee par casene\n", voisin_actuel->case_mere->position.ligne, voisin_actuel->case_mere->position.colonne);
                     *fin_recherche=0;
                 }
                 fin=1;
@@ -151,14 +152,13 @@ t_graphe* gestion_incendie(t_graphe* map, t_tile* case_en_feu, BUFFER* liste_buf
             if (map->grille[i][j]->element->type==10)
             {
                 //On lance le A* pour l'incendie
-                if(verification_connexite_route(map, map->grille[i][j]))
+                if(verification_connexite_route(map, map->grille[i][j]))//on lance le dijkstra a partir d'une caserne seulement si elle est connexe a la route
                 {
-                    printf("connexe\n");
                     map=dijkstra_incendie(map, map->grille[i][j], case_en_feu, &fin_recherche, liste_buffer, liste_image);
                 }
                 else
                 {
-                    printf("pas connexe\n");
+                    //printf("pas connexe\n");
                 }
             }
             if(fin_recherche)
@@ -209,7 +209,7 @@ void sauvegarde(long compteur_argent, long temps, t_graphe* map, int nb_habitant
                 fprintf(sauvegarde, "%d ", map->grille[i][j]->element->nb_habitant);
                 fprintf(sauvegarde, "%d ", map->grille[i][j]->element->eau_actuelle);
 
-                fprintf(sauvegarde, "%d ", map->grille[i][j]->element->compteur);
+                fprintf(sauvegarde, "%ld ", map->grille[i][j]->element->compteur);
 
 
                 temp=map->grille[i][j]->element->chateau_approvisionnement;//information sur les chateaux alimantant la maison
@@ -270,7 +270,7 @@ t_graphe* lecture_sauvegarde(t_graphe* map, long* compteur_argent, long* temps, 
         exit(EXIT_FAILURE);
     }
     //informations primaire
-    fscanf(sauvegarde, "%ld", mode_de_jeu);
+    fscanf(sauvegarde, "%d", mode_de_jeu);
     fscanf(sauvegarde, "%ld", compteur_argent);
     fscanf(sauvegarde,  "%ld", temps);
     fscanf(sauvegarde, "%d", nb_habitant);
@@ -294,7 +294,7 @@ t_graphe* lecture_sauvegarde(t_graphe* map, long* compteur_argent, long* temps, 
             {
                 fscanf(sauvegarde, "%d", &map->grille[i][j]->element->nb_habitant);
                 fscanf(sauvegarde, "%d", &map->grille[i][j]->element->eau_actuelle);
-                fscanf(sauvegarde, "%d", &map->grille[i][j]->element->compteur);
+                fscanf(sauvegarde, "%ld", &map->grille[i][j]->element->compteur);
 
                 fscanf(sauvegarde, "%d", &compteur);
                 for(int k=0; k<compteur; k++)

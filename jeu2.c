@@ -318,7 +318,6 @@ t_graphe* distribution_eau(t_graphe* map)
         {
             if (map->grille[i][j]->element->type == 2)//dès qu'on a trouver on lance dijkstra pour ensuite trouver les chemins menant aux dif bat
             {
-                printf("chateau d'eau\n");
                 map=dijkstra(map, (map->grille[i][j]));
             }
         }
