@@ -140,6 +140,7 @@ int menu(int* nvlle_partie)
         }
         blit(buffer, screen, 0, 0, 0, 0, SCREEN_W, SCREEN_H);
     }
+
     ///FREE TTE LES BITMAPS
     show_mouse(NULL);
     destroy_bitmap(debut_projet);
@@ -158,15 +159,20 @@ int menu(int* nvlle_partie)
 
     return 0;
 }
-
-void intro_du_jeu(SAMPLE* music, int* volume)
+void musique(SAMPLE*music)
+{
+    play_sample(music, 255, 0, 1000, PLAYMODE_LOOP);
+}
+void intro_du_jeu()
 {
     // Buffer
     BITMAP *page;
     BITMAP*decor;
     BITMAP *dirigeable;
 
-    play_sample(music, 255, 0, 1000, PLAYMODE_LOOP);
+
+
+
 
     // Position de l'écran réel dans le repère du décor
     int screenx,screeny;
