@@ -5,16 +5,6 @@
 #include "menu.h"
 #include "Affichage.h"
 
-void suite_menu()
-{
-    BITMAP * stitch_bonjour;
-    stitch_bonjour = load_bitmap_check("stitch_bonjour.bmp");
-    while (!key[KEY_SPACE])
-    {
-        draw_sprite(screen,stitch_bonjour,0,0);
-    }
-}
-
 
 int menu()
 {
@@ -118,7 +108,6 @@ int menu()
 
                             printf("communiste\n");
                             rest(500);
-                            suite_menu();
                             return 1;
                         }
                     } else if (mouse_x >= 582 && mouse_x <= 800 && mouse_y >= 290 && mouse_y <= 357) {
