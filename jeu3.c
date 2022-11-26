@@ -211,3 +211,12 @@ t_graphe* gestion_incendie(t_graphe* map, t_tile* case_en_feu, BUFFER* liste_buf
     }
     return map;
 }
+
+void sauvegarde(long compteur_argent, long temps)
+{
+    FILE* sauvegarde=fopen("sauvegarde.txt", "w+");
+
+    fprintf(sauvegarde, "%d ", 0);
+
+    fclose(sauvegarde);
+}

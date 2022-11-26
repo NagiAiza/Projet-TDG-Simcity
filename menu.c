@@ -38,7 +38,6 @@ int menu()
     ///Tableau d'image
     for (int i=0 ; i<=16 ; i++)
     {
-        printf ("--> tg %d\n",i);
         sprintf(tableauChargement, "chargement%d.bmp",i);
         chargement[i]=load_bitmap(tableauChargement,NULL);
         //blindage
@@ -70,11 +69,9 @@ int menu()
     blit(debut_projet,screen,0,0,SCREEN_W-debut_projet->w,SCREEN_H-debut_projet->h, debut_projet->w, debut_projet->h);
     rest(2000);
 
-    printf ("ruig^rgh\n");
     //affichage d'un tableau d'image
     for (int i=1 ; i<16 ; i++)
     {
-        printf("%d\n",i);
         blit(chargement[i],screen,0,0, (SCREEN_W-chargement[i]->w)/2, (SCREEN_H-chargement[i]->h)/2, chargement[i]->w, chargement[i]->h);
         rest(100);
     }

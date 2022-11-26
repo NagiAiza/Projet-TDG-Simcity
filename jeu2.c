@@ -143,7 +143,6 @@ void maj_capacite(t_tile* chateau_eau, t_tile* maison)
     if(chateau_eau->element->capacite>=nb_habitant_restant)
     {
         chateau_eau->element->capacite-=nb_habitant_restant;
-        printf("capactite = %d\n",chateau_eau->element->capacite );
         maison->element->eau_actuelle+=nb_habitant_restant;
         maison->element->chateau_approvisionnement= insererNoeud2(maison->element->chateau_approvisionnement, chateau_eau, nb_habitant_restant);
     }
@@ -886,6 +885,7 @@ t_graphe* cycle_habitation(t_graphe* map, int* capa_usine, long* compteur_argent
             if(parcours_habitation->n->element->incendie==1)
             {
                 *attente=1;
+                draw_sprite(liste_buffer->buffer_map, liste_image->flamme, (SCREEN_W/2-36)+(map->grille[parcours_habitation->n->position.ligne][parcours_habitation->n->position.colonne]->position.colonne-2)*14-map->grille[parcours_habitation->n->position.ligne][parcours_habitation->n->position.colonne]->position.ligne*14, (map->grille[parcours_habitation->n->position.ligne][parcours_habitation->n->position.colonne]->position.colonne-5)*8+map->grille[parcours_habitation->n->position.ligne][parcours_habitation->n->position.colonne]->position.ligne*8-11);
                 map= gestion_incendie(map, parcours_habitation->n, liste_buffer, liste_image);
             }
             //sous progrm pour générer l'incendie après la gestion de l'incendie comme ça on laisse un cycle entier à l'utilisateur pour éteindre l'incendie si besoin

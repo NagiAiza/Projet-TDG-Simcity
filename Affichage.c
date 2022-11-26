@@ -209,10 +209,6 @@ void affichage_level_0(BUFFER* liste_buffer, IMAGE* liste_image, t_graphe* map)/
                 {
                     draw_sprite(liste_buffer->buffer_map, liste_image->piece, (SCREEN_W/2-36)+(map->grille[i][j]->position.colonne-3)*14-map->grille[i][j]->position.ligne*14, (map->grille[i][j]->position.colonne-2)*8+map->grille[i][j]->position.ligne*8-11);
                 }
-                if(map->grille[i][j]->element->incendie==1)
-                {
-                    draw_sprite(liste_buffer->buffer_map, liste_image->flamme, (SCREEN_W/2-36)+(map->grille[i][j]->position.colonne-2)*14-map->grille[i][j]->position.ligne*14, (map->grille[i][j]->position.colonne-5)*8+map->grille[i][j]->position.ligne*8-11);
-                }
             }
         }
     }
