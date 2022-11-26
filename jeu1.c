@@ -106,7 +106,7 @@ void affichageGridMere(t_graphe* g)
                 printf("pas de case mere\n");
                 exit(EXIT_FAILURE);
             }
-            printf("case [%d][%d] mere-> [%d][%d]\n", i, j, g->grille[i][j]->case_mere->position.ligne, g->grille[i][j]->case_mere->position.colonne);
+            printf("case [%d][%d] mere-> [%d][%d] type %d\n", i, j, g->grille[i][j]->case_mere->position.ligne, g->grille[i][j]->case_mere->position.colonne,  g->grille[i][j]->case_mere->element->type);
         }
     }
 }

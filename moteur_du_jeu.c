@@ -114,6 +114,7 @@ void jeu(int mode, int nvlle_partie)//sous programme qui fera tourner tout le je
 
     }
 
+    //affichageGridMere(map);
     sauvegarde(compteur_argent, clock() / CLOCKS_PER_SEC+temps_ancienne_partie - CLK_debut, map, nb_habitant);
     //libération de la mémoire
     show_mouse(NULL);

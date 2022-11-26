@@ -22,7 +22,7 @@ void initialisation_allegro() {    ///Initialisation pour Allegro
 int main() {
     //variable qui reçoit le mode souhaite
     int Mode_de_Jeu=1;
-    int nvlle_partie=1;
+    int nvlle_partie=0;
 
     ///importation de la musique de fond
     SAMPLE* music=load_sample("musique.wav");

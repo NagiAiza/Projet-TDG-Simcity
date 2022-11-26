@@ -27,7 +27,7 @@ int incendie ()
 
 t_graphe* dijkstra_incendie(t_graphe* map, t_tile* sommet_de_depart, t_tile* case_en_feu, int* fin_recherche, BUFFER* liste_buffer, IMAGE* liste_image)
 {
-    printf("\nlancement dijkstra incendie\n");
+    //printf("\nlancement dijkstra incendie\n");
     int poids_temp;
     int fin=0;
     t_tile* case_analysee,* voisin_actuel, *parcourt;
@@ -278,8 +278,9 @@ t_graphe* lecture_sauvegarde(t_graphe* map, long* compteur_argent, long* temps, 
         {
             fscanf(sauvegarde,  "%d", &map->grille[i][j]->element->type);//type
             fscanf(sauvegarde,  "%d", &map->grille[i][j]->element->orientation);//on garde l'orientation
-            fscanf(sauvegarde, "%d", &map->grille[i][j]->case_mere->position.ligne);//on stock la position de la case mère
-            fscanf(sauvegarde, "%d", &map->grille[i][j]->case_mere->position.colonne);
+            fscanf(sauvegarde, "%d", &ligne_temp);//on stock la position de la case mère
+            fscanf(sauvegarde, "%d", &colonne_temp);
+            map->grille[i][j]->case_mere=map->grille[ligne_temp][colonne_temp];
             if(map->grille[i][j]->element->type==2)//si c'est un chateau d'eau
             {
                 fscanf(sauvegarde, "%d", &map->grille[i][j]->element->capacite);

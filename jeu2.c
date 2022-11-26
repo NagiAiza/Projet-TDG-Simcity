@@ -156,7 +156,7 @@ void maj_capacite(t_tile* chateau_eau, t_tile* maison)
 
 t_graphe* dijkstra(t_graphe* map, t_tile* sommet_de_depart)
 {
-    //printf("\nlancement dijkstra\n");
+    printf("\nlancement dijkstra\n");
     int poids_temp;
     t_tile* case_analysee,* voisin_actuel;
     t_liste* liste_voisin;
@@ -205,13 +205,13 @@ t_graphe* dijkstra(t_graphe* map, t_tile* sommet_de_depart)
     {
         liste_ouverte = enlever_noeud_debut(liste_ouverte, &case_analysee);
         liste_ferme = insererNoeud(liste_ferme, case_analysee);
-        //printf("noeud actuel [%d][%d]\n", case_analysee->position.ligne, case_analysee->position.colonne);
+        printf("noeud actuel [%d][%d]\n", case_analysee->position.ligne, case_analysee->position.colonne);
         liste_voisin=case_analysee->voisin;
         //afficherListe(liste_ferme);pb de boucle infini dans la liste ferme a voir si le temps
         while(liste_voisin!=NULL)
         {
             voisin_actuel=liste_voisin->n;
-            //printf("case :[%d][%d]\n", voisin_actuel->position.ligne, voisin_actuel->position.colonne);
+            printf("case :[%d][%d] de type %d\n", voisin_actuel->position.ligne, voisin_actuel->position.colonne, voisin_actuel->element->type);
             poids_temp=case_analysee->g+ heuristic(case_analysee, voisin_actuel);
 
 
@@ -245,7 +245,7 @@ t_graphe* dijkstra(t_graphe* map, t_tile* sommet_de_depart)
                 if(voisin_actuel->case_mere->element->eau_actuelle<voisin_actuel->case_mere->element->nb_habitant)//si il reste des habitants qui doivent être alimenté en eau
                 {
                     //voisin_actuel->parent=case_analysee; on met cette ligne si on veut que la case de la maison soit prise dans le chemin
-                    //printf("maison trouve\n");
+                    printf("maison trouve\n");
                     //printf("case [%d][%d] -> parent [%d][%d]\n", voisin_actuel->position.ligne, voisin_actuel->position.colonne, voisin_actuel->parent->position.ligne, voisin_actuel->parent->position.colonne);
                     //faire toute les maj sur l'habitation en fonction de l'eau distrib
                     maj_capacite(sommet_de_depart, voisin_actuel->case_mere);

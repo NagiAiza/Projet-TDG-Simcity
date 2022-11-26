@@ -74,7 +74,7 @@ t_graphe* remplissage_matrice_adjacence(t_graphe* g, int ligne, int colonne, int
 void rajouterVoisin(t_tile* spot, t_tile ***map, int colonne, int ligne);//initialise les voisins de chaque case de la grille
 void initialiserVoisin(t_tile*** map, int ligne, int colonne);//pour donner une liste de voisins à chaque noeuds
 void liberation_donnee(t_graphe* g);// pas forcément utile
-
+void affichageGridMere(t_graphe* g);
 
 int placement_route(t_graphe* map, int ligne, int colonne);
 int verification_chevauchement(t_graphe* map, int ligne, int colonne, int choix, int rotation);
