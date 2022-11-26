@@ -365,7 +365,6 @@ t_graphe* electricite(t_graphe* map, int* capa_usine)
         liste_hab=liste_hab->next;
     }
 
-    printf("elec distrib = %d\n", elec_distrib);
     for(int i=0; i<NBLIGNE; i++)
     {
         for(int j=0; j<NBCOLONNE; j++)
@@ -387,7 +386,6 @@ t_graphe* electricite(t_graphe* map, int* capa_usine)
                         elec_distrib=0;
                     }
                 }
-                printf("capacite %d\n",map->grille[i][j]->element->capacite);
             }
 
         }
@@ -904,6 +902,7 @@ t_graphe* cycle_habitation(t_graphe* map, int* capa_usine, long* compteur_argent
                 map=distribution_eau(map);
                 map=electricite(map, capa_usine);
             }
+            parcours_habitation->n->element->incendie=0;
         }
         parcours_habitation=parcours_habitation->next;
     }

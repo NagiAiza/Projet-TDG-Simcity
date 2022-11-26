@@ -83,13 +83,11 @@ t_graphe* makeGrid()//penser a crer la libération de données
     g->mat_adjacence=(int **) calloc(NBLIGNE,sizeof(int*));
     g->mat_chemin_eau=(int **) calloc(NBLIGNE,sizeof(int*));
     g->mat_chemin_elec=(int **) calloc(NBLIGNE,sizeof(int*));
-    g->mat_adj_caserne=(int **) calloc(NBLIGNE,sizeof(int*));
     for(int i=0; i<NBLIGNE; i++)
     {
         g->mat_adjacence[i]=(int*)calloc(NBCOLONNE,sizeof(int));
         g->mat_chemin_eau[i]=(int*) calloc(NBCOLONNE,sizeof(int));
         g->mat_chemin_elec[i]=(int*) calloc(NBCOLONNE,sizeof(int));
-        g->mat_adj_caserne[i]=(int *) calloc(NBLIGNE,sizeof(int));
     }
     g->mat_adjacence[17][0]=1;
     g->liste_hab=creer();

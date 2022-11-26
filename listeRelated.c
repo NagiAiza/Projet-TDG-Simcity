@@ -259,6 +259,16 @@ t_liste* actualisation(t_liste* l, t_tile* noeud_a_retrier)//si jamais la valeur
     return l;
 }
 
+int taille(t_liste *l)
+{
+    int cont = 0;
+    t_liste *aux = NULL;
+    for (aux = l; aux != NULL; aux = aux->next)
+    {
+        cont++;
+    }
+    return cont;
+}
 
 int tailleChemin(t_tile* n)
 {

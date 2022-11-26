@@ -7,43 +7,6 @@
 #include "jeu2.h"
 
 
-/*t_graphe* remplissage_matrice_caserne(t_graphe* g, int ligne, int colonne, int type)
-{
-    g->mat_adj_caserne[ligne][colonne]=type;
-    return g;
-}
-
-t_graphe* caserne_de_pompier(t_graphe* map, int a, int b, int choix)//verifier la connexité a la route
-{
-    for (int i = -10; i < 10; i++)
-    {
-        for (int j = -10; j < 10; j++)
-        {
-            if ( a+i <= 35 && b+j <= 45)
-            {
-                map = remplissage_matrice_caserne(map, a+i, b+j ,choix);
-            }
-        }
-    }
-
-    //affichage :
-
-    /*printf ("\nMAT ADJ CASERNE : \n\n");
-    for (int i = 0; i<NBLIGNE ; i++)
-    {
-        for (int j=0 ; j<NBCOLONNE ; j++)
-        {
-            printf ("%d ", map->mat_adj_caserne[i][j]);
-        }
-        printf ("\n");
-    }
-
-    printf ("\n\n\n");*/
-/*
-    //FAIRE AFFICHAGE MAP CASERNE GENRE UN ETAGE AVEC LA ZONE QUE PREND LA CASERNE OU QUAND ON SELECT LA CASERNE VOIR CASE INFECTE
-    return map;
-}*/
-
 int incendie ()
 {
     //random pour incendie
@@ -71,7 +34,6 @@ t_graphe* dijkstra_incendie(t_graphe* map, t_tile* sommet_de_depart, t_tile* cas
     t_liste* liste_voisin;
     t_liste* liste_ouverte=creer();
     t_liste* liste_ferme=creer();//pas forcement utile cette ligne
-    t_liste2* temp;
     //initialisation de la matrice des poids
     for(int i=0 ; i<NBLIGNE; i++)
     {
@@ -212,11 +174,157 @@ t_graphe* gestion_incendie(t_graphe* map, t_tile* case_en_feu, BUFFER* liste_buf
     return map;
 }
 
-void sauvegarde(long compteur_argent, long temps)
+void sauvegarde(long compteur_argent, long temps, t_graphe* map, int nb_habitant)
 {
+    t_liste2* temp;
+    t_liste* temp_hab;
+    int compteur;
     FILE* sauvegarde=fopen("sauvegarde.txt", "w+");
 
-    fprintf(sauvegarde, "%d ", 0);
+    fprintf(sauvegarde, "%ld ", compteur_argent);
+    fprintf(sauvegarde, "\n");
+    fprintf(sauvegarde,  "%ld ", temps);
+    fprintf(sauvegarde, "\n");
+    fprintf(sauvegarde, "%d", nb_habitant);
+    fprintf(sauvegarde, "\n");
+
+    //sauvegarde de la matrice de tile
+    for(int i=0; i<NBLIGNE; i++)
+    {
+        for(int j=0; j<NBCOLONNE; j++)
+        {
+            fprintf(sauvegarde,  "%d ", map->grille[i][j]->element->type);//type
+            fprintf(sauvegarde,  "%d ", map->grille[i][j]->element->orientation);//on garde l'orientation
+            fprintf(sauvegarde, "%d ", map->grille[i][j]->case_mere->position.ligne);//on stock la position de la case mère
+            fprintf(sauvegarde, "%d ", map->grille[i][j]->case_mere->position.colonne);
+            if(map->grille[i][j]->element->type==2)//si c'est un chateau d'eau
+            {
+                fprintf(sauvegarde, "%d ", map->grille[i][j]->element->capacite);
+                fprintf(sauvegarde, "%d ", map->grille[i][j]->element->couleur);
+            }
+            if(map->grille[i][j]->element->type>=4 && map->grille[i][j]->element->type<=9)//si c'est une habitation
+            {
+                fprintf(sauvegarde, "%d ", map->grille[i][j]->element->nb_habitant);
+                fprintf(sauvegarde, "%d ", map->grille[i][j]->element->eau_actuelle);
+                //fprintf(sauvegarde, "%d ", map->grille[i][j]->element->compteur); va falloir réflechir la dessus
+
+
+                temp=map->grille[i][j]->element->chateau_approvisionnement;//information sur les chateaux alimantant la maison
+                compteur=0;
+                while(temp!=NULL)
+                {
+                    compteur++;
+                    temp=temp->next;
+                }
+                fprintf(sauvegarde, "%d ", compteur);
+
+                temp=map->grille[i][j]->element->chateau_approvisionnement;
+                while(temp!=NULL)
+                {
+                    fprintf(sauvegarde, "%d ", temp->n->position.ligne);//on stock la position pour pouvoir regenerer la liste chainee dans le futur
+                    fprintf(sauvegarde, "%d ", temp->n->position.colonne);
+                    fprintf(sauvegarde, "%d ", temp->montant_distribue);
+                    temp=temp->next;
+                }
+                fprintf(sauvegarde, "%d ", map->grille[i][j]->element->incendie);//info sur l'incendie
+                fprintf(sauvegarde, "%d ", map->grille[i][j]->element->argent);//info sur l'affichage de la pièce
+                fprintf(sauvegarde, "%d ", map->grille[i][j]->element->alimente);//indo sur l'alimantation
+            }
+
+            fprintf(sauvegarde, "\n");// on passe a la case suivante
+        }
+    }
+
+    //sauvegarde matrice adajcence
+    for(int i=0; i<NBLIGNE; i++)
+    {
+        for(int j=0; j<NBCOLONNE; j++)
+        {
+            fprintf(sauvegarde, "%d ", map->mat_adjacence[i][j]);
+        }
+        fprintf(sauvegarde, "\n");
+    }
+
+    //sauvegarde des habitations
+    temp_hab=map->liste_hab;
+    fprintf(sauvegarde, "%d ", taille(map->liste_hab));
+    while (temp_hab!=NULL)
+    {
+        fprintf(sauvegarde, "%d ", temp_hab->n->position.ligne);
+        fprintf(sauvegarde, "%d ", temp_hab->n->position.colonne);
+        temp_hab=temp_hab->next;
+    }
+    fclose(sauvegarde);
+}
+t_graphe* lecture_sauvegarde(t_graphe* map, long* compteur_argent, long* temps, int* nb_habitant)
+{
+    int compteur;
+    int ligne_temp, colonne_temp, montant_distrib;
+    FILE* sauvegarde=fopen("sauvegarde.txt", "r");
+    if(sauvegarde==NULL)
+    {
+        printf("Erreur d'ouverture du fichier\n");
+        exit(EXIT_FAILURE);
+    }
+    //informations primaire
+    fscanf(sauvegarde, "%ld", compteur_argent);
+    fscanf(sauvegarde,  "%ld", temps);
+    fscanf(sauvegarde, "%d", nb_habitant);
+
+    //informations tile
+    for(int i=0; i<NBLIGNE; i++)
+    {
+        for(int j=0; j<NBCOLONNE; j++)
+        {
+            fscanf(sauvegarde,  "%d", &map->grille[i][j]->element->type);//type
+            fscanf(sauvegarde,  "%d", &map->grille[i][j]->element->orientation);//on garde l'orientation
+            fscanf(sauvegarde, "%d", &map->grille[i][j]->case_mere->position.ligne);//on stock la position de la case mère
+            fscanf(sauvegarde, "%d", &map->grille[i][j]->case_mere->position.colonne);
+            if(map->grille[i][j]->element->type==2)//si c'est un chateau d'eau
+            {
+                fscanf(sauvegarde, "%d", &map->grille[i][j]->element->capacite);
+                fscanf(sauvegarde, "%d", &map->grille[i][j]->element->couleur);
+            }
+            if(map->grille[i][j]->element->type>=4 && map->grille[i][j]->element->type<=9)//si c'est une habitation
+            {
+                fscanf(sauvegarde, "%d", &map->grille[i][j]->element->nb_habitant);
+                fscanf(sauvegarde, "%d", &map->grille[i][j]->element->eau_actuelle);
+                //fprintf(sauvegarde, "%d ", map->grille[i][j]->element->compteur); va falloir réflechir la dessus
+
+                fscanf(sauvegarde, "%d", &compteur);
+                for(int k=0; k<compteur; k++)
+                {
+                    fscanf(sauvegarde, "%d", &ligne_temp);//on stock la position pour pouvoir regenerer la liste chainee dans le futur
+                    fscanf(sauvegarde, "%d", &colonne_temp);
+                    fscanf(sauvegarde, "%d", &montant_distrib);
+                    map->grille[i][j]->element->chateau_approvisionnement=insererNoeud2( map->grille[i][j]->element->chateau_approvisionnement, map->grille[ligne_temp][colonne_temp], montant_distrib);
+                }
+
+                fscanf(sauvegarde, "%d", &map->grille[i][j]->element->incendie);//info sur l'incendie
+                fscanf(sauvegarde, "%d", &map->grille[i][j]->element->argent);//info sur l'affichage de la pièce
+                fscanf(sauvegarde, "%d", &map->grille[i][j]->element->alimente);//indo sur l'alimantation
+            }
+        }
+    }
+
+    //récupération de la matrice d'adjacence
+    for(int i=0; i<NBLIGNE; i++)
+    {
+        for(int j=0; j<NBCOLONNE; j++)
+        {
+            fscanf(sauvegarde, "%d", &map->mat_adjacence[i][j]);
+        }
+    }
+
+    //recupération des habitations
+    fscanf(sauvegarde, "%d", &compteur);
+    for(int k=0; k<compteur; k++)
+    {
+        fscanf(sauvegarde, "%d", &ligne_temp);
+        fscanf(sauvegarde, "%d ", &colonne_temp);
+        map->liste_hab= insererNoeud(map->liste_hab, map->grille[ligne_temp][colonne_temp]);
+    }
 
     fclose(sauvegarde);
+    return map;
 }

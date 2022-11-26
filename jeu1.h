@@ -26,7 +26,6 @@ typedef struct batiment{
     int orientation;//connaitre l'orientation du bat 1 ou 2
 
     // si c'est une habitation
-    int stade;//niveau d'évolution
     int nb_habitant;
     int eau_actuelle;
     long compteur;//timer à la création de l'habitation
@@ -45,7 +44,6 @@ typedef struct batiment{
 
 typedef struct tile{//pour faire la map on fait un tableau à 2 dimensions de tile
     t_batiment* element;//quel element est dessus (maison, chateau d'eau, centrale etc)
-    int numConnexite;
     t_pos position;
 
     //pour algo A*
@@ -63,7 +61,6 @@ typedef struct graphe{
     int** mat_adjacence;//vraie matrice d'adjacence avec toutes les cases qui sont remplies pour les batiments
     int** mat_chemin_eau;//matrice pour repertorier les chemins en eau
     int** mat_chemin_elec;
-    int** mat_adj_caserne;
     struct liste* liste_hab;
 }t_graphe;
 
