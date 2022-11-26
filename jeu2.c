@@ -9,7 +9,7 @@
 #include "stdio.h"
 #include "jeu3.h"
 
-int calcul_depenses(int choix, int taille_chemin_route/*Algo Taille chemin*/)
+int calcul_depenses(int choix, int taille_chemin_route)//le deuxième paramètre c'est seulement pour la depense de route
 {
     int depense;
     switch (choix) {
@@ -259,6 +259,12 @@ t_graphe* dijkstra(t_graphe* map, t_tile* sommet_de_depart)
                         temp=temp->next;
                     }*/
                     map=ecriture_fichier_eau(map, case_analysee);//on part de la route adajacente à la maison
+                }
+                if(voisin_actuel->case_mere->element->type==4)
+                {
+                    voisin_actuel->case_mere->element->eau_actuelle=1;
+                    voisin_actuel->case_mere->element->chateau_approvisionnement= insererNoeud2(voisin_actuel->case_mere->element->chateau_approvisionnement, sommet_de_depart, voisin_actuel->case_mere->element->capacite);
+                    sommet_de_depart->element->capacite-=1;
                 }
 
             }
@@ -597,7 +603,7 @@ int validation_evolution_communiste(t_tile* batiment, int* nb_habitant, int comp
     switch (batiment->element->type) {
         case 4:
             //printf("evolution\n");
-            if(batiment->element->alimente==1)//POUR EVITER QUE CA PROGRESSE
+            if(batiment->element->alimente==1 && batiment->element->eau_actuelle==1)//on met 1 d'eau sur la batiment pour dire que'il y a possibilité d'amélioration
             {
                 batiment->element->type++;
                 batiment->element->nb_habitant=10;
