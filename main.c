@@ -3,7 +3,8 @@
 #include "menu.h"
 #include "moteur_du_jeu.h"
 
-
+//lien du git
+//https://github.com/NagiAiza/Projet-TDG-Simcity
 
 void initialisation_allegro() {    ///Initialisation pour Allegro
     allegro_init();
