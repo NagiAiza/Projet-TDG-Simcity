@@ -78,7 +78,7 @@ int menu()
     blit(chargement[16],screen,0,0,SCREEN_W-chargement[16]->w,SCREEN_H-chargement[16]->h, chargement[16]->w, chargement[16]->h);
     rest(1000);
 
-    //boucle
+    //boucles
     while (!key[KEY_ESC]) {
         //Affichage
         blit(image, screen, 0, 0, SCREEN_W - image->w, SCREEN_H - image->h, image->w, image->h);

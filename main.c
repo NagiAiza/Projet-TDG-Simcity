@@ -20,7 +20,7 @@ void initialisation_allegro() {    ///Initialisation pour Allegro
 }
 
 int main() {
-    //variable qui reçoit le mode souhaite
+    //variable qui reçoit le mode souhaite //
     int Mode_de_Jeu=1;
 
     ///importation de la musique de fond
