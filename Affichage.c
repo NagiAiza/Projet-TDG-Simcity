@@ -534,4 +534,52 @@ void affichage_info_menu(BUFFER* liste_buffer, IMAGE* liste_image)
     }
 }
 
+void scroll_map(int* scroll, int* niv_visu, int* screeny)
+{
+    switch (*scroll) {
+        case 0:
+            *screeny-=5;
+            if(*screeny<0)
+            {
+                *screeny=0;
+                *scroll=-1;
+                *niv_visu=0;
+            }
+            break;
+        case 1:
+            if(*niv_visu==0) //scroller vers le bas
+            {
+                *screeny+=5;
+                if(*screeny>550)
+                {
+                    *screeny=550;
+                    *scroll=-1;
+                    *niv_visu=1;
+                }
+
+            }
+            if(*niv_visu==2)//vers le haut
+            {
+                *screeny-=5;
+                if(*screeny<550)
+                {
+                    *screeny=550;
+                    *scroll=-1;
+                    *niv_visu=1;
+                }
+            }
+            break;
+        case 2:
+            *screeny+=5;
+            if(*screeny>1100)
+            {
+                *screeny=1100;
+                *scroll=-1;
+                *niv_visu=2;
+            }
+            break;
+        default:
+            break;
+    }
+}
 
