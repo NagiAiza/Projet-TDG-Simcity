@@ -245,7 +245,7 @@ t_graphe* dijkstra(t_graphe* map, t_tile* sommet_de_depart)
                 if(voisin_actuel->case_mere->element->eau_actuelle<voisin_actuel->case_mere->element->nb_habitant)//si il reste des habitants qui doivent être alimenté en eau
                 {
                     //voisin_actuel->parent=case_analysee; on met cette ligne si on veut que la case de la maison soit prise dans le chemin
-                    printf("maison trouve\n");
+                    //printf("maison trouve\n");
                     //printf("case [%d][%d] -> parent [%d][%d]\n", voisin_actuel->position.ligne, voisin_actuel->position.colonne, voisin_actuel->parent->position.ligne, voisin_actuel->parent->position.colonne);
                     //faire toute les maj sur l'habitation en fonction de l'eau distrib
                     maj_capacite(sommet_de_depart, voisin_actuel->case_mere);

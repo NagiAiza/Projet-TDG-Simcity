@@ -19,9 +19,9 @@ int incendie ();
 t_graphe* dijkstra_incendie(t_graphe* map, t_tile* sommet_de_depart, t_tile* case_en_feu, int* fin_recherche, BUFFER* liste_buffer, IMAGE* liste_image);
 t_graphe* gestion_incendie(t_graphe* map, t_tile* case_en_feu, BUFFER* liste_buffer, IMAGE* liste_image);
 
-void sauvegarde(long compteur_argent, long temps, t_graphe* map, int nb_habitant);
+void sauvegarde(long compteur_argent, long temps, t_graphe* map, int nb_habitant, int mode_de_jeu);
 
-t_graphe* lecture_sauvegarde(t_graphe* map, long* compteur_argent, long* temps, int* nb_habitant);
+t_graphe* lecture_sauvegarde(t_graphe* map, long* compteur_argent, long* temps, int* nb_habitant, int* mode_de_jeu);
 
 
 #endif //PROJET_S1_TDG_JEU3_H

@@ -174,13 +174,15 @@ t_graphe* gestion_incendie(t_graphe* map, t_tile* case_en_feu, BUFFER* liste_buf
     return map;
 }
 
-void sauvegarde(long compteur_argent, long temps, t_graphe* map, int nb_habitant)
+void sauvegarde(long compteur_argent, long temps, t_graphe* map, int nb_habitant, int mode_de_jeu)
 {
     t_liste2* temp;
     t_liste* temp_hab;
     int compteur;
     FILE* sauvegarde=fopen("sauvegarde.txt", "w+");
 
+    fprintf(sauvegarde, "%d ", mode_de_jeu);
+    fprintf(sauvegarde, "\n");
     fprintf(sauvegarde, "%ld ", compteur_argent);
     fprintf(sauvegarde, "\n");
     fprintf(sauvegarde,  "%ld ", temps);
@@ -257,7 +259,7 @@ void sauvegarde(long compteur_argent, long temps, t_graphe* map, int nb_habitant
     }
     fclose(sauvegarde);
 }
-t_graphe* lecture_sauvegarde(t_graphe* map, long* compteur_argent, long* temps, int* nb_habitant)
+t_graphe* lecture_sauvegarde(t_graphe* map, long* compteur_argent, long* temps, int* nb_habitant, int* mode_de_jeu)
 {
     int compteur;
     int ligne_temp, colonne_temp, montant_distrib;
@@ -268,6 +270,7 @@ t_graphe* lecture_sauvegarde(t_graphe* map, long* compteur_argent, long* temps, 
         exit(EXIT_FAILURE);
     }
     //informations primaire
+    fscanf(sauvegarde, "%ld", mode_de_jeu);
     fscanf(sauvegarde, "%ld", compteur_argent);
     fscanf(sauvegarde,  "%ld", temps);
     fscanf(sauvegarde, "%d", nb_habitant);

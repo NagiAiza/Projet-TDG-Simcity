@@ -48,7 +48,7 @@ void jeu(int mode, int nvlle_partie)//sous programme qui fera tourner tout le je
     }
     else//pb on n'a pas la connexite
     {
-        map=lecture_sauvegarde(map, &compteur_argent, &temps_ancienne_partie, &nb_habitant);
+        map=lecture_sauvegarde(map, &compteur_argent, &temps_ancienne_partie, &nb_habitant, &mode);
         map= distribution_eau(map);//pb avec l'eau surtout
         map= distribution_elec(map);
     }
@@ -115,7 +115,7 @@ void jeu(int mode, int nvlle_partie)//sous programme qui fera tourner tout le je
     }
 
     //affichageGridMere(map);
-    sauvegarde(compteur_argent, clock() / CLOCKS_PER_SEC+temps_ancienne_partie - CLK_debut, map, nb_habitant);
+    sauvegarde(compteur_argent, clock() / CLOCKS_PER_SEC+temps_ancienne_partie - CLK_debut, map, nb_habitant, mode);
     //libération de la mémoire
     show_mouse(NULL);
     liberation_memoire_bitmaps(liste_image, liste_buffer);
