@@ -25,6 +25,7 @@ int calcul_depenses(int choix, int taille_chemin_route/*Algo Taille chemin*/)
             break;
         case 5:
             depense = 10000;
+            break;
         default:
             depense = 0;
             break;
@@ -162,7 +163,6 @@ t_graphe* dijkstra(t_graphe* map, t_tile* sommet_de_depart)
     t_liste* liste_voisin;
     t_liste* liste_ouverte=creer();
     t_liste* liste_ferme=creer();//pas forcement utile cette ligne
-    t_liste2* temp;
     //initialisation de la matrice des poids
     for(int i=0 ; i<NBLIGNE; i++)
     {
@@ -426,7 +426,7 @@ t_graphe* ecriture_fichier_elec(t_graphe* map, t_tile* case_arrive)
 
 t_graphe* BFS(t_graphe* map, t_tile* sommet_depart)
 {
-    t_tile* noeud, *temp;
+    t_tile* noeud;
     for(int i=0; i<NBLIGNE; i++) //initialisation du bfs
     {
         for(int j=0; j<NBCOLONNE; j++) //initialisation du bfs

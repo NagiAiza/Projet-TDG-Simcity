@@ -3,18 +3,16 @@
 //
 
 #include "menu.h"
-#include "Affichage.h"
 
 
 int menu(int* nvlle_partie)
 {
     //declaration BITMAP devant recevoir l'image
-
     // SuperCool
     BITMAP* debut_projet;
     // barre de chargement
     BITMAP* chargement[17];
-    char tableauChargement[14];
+    char tableauChargement[17];
     // COMMENCER/CONTINUER/QUITTER
     BITMAP* image;
     BITMAP* prop1;
@@ -25,7 +23,8 @@ int menu(int* nvlle_partie)
     BITMAP* prop4;
     BITMAP* prop5;
     // MAP
-    BITMAP* test_ecran;
+    BITMAP* buffer = create_bitmap(SCREEN_W, SCREEN_H);
+    clear(buffer);
     //regle
     BITMAP* regle;
 
@@ -33,7 +32,6 @@ int menu(int* nvlle_partie)
     show_mouse(screen);
 
     debut_projet=load_bitmap_check("debut_projet.bmp");
-
 
     ///Tableau d'image
     for (int i=0 ; i<=16 ; i++)
@@ -70,7 +68,7 @@ int menu(int* nvlle_partie)
     rest(2000);
 
     //affichage d'un tableau d'image
-    for (int i=1 ; i<16 ; i++)
+    for (int i=0 ; i<=16 ; i++)
     {
         blit(chargement[i],screen,0,0, (SCREEN_W-chargement[i]->w)/2, (SCREEN_H-chargement[i]->h)/2, chargement[i]->w, chargement[i]->h);
         rest(100);
@@ -81,76 +79,71 @@ int menu(int* nvlle_partie)
     //boucles
     while (!key[KEY_ESC]) {
         //Affichage
-        blit(image, screen, 0, 0, SCREEN_W - image->w, SCREEN_H - image->h, image->w, image->h);
+        blit(image, buffer, 0, 0, SCREEN_W - image->w, SCREEN_H - image->h, image->w, image->h);
 
-        // afficher coordonnées de la souris (%4d = format numérique largeur fixe sur 4 caractères)
-        //textprintf_ex(screen, font, 60, 300, makecol(0, 255, 0), makecol(0, 0, 0), "%4d %4d", mouse_x, mouse_y);
 
         if (mouse_x >= 391 && mouse_x <= 607 && mouse_y >= 87 && mouse_y <= 154) {
-            blit(prop1, screen, 0, 0, SCREEN_W - prop1->w, SCREEN_H - prop1->h, prop1->w, prop1->h);
+            blit(prop1, buffer, 0, 0, SCREEN_W - prop1->w, SCREEN_H - prop1->h, prop1->w, prop1->h);
             rest(100);
             if (mouse_b & 1) {
-                printf("COMMENCER\n");
-                rest(500);
+                //printf("COMMENCER\n");
+                //rest(500);
                 *nvlle_partie = 1;
                 while (!key[KEY_ESC]) {
                     //textprintf_ex(screen,font,60,300,makecol(0,255,0),makecol(0,0,0),"%4d %4d",mouse_x,mouse_y);
 
-                    blit(Image, screen, 0, 0, SCREEN_W - Image->w, SCREEN_H - Image->h, Image->w, Image->h);
+                    blit(Image, buffer, 0, 0, SCREEN_W - Image->w, SCREEN_H - Image->h, Image->w, Image->h);
                     if (mouse_x >= 227 && mouse_x <= 444 && mouse_y >= 290 && mouse_y <= 357) {
-                        blit(prop4, screen, 0, 0, SCREEN_W - prop4->w, SCREEN_H - prop4->h, prop4->w, prop4->h);
+                        blit(prop4, buffer, 0, 0, SCREEN_W - prop4->w, SCREEN_H - prop4->h, prop4->w, prop4->h);
                         rest(100);
                         if (mouse_b & 1) {
 
-                            printf("communiste\n");
+                            //printf("communiste\n");
                             rest(500);
                             return 1;
                         }
                     } else if (mouse_x >= 582 && mouse_x <= 800 && mouse_y >= 290 && mouse_y <= 357) {
-                        blit(prop5, screen, 0, 0, SCREEN_W - prop5->w, SCREEN_H - prop5->h, prop5->w, prop5->h);
+                        blit(prop5, buffer, 0, 0, SCREEN_W - prop5->w, SCREEN_H - prop5->h, prop5->w, prop5->h);
                         rest(100);
                         if (mouse_b & 1) {
-                            printf("capitaliste\n");
+                            //printf("capitaliste\n");
                             rest(500);
                             return 2;
                         }
                     }
-
+                    blit(buffer, screen, 0, 0, 0, 0, SCREEN_W, SCREEN_H);
                 }
 
             }
 
         } else if (mouse_x >= 391 && mouse_x <= 607 && mouse_y >= 293 && mouse_y <= 361) {
-            blit(prop2, screen, 0, 0, SCREEN_W - prop2->w, SCREEN_H - prop2->h, prop2->w, prop2->h);
+            blit(prop2, buffer, 0, 0, SCREEN_W - prop2->w, SCREEN_H - prop2->h, prop2->w, prop2->h);
             rest(100);
             if (mouse_b & 1) {
-                printf("CONTINUER\n");
+                //printf("CONTINUER\n");
                 rest(500);
                 ///METTRE LE SOUS PROGRAMME DE SAUVEGARDE POUR RECUP LA PARTIE EN COURS
                 *nvlle_partie = 0;
                 return 1;
             }
         } else if (mouse_x >= 391 && mouse_x <= 607 && mouse_y >= 500 && mouse_y <= 566) {
-            blit(prop3, screen, 0, 0, SCREEN_W - prop3->w, SCREEN_H - prop3->h, prop3->w, prop3->h);
+            blit(prop3, buffer, 0, 0, SCREEN_W - prop3->w, SCREEN_H - prop3->h, prop3->w, prop3->h);
             rest(100);
             if (mouse_b & 1) {
-                printf("QUITTER\n");
+                //printf("QUITTER\n");
                 rest(500);
                 exit(EXIT_SUCCESS);
             }
         } else if (mouse_x >= 947 && mouse_x <= 999 && mouse_y >= 23 && mouse_y <= 79) {
-            blit(regle, screen, 0, 0, SCREEN_W - regle->w, SCREEN_H - regle->h, regle->w, regle->h);
+            blit(regle, buffer, 0, 0, SCREEN_W - regle->w, SCREEN_H - regle->h, regle->w, regle->h);//affichage des règles
             rest(100);
-            if (mouse_b & 1) {
-                printf("regle\n");
-                rest(500);
-            }
-
         }
+        blit(buffer, screen, 0, 0, 0, 0, SCREEN_W, SCREEN_H);
     }
     ///FREE TTE LES BITMAPS
+    show_mouse(NULL);
     destroy_bitmap(debut_projet);
-        for (int i=1 ; i<=16 ; i++)
+        for (int i=0 ; i<=16 ; i++)
         {
             destroy_bitmap(chargement[i]);
         }
@@ -161,23 +154,19 @@ int menu(int* nvlle_partie)
     destroy_bitmap(Image);
     destroy_bitmap(prop4);
     destroy_bitmap(prop5);
-
+    destroy_bitmap(buffer);
 
     return 0;
 }
 
-void ecran_victoire_saboteur(SAMPLE* music, int* volume)
+void intro_du_jeu(SAMPLE* music, int* volume)
 {
     // Buffer
     BITMAP *page;
     BITMAP*decor;
     BITMAP *dirigeable;
 
-
     play_sample(music, 255, 0, 1000, PLAYMODE_LOOP);
-
-
-
 
     // Position de l'écran réel dans le repère du décor
     int screenx,screeny;
@@ -187,21 +176,14 @@ void ecran_victoire_saboteur(SAMPLE* music, int* volume)
     clear_bitmap(page);
 
     // charger image de fond
-    decor=load_bitmap("nuage.bmp",NULL);
-    if (!decor)
-    {
-        allegro_message("pas pu trouver images/grandfond_decor.bmp");
-        exit(EXIT_FAILURE);
-    }
+    decor=load_bitmap_check("nuage.bmp");
 
     // initialisation du scrolling en haut à gauche du décor
     screenx=0;
     screeny=900;
 
     // créer le dirigeable et la cible
-    dirigeable=load_bitmap("dirigeable.bmp",NULL);
-
-    printf("ici\n");
+    dirigeable=load_bitmap_check("dirigeable.bmp");
 
     while (!key[KEY_SPACE] && !(mouse_b & 1))
     {

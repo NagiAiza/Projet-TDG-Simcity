@@ -7,9 +7,11 @@
 
 #include <stdio.h>
 #include <allegro.h>
+#include "Affichage.h"
 
-void suite_menu();
-int menu();
-void ecran_victoire_saboteur(SAMPLE* music, int* volume);
+
+int menu(int* nvlle_partie);
+
+void intro_du_jeu(SAMPLE* music, int* volume);
 
 #endif //PROJET_S1_TDG_MENU_H

@@ -12,15 +12,15 @@ int incendie ()
     //random pour incendie
     int aleatoire;
     aleatoire = rand() % 15;
-    printf ("nbre aleatoire --> %d\n", aleatoire);
+    //printf ("nbre aleatoire --> %d\n", aleatoire);
     if(aleatoire==1)
     {
-        printf("en feu!\n");
+        //printf("en feu!\n");
         return 1;
     }
     else
     {
-        printf("pas en feu\n");
+        //printf("pas en feu\n");
         return 0;
     }
 }

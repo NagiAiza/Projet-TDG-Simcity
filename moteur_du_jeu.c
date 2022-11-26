@@ -7,7 +7,7 @@
 #include "time.h"
 #include "jeu3.h"
 
-void jeu(int mode, int nvlle_partie)//sous programme qui fera tourner tout le jeu
+void jeu(int* mode, int nvlle_partie)//sous programme qui fera tourner tout le jeu
 {
     srand(time(NULL));
     //initialisation des variables
@@ -15,7 +15,7 @@ void jeu(int mode, int nvlle_partie)//sous programme qui fera tourner tout le je
     long compteur_argent=500000;
     int capa_usine=0;
     int nb_habitant=0;
-    int capa_eau=0;
+    int capa_eau;
     int exit=0;
     int attente=0;
     long temps_ancienne_partie=0;
@@ -48,7 +48,7 @@ void jeu(int mode, int nvlle_partie)//sous programme qui fera tourner tout le je
     }
     else//pb on n'a pas la connexite
     {
-        map=lecture_sauvegarde(map, &compteur_argent, &temps_ancienne_partie, &nb_habitant, &mode);
+        map=lecture_sauvegarde(map, &compteur_argent, &temps_ancienne_partie, &nb_habitant, mode);
         map= distribution_eau(map);//pb avec l'eau surtout
         map= distribution_elec(map);
     }
@@ -81,7 +81,7 @@ void jeu(int mode, int nvlle_partie)//sous programme qui fera tourner tout le je
         {
             if(mouse_x<124 || mouse_y>640)
             {
-                choixAction(liste_buffer, liste_image, &choix);
+                choixAction(&choix);
                 rest(100);
             }
         }
@@ -90,7 +90,7 @@ void jeu(int mode, int nvlle_partie)//sous programme qui fera tourner tout le je
 
         map=action(map, liste_buffer, liste_image, &choix, souris, &rotation, niv_visu, &case_select, &algo_A, &compteur_argent, &capa_usine, &exit, &scroll);
 
-        map=cycle_habitation(map, &capa_usine, &compteur_argent, &nb_habitant, capa_eau, liste_buffer, liste_image, &attente, mode, temps_ancienne_partie);
+        map=cycle_habitation(map, &capa_usine, &compteur_argent, &nb_habitant, capa_eau, liste_buffer, liste_image, &attente, *mode, temps_ancienne_partie);
 
         map=remise_0_argent(map, souris);
 
@@ -115,7 +115,7 @@ void jeu(int mode, int nvlle_partie)//sous programme qui fera tourner tout le je
     }
 
     //affichageGridMere(map);
-    sauvegarde(compteur_argent, clock() / CLOCKS_PER_SEC+temps_ancienne_partie - CLK_debut, map, nb_habitant, mode);
+    sauvegarde(compteur_argent, clock() / CLOCKS_PER_SEC+temps_ancienne_partie - CLK_debut, map, nb_habitant, *mode);
     //libération de la mémoire
     show_mouse(NULL);
     liberation_memoire_bitmaps(liste_image, liste_buffer);

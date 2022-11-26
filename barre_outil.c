@@ -6,11 +6,10 @@
 
 #include "barre_outil.h"
 #include "jeu2.h"
-#include "jeu3.h"
 #include "listeRelated.h"
 
 
-void choixAction(BUFFER* liste_buffer, IMAGE*liste_image, int* choix)
+void choixAction(int* choix)
 {
 
     if(((mouse_x>=5)&&(mouse_x<=121)&&(mouse_y>=124)&&(mouse_y<=158))&&(mouse_b&1)) //Si on clique sur la case route
