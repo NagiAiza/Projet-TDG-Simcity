@@ -6,7 +6,7 @@
 #include "Affichage.h"
 
 
-int menu()
+int menu(int* nvlle_partie)
 {
     //declaration BITMAP devant recevoir l'image
 
@@ -92,6 +92,7 @@ int menu()
             if (mouse_b & 1) {
                 printf("COMMENCER\n");
                 rest(500);
+                *nvlle_partie = 1;
                 while (!key[KEY_ESC]) {
                     //textprintf_ex(screen,font,60,300,makecol(0,255,0),makecol(0,0,0),"%4d %4d",mouse_x,mouse_y);
 
@@ -126,6 +127,8 @@ int menu()
                 printf("CONTINUER\n");
                 rest(500);
                 ///METTRE LE SOUS PROGRAMME DE SAUVEGARDE POUR RECUP LA PARTIE EN COURS
+                *nvlle_partie = 0;
+                return 1;
             }
         } else if (mouse_x >= 391 && mouse_x <= 607 && mouse_y >= 500 && mouse_y <= 566) {
             blit(prop3, screen, 0, 0, SCREEN_W - prop3->w, SCREEN_H - prop3->h, prop3->w, prop3->h);
