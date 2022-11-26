@@ -63,6 +63,7 @@ void affichage_element_eau(BUFFER* liste_buffer, IMAGE* liste, int type, int lig
 void affichage_habitation(BUFFER* liste_buffer, IMAGE* liste_image, t_tile* habitation);
 void affichageTotal(t_graphe* map, IMAGE* liste_image, BUFFER* liste_buffer, t_pos souris, long compteur_argent, int niveau_visu, int capa_usine, clock_t CLK_debut, int compteur_hab, int capa_eau, int screeny);
 t_pos calcul_pos_souris(BITMAP* sousMap, int decalageScreenX/*pour savoir où placer la bitmap*/);//retourne la position de la souris
+void affichage_info_menu(BUFFER* liste_buffer, IMAGE* liste_image);
 
 
 #endif //PROJET_S1_AFFICHAGE_H

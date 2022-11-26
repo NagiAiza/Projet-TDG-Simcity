@@ -504,6 +504,34 @@ void affichageTotal(t_graphe* map, IMAGE* liste_image, BUFFER* liste_buffer, t_p
 
 }
 
-
+void affichage_info_menu(BUFFER* liste_buffer, IMAGE* liste_image)
+{
+    ///passer la souris sur la case compteur habitants pour afficher le nom de la case
+    if(((mouse_x>=164)&&(mouse_x<=295)&&(mouse_y>=647)&&(mouse_y<=672)))
+    {
+        //textprintf_ex(liste_buffer->buffer_menu,font,10,20,makecol(0,0,0),makecol(255,255,255),"bouton selec");
+        blit(liste_image->info_habitants, liste_buffer->buffer_menu,0, 0,  201, 654, 100, 13);
+    }
+    ///passer la souris sur la case compteur eau pour afficher le nom de la case
+    if(((mouse_x>=798)&&(mouse_x<=931)&&(mouse_y>=648)&&(mouse_y<=672)))
+    {
+        blit(liste_image->info_eau, liste_buffer->buffer_menu,0, 0,  833, 649, 100, 13);
+    }
+    ///passer la souris sur la case compteur elec pour afficher le nom de la case
+    if(((mouse_x>=482)&&(mouse_x<=613)&&(mouse_y>=647)&&(mouse_y<=672)))
+    {
+        blit(liste_image->info_elec, liste_buffer->buffer_menu,0, 0,  521, 651, 100, 13);
+    }
+    ///passer la souris sur la case compteur monaie pour afficher le nom de la case
+    if(((mouse_x>=4)&&(mouse_x<=108)&&(mouse_y>=592)&&(mouse_y<=612)))
+    {
+        blit(liste_image->info_monnaie, liste_buffer->buffer_menu,0, 0,  15, 600, 100, 13);
+    }
+    ///passer la souris sur la case compteur habitants pour afficher le nom de la case
+    if(((mouse_x>=288)&&(mouse_x<=420)&&(mouse_y>=671)&&(mouse_y<=702)))
+    {
+        blit(liste_image->info_habitants, liste_buffer->buffer_menu,0, 0,  288, 705, 100, 13);
+    }
+}
 
 

@@ -129,6 +129,8 @@ void jeu(int mode)//sous programme qui fera tourner tout le jeu
             draw_sprite(liste_buffer->buffer_menu, liste_image->rotation, 70, 517);
         }
 
+        affichage_info_menu(liste_buffer, liste_image);
+
         blit(liste_buffer->buffer_menu, liste_buffer->buffer_final, 0, 0, 0, 0, SCREEN_W, SCREEN_H);
         blit(liste_buffer->buffer_map, liste_buffer->buffer_final, decalageX, 0, 124, 0, SCREEN_W, SCREEN_H);
         blit(liste_buffer->buffer_final, screen, 0, 0, 0, 0, SCREEN_W, SCREEN_H);
