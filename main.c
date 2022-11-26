@@ -35,8 +35,8 @@ int main() {
 
 
     //Sous-programme menu
-    Mode_de_Jeu = menu(); //si 1 communiste si 2 capitaliste si 0 nada
-    ecran_victoire_saboteur(music, &volume);
+    //Mode_de_Jeu = menu(); //si 1 communiste si 2 capitaliste si 0 nada
+    //ecran_victoire_saboteur(music, &volume);
     //Sous-programme jeu
     jeu(Mode_de_Jeu);
     allegro_exit();

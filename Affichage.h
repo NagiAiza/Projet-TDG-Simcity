@@ -39,6 +39,8 @@ typedef struct IMAGE{//liste de tout les buffer d'image qu'on va utiliser, on va
     //BITMAP* info_deplacer; on remettra si besoin
     //BITMAP* info_supprimer;
     BITMAP* reseau;
+    BITMAP* annulation_action;
+    BITMAP* rotation;
 }IMAGE;
 
 typedef struct BUFFER{//liste des buffer qu'on utilisera qui correspondent à chaque element d'affichage

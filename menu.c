@@ -76,8 +76,6 @@ int menu()
 
     regle=load_bitmap_check("regle.bmp");
 
-    test_ecran=load_bitmap_check("test_ecran.bmp");
-
 
     blit(debut_projet,screen,0,0,SCREEN_W-debut_projet->w,SCREEN_H-debut_projet->h, debut_projet->w, debut_projet->h);
     rest(2000);

@@ -66,7 +66,7 @@ void jeu(int mode)//sous programme qui fera tourner tout le jeu
         {
             if(mouse_x<124 || mouse_y>640)
             {
-                choix = choixAction(liste_buffer, liste_image);
+                choixAction(liste_buffer, liste_image, &choix);
                 rest(100);
             }
         }
@@ -122,6 +122,12 @@ void jeu(int mode)//sous programme qui fera tourner tout le jeu
         map=cycle_habitation(map, &capa_usine, &compteur_argent, &nb_habitant, capa_eau, liste_buffer, liste_image, &attente, mode);
 
         map=remise_0_argent(map, souris);
+
+        if(choix>=1 && choix <=5)
+        {
+            draw_sprite(liste_buffer->buffer_menu, liste_image->annulation_action, 25, 517);
+            draw_sprite(liste_buffer->buffer_menu, liste_image->rotation, 70, 517);
+        }
 
         blit(liste_buffer->buffer_menu, liste_buffer->buffer_final, 0, 0, 0, 0, SCREEN_W, SCREEN_H);
         blit(liste_buffer->buffer_map, liste_buffer->buffer_final, decalageX, 0, 124, 0, SCREEN_W, SCREEN_H);

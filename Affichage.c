@@ -52,6 +52,8 @@ IMAGE* initialisation_liste_image()//on initialise une seule fois les bitmaps en
     //liste->info_deplacer=load_bitmap_check("info_deplacer.bmp");
     //liste->info_supprimer=load_bitmap_check("info_supprimer.bmp");
     liste->nuage=load_bitmap_check("nuage.bmp");
+    liste->annulation_action= load_bitmap_check("croix_rouge.bmp");
+    liste->rotation= load_bitmap_check("symbole_rotation.bmp");
     return liste;
 }
 
@@ -99,6 +101,8 @@ void liberation_memoire_bitmaps(IMAGE* liste_image, BUFFER* liste_buffer)//on n'
     destroy_bitmap(liste_image->info_elec);
     destroy_bitmap(liste_image->info_monnaie);
     destroy_bitmap(liste_image->info_habitants);
+    destroy_bitmap(liste_image->annulation_action);
+    destroy_bitmap(liste_image->rotation);
 
     free(liste_image);
     destroy_bitmap(liste_buffer->buffer_map);

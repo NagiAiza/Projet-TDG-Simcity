@@ -10,7 +10,7 @@
 #include "listeRelated.h"
 
 
-int choixAction(BUFFER* liste_buffer, IMAGE*liste_image)
+void choixAction(BUFFER* liste_buffer, IMAGE*liste_image, int* choix)
 {
     ///passer la souris sur la case compteur habitants pour afficher le nom de la case
     if(((mouse_x>=164)&&(mouse_x<=295)&&(mouse_y>=647)&&(mouse_y<=672)))
@@ -41,23 +41,23 @@ int choixAction(BUFFER* liste_buffer, IMAGE*liste_image)
 
     if(((mouse_x>=5)&&(mouse_x<=121)&&(mouse_y>=124)&&(mouse_y<=158))&&(mouse_b&1)) //Si on clique sur la case route
     {
-        return 1;
+        *choix = 1;
     }
     if(((mouse_x>=6)&&(mouse_x<=119)&&(mouse_y>=165)&&(mouse_y<=196))&&(mouse_b&1)) //Si on clique sur case batiments
     {
-        return 4;
+        *choix = 4;
     }
     if(((mouse_x>=5)&&(mouse_x<=121)&&(mouse_y>=207)&&(mouse_y<=236))&&(mouse_b&1)) //elec
     {
-        return 3;
+        *choix = 3;
     }
     if(((mouse_x>=5)&&(mouse_x<=117)&&(mouse_y>=246)&&(mouse_y<=275))&&(mouse_b&1)) // eau
     {
-        return 2;
+        *choix = 2;
     }
     if(((mouse_x>=7)&&(mouse_x<=118)&&(mouse_y>=288)&&(mouse_y<=313))&&(mouse_b&1)) // pompiers
     {
-        return 5;
+        *choix = 5;
     }
     if(((mouse_x>=7)&&(mouse_x<=59)&&(mouse_y>=326)&&(mouse_y<=350))&&(mouse_b&1))//fleches
     {
@@ -69,21 +69,20 @@ int choixAction(BUFFER* liste_buffer, IMAGE*liste_image)
     }
     if(((mouse_x>=9)&&(mouse_x<=81)&&(mouse_y>=408)&&(mouse_y<=434))&&(mouse_b&1))//0
     {
-        return 6;
+        *choix = 6;
     }
     if(((mouse_x>=12)&&(mouse_x<=77)&&(mouse_y>=446)&&(mouse_y<=471))&&(mouse_b&1))//-1
     {
-        return 7;
+        *choix = 7;
     }
     if(((mouse_x>=11)&&(mouse_x<=79)&&(mouse_y>=486)&&(mouse_y<=507))&&(mouse_b&1))//-2
     {
-        return 8;
+        *choix = 8;
     }
     if(((mouse_x>=50)&&(mouse_x<=115)&&(mouse_y>=557)&&(mouse_y<=583))&&(mouse_b&1))//exit
     {
-        return 9;
+        *choix = 9;
     }
-    return 0;
 }
 
 t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* choix, t_pos souris, int* rotation, int niv_visu, t_tile** case_select, int* algo_A, long* argent_restant, int* capa_usine, int* exit, int* scroll)
@@ -142,7 +141,7 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
                     }
                 }
 
-                if(key[KEY_1])//ou choisir un bouton plus judicieux
+                if(key[KEY_1] || ((mouse_x>=25)&&(mouse_x<=55)&&(mouse_y>=520)&&(mouse_y<=545))&&(mouse_b&1))//ou choisir un bouton plus judicieux
                 {
                     *choix=0;//on sort du choix des actions si l'utilisateur le veut
                     *algo_A=0;
@@ -152,11 +151,11 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
         case 2://Chateau d'eau
             if(niv_visu==0)
             {
-                if(key[KEY_1])//ou choisir un bouton plus judicieux
+                if(key[KEY_1] || ((mouse_x>=25)&&(mouse_x<=55)&&(mouse_y>=520)&&(mouse_y<=545))&&(mouse_b&1))//ou choisir un bouton plus judicieux
                 {
                     *choix=0;//on sort du choix des actions si l'utilisateur le veut
                 }
-                if(key[KEY_2])
+                if(key[KEY_2] || ((mouse_x>=70)&&(mouse_x<=100)&&(mouse_y>=515)&&(mouse_y<=545))&&(mouse_b&1))
                 {
                     *rotation=-*rotation;
                     rest(100);//pour eviter les rebonds
@@ -226,11 +225,11 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
         case 3://Electricité
             if(niv_visu==0)
             {
-                if(key[KEY_1])//ou choisir un bouton plus judicieux
+                if(key[KEY_1] || ((mouse_x>=25)&&(mouse_x<=55)&&(mouse_y>=520)&&(mouse_y<=545))&&(mouse_b&1))//ou choisir un bouton plus judicieux
                 {
                     *choix=0;//on sort du choix des actions si l'utilisateur le veut
                 }
-                if(key[KEY_2])
+                if(key[KEY_2] || ((mouse_x>=70)&&(mouse_x<=100)&&(mouse_y>=515)&&(mouse_y<=545))&&(mouse_b&1))
                 {
                     *rotation=-*rotation;
                     rest(100);//pour eviter les rebonds
@@ -301,7 +300,7 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
             //bouton pour rotationné le sens de construction? + blindage pour ne pas superposer avec une autre construction
             if(niv_visu==0)
             {
-                if(key[KEY_1])//ou choisir un bouton plus judicieux
+                if(key[KEY_1] || ((mouse_x>=25)&&(mouse_x<=55)&&(mouse_y>=520)&&(mouse_y<=545))&&(mouse_b&1))//ou choisir un bouton plus judicieux
                 {
                     *choix=0;//on sort du choix des actions si l'utilisateur le veut
                 }
@@ -340,11 +339,11 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
         case 5://caserne de pompier
             if(niv_visu==0)
             {
-                if(key[KEY_1])//ou choisir un bouton plus judicieux
+                if(key[KEY_1] || ((mouse_x>=25)&&(mouse_x<=55)&&(mouse_y>=520)&&(mouse_y<=545))&&(mouse_b&1))//ou choisir un bouton plus judicieux
                 {
                     *choix=0;//on sort du choix des actions si l'utilisateur le veut
                 }
-                if(key[KEY_2])
+                if(key[KEY_2] || ((mouse_x>=70)&&(mouse_x<=100)&&(mouse_y>=515)&&(mouse_y<=545))&&(mouse_b&1))
                 {
                     *rotation=-*rotation;
                     rest(100);//pour eviter les rebonds
