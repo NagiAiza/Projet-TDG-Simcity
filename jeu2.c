@@ -490,7 +490,7 @@ t_graphe* BFS(t_graphe* map, t_tile* sommet_depart)
 
         while(liste_temporaire!=NULL)
         {
-            if(liste_temporaire->n->case_mere->element->type>=4 && liste_temporaire->n->case_mere->element->type<=9)
+            if(liste_temporaire->n->case_mere->element->type>=4 && liste_temporaire->n->case_mere->element->type<=9 && liste_temporaire->n->case_mere->element->alimente==1)
             {
                 map= ecriture_fichier_elec(map, noeud);
 

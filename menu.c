@@ -220,7 +220,7 @@ void ecran_victoire_saboteur(SAMPLE* music, int* volume)
 
     printf("ici\n");
 
-    while (!key[KEY_SPACE])
+    while (!key[KEY_SPACE] && !(mouse_b & 1))
     {
         //scroller le decor
         screeny-=5;
