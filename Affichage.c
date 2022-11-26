@@ -480,7 +480,7 @@ void affichageTotal(t_graphe* map, IMAGE* liste_image, BUFFER* liste_buffer, t_p
     textprintf_ex(liste_buffer->buffer_menu,font,560,658,makecol(0,0,0),-1,"%d",capa_usine);
     textprintf_ex(liste_buffer->buffer_menu,font,873,657,makecol(0,0,0),-1,"%d",capa_eau);
     textprintf_ex(liste_buffer->buffer_menu,font,237,658,makecol(0,0,0),-1,"%d",compteur_hab);
-    textprintf_ex(liste_buffer->buffer_menu,font,47,73,makecol(0,0,0),-1,"%ld sec",clock()/CLOCKS_PER_SEC+temps_ancienne_partie-CLK_debut);
+    textprintf_ex(liste_buffer->buffer_menu,font,47,73,makecol(0,0,0),-1,"%ld sec",(clock()/CLOCKS_PER_SEC-CLK_debut)+temps_ancienne_partie);
 
 
     blit(liste_image->nuage,liste_buffer->buffer_map,0,screeny,0,0,1500,SCREEN_H);

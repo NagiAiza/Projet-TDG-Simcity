@@ -156,7 +156,7 @@ void maj_capacite(t_tile* chateau_eau, t_tile* maison)
 
 t_graphe* dijkstra(t_graphe* map, t_tile* sommet_de_depart)
 {
-    printf("\nlancement dijkstra\n");
+    //printf("\nlancement dijkstra\n");
     int poids_temp;
     t_tile* case_analysee,* voisin_actuel;
     t_liste* liste_voisin;
@@ -205,13 +205,13 @@ t_graphe* dijkstra(t_graphe* map, t_tile* sommet_de_depart)
     {
         liste_ouverte = enlever_noeud_debut(liste_ouverte, &case_analysee);
         liste_ferme = insererNoeud(liste_ferme, case_analysee);
-        printf("noeud actuel [%d][%d]\n", case_analysee->position.ligne, case_analysee->position.colonne);
+        //printf("noeud actuel [%d][%d]\n", case_analysee->position.ligne, case_analysee->position.colonne);
         liste_voisin=case_analysee->voisin;
         //afficherListe(liste_ferme);pb de boucle infini dans la liste ferme a voir si le temps
         while(liste_voisin!=NULL)
         {
             voisin_actuel=liste_voisin->n;
-            printf("case :[%d][%d] de type %d\n", voisin_actuel->position.ligne, voisin_actuel->position.colonne, voisin_actuel->element->type);
+            //printf("case :[%d][%d] de type %d\n", voisin_actuel->position.ligne, voisin_actuel->position.colonne, voisin_actuel->element->type);
             poids_temp=case_analysee->g+ heuristic(case_analysee, voisin_actuel);
 
 
@@ -866,14 +866,14 @@ int validation_evolution_capitaliste(t_graphe* map, t_tile* batiment, int* nb_ha
     }
 }
 
-t_graphe* cycle_habitation(t_graphe* map, int* capa_usine, long* compteur_argent, int* nb_habitant, int compteur_eau, BUFFER* liste_buffer, IMAGE* liste_image, int* attente, int mode)
+t_graphe* cycle_habitation(t_graphe* map, int* capa_usine, long* compteur_argent, int* nb_habitant, int compteur_eau, BUFFER* liste_buffer, IMAGE* liste_image, int* attente, int mode, int temps_ancienne_partie)
 {
     int changement;
     //parcours du tableau des maisons au lieu du parcours de toute la map
     t_liste* parcours_habitation=map->liste_hab;
     while(parcours_habitation!=NULL)
     {
-        if(clock()/CLOCKS_PER_SEC-parcours_habitation->n->element->compteur==5)//si on a fait un cycle
+        if(clock()/CLOCKS_PER_SEC + temps_ancienne_partie -parcours_habitation->n->element->compteur==5)//si on a fait un cycle
         {
             if(parcours_habitation->n->element->type>4 && parcours_habitation->n->element->type<9)
             {
@@ -887,7 +887,7 @@ t_graphe* cycle_habitation(t_graphe* map, int* capa_usine, long* compteur_argent
                 map= gestion_incendie(map, parcours_habitation->n, liste_buffer, liste_image);
             }
             //sous progrm pour générer l'incendie après la gestion de l'incendie comme ça on laisse un cycle entier à l'utilisateur pour éteindre l'incendie si besoin
-            parcours_habitation->n->element->compteur=clock()/CLOCKS_PER_SEC;
+            parcours_habitation->n->element->compteur=clock()/CLOCKS_PER_SEC + temps_ancienne_partie;
             *compteur_argent=*compteur_argent+parcours_habitation->n->element->nb_habitant;
             if(mode==1)
             {

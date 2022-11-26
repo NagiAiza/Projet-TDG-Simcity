@@ -58,7 +58,7 @@ void jeu(int mode, int nvlle_partie)//sous programme qui fera tourner tout le je
     //  (on peut décider de partir autrement...)
     decalageX=0;
     show_mouse(screen);
-    clock_t CLK_debut=clock() / CLOCKS_PER_SEC + temps_ancienne_partie;
+    clock_t CLK_debut=clock() / CLOCKS_PER_SEC;
     while(!key[KEY_ESC] && exit!=1)
     {
         if (key[KEY_RIGHT])   decalageX+=5;
@@ -90,7 +90,7 @@ void jeu(int mode, int nvlle_partie)//sous programme qui fera tourner tout le je
 
         map=action(map, liste_buffer, liste_image, &choix, souris, &rotation, niv_visu, &case_select, &algo_A, &compteur_argent, &capa_usine, &exit, &scroll);
 
-        map=cycle_habitation(map, &capa_usine, &compteur_argent, &nb_habitant, capa_eau, liste_buffer, liste_image, &attente, mode);
+        map=cycle_habitation(map, &capa_usine, &compteur_argent, &nb_habitant, capa_eau, liste_buffer, liste_image, &attente, mode, temps_ancienne_partie);
 
         map=remise_0_argent(map, souris);
 

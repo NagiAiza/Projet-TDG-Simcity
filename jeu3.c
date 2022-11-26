@@ -206,7 +206,8 @@ void sauvegarde(long compteur_argent, long temps, t_graphe* map, int nb_habitant
             {
                 fprintf(sauvegarde, "%d ", map->grille[i][j]->element->nb_habitant);
                 fprintf(sauvegarde, "%d ", map->grille[i][j]->element->eau_actuelle);
-                //fprintf(sauvegarde, "%d ", map->grille[i][j]->element->compteur); va falloir réflechir la dessus
+
+                fprintf(sauvegarde, "%d ", map->grille[i][j]->element->compteur);
 
 
                 temp=map->grille[i][j]->element->chateau_approvisionnement;//information sur les chateaux alimantant la maison
@@ -290,7 +291,7 @@ t_graphe* lecture_sauvegarde(t_graphe* map, long* compteur_argent, long* temps, 
             {
                 fscanf(sauvegarde, "%d", &map->grille[i][j]->element->nb_habitant);
                 fscanf(sauvegarde, "%d", &map->grille[i][j]->element->eau_actuelle);
-                //fprintf(sauvegarde, "%d ", map->grille[i][j]->element->compteur); va falloir réflechir la dessus
+                fscanf(sauvegarde, "%d", &map->grille[i][j]->element->compteur);
 
                 fscanf(sauvegarde, "%d", &compteur);
                 for(int k=0; k<compteur; k++)

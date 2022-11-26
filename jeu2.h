@@ -22,7 +22,7 @@ int verification_connexite_route(t_graphe* map, t_tile* case_actu);
 
 int validation_evolution_communiste(t_tile* batiment, int* nb_habitant, int compteur_eau);
 int validation_evolution_capitaliste(t_graphe* map, t_tile* batiment, int* nb_habitant);//evolue forcément peut importe les conditions
-t_graphe* cycle_habitation(t_graphe* map, int* capa_usine, long* compteur_argent, int* nb_habitant, int compteur_eau, BUFFER* liste_buffer, IMAGE* liste_image, int* attente, int mode);
+t_graphe* cycle_habitation(t_graphe* map, int* capa_usine, long* compteur_argent, int* nb_habitant, int compteur_eau, BUFFER* liste_buffer, IMAGE* liste_image, int* attente, int mode, int temps_ancienne_partie);
 
 t_graphe* ecriture_fichier_elec(t_graphe* map, t_tile* case_arrive);
 t_graphe* BFS(t_graphe* map, t_tile* sommet_depart);
