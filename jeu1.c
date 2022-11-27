@@ -385,10 +385,10 @@ int verification_chevauchement(t_graphe* map, int ligne, int colonne, int choix,
             break;
     }
 
-    /*if(verif==1)
+    if(verif==1)
     {
         printf("impossible il ya chevauchement\n");
-    }*/
+    }
     return verif;
 }
 

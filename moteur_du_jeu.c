@@ -95,7 +95,7 @@ void jeu(int* mode, int nvlle_partie)//sous programme qui fera tourner tout le j
 
         map=remise_0_argent(map, souris);//si on appuie sur une pièce on fait disparaitre la pièce
 
-        if(choix>=1 && choix <=5)//si il doit poser un batiment, on affiche les sprites qui permettront d'annuler l'action ou de faire tourner le batiment
+        if(choix>=1 && choix <=5 || choix == 10)//si il doit poser un batiment, on affiche les sprites qui permettront d'annuler l'action ou de faire tourner le batiment
         {
             draw_sprite(liste_buffer->buffer_menu, liste_image->annulation_action, 25, 517);
             draw_sprite(liste_buffer->buffer_menu, liste_image->rotation, 70, 517);

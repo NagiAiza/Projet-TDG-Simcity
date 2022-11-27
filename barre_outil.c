@@ -38,7 +38,8 @@ void choixAction(int* choix)//en fonction de l'endroit cliqué, on lui attribut 
     }
     if(((mouse_x>=65)&&(mouse_x<=115)&&(mouse_y>=328)&&(mouse_y<=354))&&(mouse_b&1))//pelle
     {
-        //pas codé
+        printf("supp\n");
+        *choix = 10;
     }
     if(((mouse_x>=9)&&(mouse_x<=81)&&(mouse_y>=408)&&(mouse_y<=434))&&(mouse_b&1))//0
     {
@@ -396,6 +397,70 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
         case 9://sortie du jeu
             *exit=1;
             *choix=0;
+            break;
+        case 10:
+            if(niv_visu==0)
+            {
+
+                if(key[KEY_1] || ((mouse_x>=25)&&(mouse_x<=55)&&(mouse_y>=520)&&(mouse_y<=545))&&(mouse_b&1))//ou choisir un bouton plus judicieux
+                {
+                    *choix=0;//on sort du choix des actions si l'utilisateur le veut
+                }
+                if(mouse_b & 1)
+                {
+                    if(souris.ligne<35 && souris.colonne<45)
+                    {
+                        int temp_ligne= map->grille[souris.ligne][souris.colonne]->case_mere->position.ligne;
+                        int temp_colonne= map->grille[souris.ligne][souris.colonne]->case_mere->position.colonne;
+                        if (map->grille[souris.ligne][souris.colonne]->case_mere->element->type==2 || map->grille[souris.ligne][souris.colonne]->case_mere->element->type==3 || map->grille[souris.ligne][souris.colonne]->case_mere->element->type==10)
+                        {
+                            printf("suppresion\n");
+                            map->grille[souris.ligne][souris.colonne]->case_mere->element->type=0;
+                            if(map->grille[souris.ligne][souris.colonne]->case_mere->element->orientation==1)
+                            {
+                                for (int i = -2; i < 2; i++)
+                                {
+                                    for (int j = -2; j < 4; j++)
+                                    {
+                                        map = remplissage_matrice_adjacence(map, temp_ligne + i, temp_colonne + j,0, map->grille[temp_ligne + i][temp_colonne + j]);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                for (int i = -3; i < 3; i++)
+                                {
+                                    for (int j = -1; j < 3; j++)
+                                    {
+                                        map = remplissage_matrice_adjacence(map, temp_ligne + i, temp_colonne + j,0, map->grille[temp_ligne + i][temp_colonne + j]);
+                                    }
+                                }
+                            }
+                            map= electricite(map, capa_usine);
+                            map=distribution_eau(map);
+                            *choix=0;
+                        }
+                        else if(map->grille[souris.ligne][souris.colonne]->case_mere->element->type>=4 && map->grille[souris.ligne][souris.colonne]->case_mere->element->type<=9)
+                        {
+                            //retirer de la liste des habitations du graphe
+                            map->grille[souris.ligne][souris.colonne]->case_mere->element->type=0;
+                            printf("case [%d][%d]\n", temp_ligne, temp_colonne);
+                            for(int i=-1; i<2; i++)
+                            {
+                                for(int j=-1; j<2; j++)
+                                {
+                                    printf("suppresion case [%d][%d]\n", temp_ligne + i, temp_colonne + j);
+                                    map= remplissage_matrice_adjacence(map, temp_ligne + i, temp_colonne + j, 0, map->grille[temp_ligne + i][temp_colonne + j]);
+                                }
+                            }
+                            map->liste_hab=enleverNoeud(map->liste_hab, map->grille[temp_ligne][temp_colonne]);
+                            map= electricite(map, capa_usine);
+                            map=distribution_eau(map);
+                            *choix=0;
+                        }
+                    }
+                }
+            }
             break;
         default:
             textout_ex ( liste_buffer->buffer_final, font, "Rien de selectionne", 511, 326,makecol (255, 255, 255), -1); //texte explicatif

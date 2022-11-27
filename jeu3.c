@@ -334,3 +334,35 @@ t_graphe* lecture_sauvegarde(t_graphe* map, long* compteur_argent, long* temps, 
     fclose(sauvegarde);
     return map;
 }
+
+t_graphe* suppresion(t_graphe* map, t_pos souris)
+{
+    if(mouse_b & 1)
+    {
+        if (map->grille[souris.ligne][souris.colonne]->case_mere->element->type==2)
+        {
+            map->grille[souris.ligne][souris.colonne]->case_mere->element->type=0;
+            if(map->grille[souris.ligne][souris.colonne]->case_mere->element->orientation==1)
+            {
+                for (int i = -2; i < 2; i++)
+                {
+                    for (int j = -2; j < 4; j++)
+                    {
+                        map = remplissage_matrice_adjacence(map, souris.ligne + i, souris.colonne + j,0, map->grille[souris.ligne][souris.colonne]);
+                    }
+                }
+            }
+            else
+            {
+                for (int i = -3; i < 3; i++)
+                {
+                    for (int j = -1; j < 3; j++)
+                    {
+                        map = remplissage_matrice_adjacence(map, souris.ligne + i, souris.colonne + j,0, map->grille[souris.ligne][souris.colonne]);
+                    }
+                }
+            }
+
+        }
+    }
+}
