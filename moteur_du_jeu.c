@@ -89,7 +89,7 @@ void jeu(int* mode, int nvlle_partie)//sous programme qui fera tourner tout le j
         scroll_map(&scroll, &niv_visu, &screeny);
         //dès qu'on a récup ce qu'il veut faire on conserve son action et en fonction de l'action on lance le sous pgrm pour l'effectuer
 
-        map=action(map, liste_buffer, liste_image, &choix, souris, &rotation, niv_visu, &case_select, &algo_A, &compteur_argent, &capa_usine, &exit, &scroll);//gère l'action choisi par l'utilisateur
+        map=action(map, liste_buffer, liste_image, &choix, souris, &rotation, niv_visu, &case_select, &algo_A, &compteur_argent, &capa_usine, &exit, &scroll, &nb_habitant);//gère l'action choisi par l'utilisateur
 
         map=cycle_habitation(map, &capa_usine, &compteur_argent, &nb_habitant, capa_eau, liste_buffer, liste_image, &attente, *mode, temps_ancienne_partie);//gestion des cycles des habitations
 

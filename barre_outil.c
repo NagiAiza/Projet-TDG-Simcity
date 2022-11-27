@@ -59,7 +59,7 @@ void choixAction(int* choix)//en fonction de l'endroit cliqué, on lui attribut 
     }
 }
 
-t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* choix, t_pos souris, int* rotation, int niv_visu, t_tile** case_select, int* algo_A, long* argent_restant, int* capa_usine, int* exit, int* scroll)
+t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* choix, t_pos souris, int* rotation, int niv_visu, t_tile** case_select, int* algo_A, long* argent_restant, int* capa_usine, int* exit, int* scroll, int* nb_habitants)
 {
     int depense;
     t_tile* parcour_chemin=NULL;//tuile auxilière pour reparcourir les chemins calculé
@@ -410,13 +410,13 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
                 {
                     if(souris.ligne<35 && souris.colonne<45)
                     {
-                        int temp_ligne= map->grille[souris.ligne][souris.colonne]->case_mere->position.ligne;
+                        int temp_ligne= map->grille[souris.ligne][souris.colonne]->case_mere->position.ligne;//on récupère les composantes de positions car la case mère peut changer pendant la suppresion
                         int temp_colonne= map->grille[souris.ligne][souris.colonne]->case_mere->position.colonne;
                         if (map->grille[souris.ligne][souris.colonne]->case_mere->element->type==2 || map->grille[souris.ligne][souris.colonne]->case_mere->element->type==3 || map->grille[souris.ligne][souris.colonne]->case_mere->element->type==10)
                         {
-                            printf("suppresion\n");
-                            map->grille[souris.ligne][souris.colonne]->case_mere->element->type=0;
-                            if(map->grille[souris.ligne][souris.colonne]->case_mere->element->orientation==1)
+                            //printf("suppresion\n");
+                            map->grille[souris.ligne][souris.colonne]->case_mere->element->type=0;//on remet le type à 0
+                            if(map->grille[souris.ligne][souris.colonne]->case_mere->element->orientation==1)//selon l'orientation
                             {
                                 for (int i = -2; i < 2; i++)
                                 {
@@ -436,7 +436,7 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
                                     }
                                 }
                             }
-                            map= electricite(map, capa_usine);
+                            map= electricite(map, capa_usine);//on  n'oublie pas de mettre a jour les chemins d'eau et d'elec
                             map=distribution_eau(map);
                             *choix=0;
                         }
@@ -444,16 +444,17 @@ t_graphe* action(t_graphe* map, BUFFER* liste_buffer, IMAGE* liste_image, int* c
                         {
                             //retirer de la liste des habitations du graphe
                             map->grille[souris.ligne][souris.colonne]->case_mere->element->type=0;
-                            printf("case [%d][%d]\n", temp_ligne, temp_colonne);
+                            *nb_habitants-=map->grille[souris.ligne][souris.colonne]->case_mere->element->nb_habitant;
+                            //printf("case [%d][%d]\n", temp_ligne, temp_colonne);
                             for(int i=-1; i<2; i++)
                             {
                                 for(int j=-1; j<2; j++)
                                 {
-                                    printf("suppresion case [%d][%d]\n", temp_ligne + i, temp_colonne + j);
+                                    //printf("suppresion case [%d][%d]\n", temp_ligne + i, temp_colonne + j);
                                     map= remplissage_matrice_adjacence(map, temp_ligne + i, temp_colonne + j, 0, map->grille[temp_ligne + i][temp_colonne + j]);
                                 }
                             }
-                            map->liste_hab=enleverNoeud(map->liste_hab, map->grille[temp_ligne][temp_colonne]);
+                            map->liste_hab=enleverNoeud(map->liste_hab, map->grille[temp_ligne][temp_colonne]);//on  n'oublie pas de mettre a jour les chemins d'eau et d'elec
                             map= electricite(map, capa_usine);
                             map=distribution_eau(map);
                             *choix=0;
